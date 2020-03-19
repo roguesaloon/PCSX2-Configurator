@@ -63,7 +63,7 @@ namespace PCSX2_Configurator.Core
 
         private bool EnumWindow(IntPtr handle, IntPtr pointer)
         {
-            GCHandle gch = GCHandle.FromIntPtr(pointer);
+            var gch = GCHandle.FromIntPtr(pointer);
             if (!(gch.Target is List<IntPtr> list))
             {
                 throw new InvalidCastException("GCHandle Target could not be cast as List<IntPtr>");

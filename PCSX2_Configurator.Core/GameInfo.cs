@@ -1,10 +1,13 @@
-﻿namespace PCSX2_Configurator.Core
+﻿using System;
+using System.Reflection;
+
+namespace PCSX2_Configurator.Core
 {
     public class GameInfo
     {
         public GameInfo() { }
 
-        private GameInfo(GameInfo gameInfo)
+        public GameInfo(GameInfo gameInfo)
         {
             foreach (var prop in typeof(GameInfo).GetProperties())
             {
@@ -12,32 +15,33 @@
             }
         }
 
-        public GameInfo
-            (GameInfo gameInfo, string name = null , string path = null, string emuVersion = null , string config = null, string displayName = null, string region = null, string gameId = null) 
-            : this(gameInfo) => SetFromValues(name, path, emuVersion, config, displayName, region, gameId);
+        private readonly string name;
+        public string Name { get => name; set => ExternalSetFieldOnce(nameof(name), value); }
 
-        public GameInfo
-            (string name, string path, string emuVersion, string config = null, string displayName = null, string region = null, string gameId = null) 
-            => SetFromValues(name, path, emuVersion, config, displayName, region, gameId);
+        private readonly string path;
+        public string Path { get => path; set => ExternalSetFieldOnce(nameof(path), value); }
 
-        private void SetFromValues(string name, string path, string emuVersion, string config, string displayName, string region, string gameId)
+        private readonly string emuVersion;
+        public string EmuVersion { get => emuVersion; set => ExternalSetFieldOnce(nameof(emuVersion), value); }
+        
+        private readonly string config;
+        public string Config { get => config; set => ExternalSetFieldOnce(nameof(config), value); }
+
+        private readonly string displayName;
+        public string DisplayName { get => displayName; set => ExternalSetFieldOnce(nameof(displayName), value); }
+
+        private readonly string region;
+        public string Region { get => region; set => ExternalSetFieldOnce(nameof(region), value); }
+
+        private readonly string gameId;
+        public string GameId { get => gameId; set => ExternalSetFieldOnce(nameof(gameId), value); }
+
+        private void ExternalSetFieldOnce(string fieldName, object value)
         {
-            Name = name ?? Name;
-            Path = path ?? Path;
-            EmuVersion = emuVersion ?? EmuVersion;
-            Config = config ?? Config;
-            DisplayName = displayName ?? DisplayName;
-            Region = region ?? Region;
-            GameId = gameId ?? GameId;
+            var field = typeof(GameInfo).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            if (field == null || Assembly.GetCallingAssembly() == Assembly.GetExecutingAssembly()) field.SetValue(this, value);
+            else throw new Exception("Value is already set");
         }
-
-        public string Name { get; internal set; }
-        public string Path { get; internal set; }
-        public string EmuVersion { get; internal set; }
-        public string Config { get; internal set; }
-        public string DisplayName { get; internal set; }
-        public string Region { get; internal set; }
-        public string GameId { get; internal set; }
 
         internal object this[string propName]
         {

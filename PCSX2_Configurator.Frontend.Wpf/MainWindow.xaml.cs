@@ -1,7 +1,6 @@
 ﻿using PCSX2_Configurator.Core;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -69,7 +68,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             foreach (var game in gameModels)
             {
                 var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == game.Game);
-                if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo, emuVersion: game.Version, config: game.Config));
+                if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config });
             }
         }
 
@@ -84,7 +83,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                     Mouse.OverrideCursor = Cursors.Wait;
                     var gameInfo = gameLibraryService.AddToLibrary(file);
                     var (name, region, id) = emulationService.IdentifyGame(settingsService.VersionsAndPaths["v1.4.0"], file);
-                    gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo, displayName: name, region: region, gameId: id), shouldReloadLibrary: true);
+                    gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
                     Mouse.OverrideCursor = null;
                 }
                 UpdateGameModels();

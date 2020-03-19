@@ -14,7 +14,7 @@ namespace PCSX2_Configurator.Core
         
         public GameLibraryService(string targetFile)
         {
-            targetFile = targetFile ?? "GameLibrary.xml";
+            targetFile ??= "GameLibrary.xml";
             this.targetFile = targetFile;
             xmlDocument = new XmlDocument();
 
