@@ -12,21 +12,12 @@ namespace PCSX2_Configurator.Frontend.Wpf
     /// </summary>
     public partial class MainWindow : Window
     {
-        private class GameModel
-        {
-            public string Game { get; set; }
-            public string Path { get; set; }
-            public string[] Versions { get; set; }
-            public string Version { get; set; }
-            public string[] Configs { get; set; }
-            public string Config { get; set; }
-        }
-
         private ObservableCollection<GameModel> gameModels;
 
         private readonly SettingsService settingsService;
         private readonly GameLibraryService gameLibraryService;
         private readonly EmulationService emulationService;
+        private readonly ConfigurationService configurationService;
 
         public MainWindow()
         {
@@ -34,10 +25,10 @@ namespace PCSX2_Configurator.Frontend.Wpf
             settingsService = new SettingsService(null);
             gameLibraryService = new GameLibraryService(null);
             emulationService = new EmulationService();
+            configurationService = new ConfigurationService(settingsService.ConfigsDir);
 
             UpdateGameModels();
-            gamesList.ItemsSource = gameModels;
-            
+            gamesList.ItemsSource = gameModels; 
         }
 
         private void UpdateGameModels()
@@ -50,8 +41,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 {
                     Game = game.DisplayName ?? game.Name,
                     Path = game.Path,
-                    Versions = settingsService.VersionsAndPaths.Keys.ToArray(),
-                    Configs = settingsService.AvalialableConfigs.Keys.ToArray(),
+                    Versions = settingsService.VersionsAndPaths.Keys,
+                    Configs = settingsService.AvalialableConfigs.Keys,
                     Version = game.EmuVersion,
                     Config = game.Config
                 });
@@ -70,6 +61,13 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == game.Game);
                 if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config });
             }
+        }
+
+        private void ShowConfigWizard(object sender, RoutedEventArgs e)
+        {
+            var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
+            var configWizard = new ConfigWizard(configurationService, settingsService, model, UpdateGameModels);
+            configWizard.Show();
         }
 
 

@@ -42,5 +42,11 @@ namespace PCSX2_Configurator.Core
             VersionsAndPaths = settings["PCSX2_Versions"].ToDictionary(x => x.KeyName, x => x.Value);
             ConfigsDir = settings["PCSX2_Configurator"]["ConfigsDir"];
         }
+
+        public void UpdateAvailableConfigs()
+        {
+            availableConfigs = null;
+            availableConfigs = AvalialableConfigs;
+        }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PCSX2_Configurator.Frontend.Wpf"
         mc:Ignorable="d"
-        Title="PCSX2 Configurator" Width="800" Height="450"
+        Title="PCSX2 Configurator" Width="900" Height="450"
         Closing="OnClosing">
     <Grid>
         <ListBox Name="gamesList" Margin="40,26,40,26" Drop="DropIso" AllowDrop="True" HorizontalContentAlignment="Stretch">
@@ -17,6 +17,7 @@
                         <ComboBox Width="90" ItemsSource="{Binding Versions}" SelectedItem="{Binding Version}"></ComboBox>
                         <TextBlock Text="Config" Margin="20,0,5,0" VerticalAlignment="Center" />
                         <ComboBox Width="150" ItemsSource="{Binding Configs}" SelectedItem="{Binding Config}"></ComboBox>
+                        <Button Margin="20,0,0,0" Click="ShowConfigWizard" BindingGroup="{Binding}">Create Config</Button>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
