@@ -15,32 +15,36 @@ namespace PCSX2_Configurator.Core
             }
         }
 
-        private readonly string name;
-        public string Name { get => name; set => ExternalSetFieldOnce(nameof(name), value); }
+        private string name;
+        public string Name { get => name; set => name = this[nameof(name), value] as string; }
 
-        private readonly string path;
-        public string Path { get => path; set => ExternalSetFieldOnce(nameof(path), value); }
+        private string path;
+        public string Path { get => path; set => path = this[nameof(path), value] as string; }
 
-        private readonly string emuVersion;
-        public string EmuVersion { get => emuVersion; set => ExternalSetFieldOnce(nameof(emuVersion), value); }
+        private string emuVersion;
+        public string EmuVersion { get => emuVersion; set => emuVersion = this[nameof(emuVersion), value] as string; }
         
-        private readonly string config;
-        public string Config { get => config; set => ExternalSetFieldOnce(nameof(config), value); }
+        private string config;
+        public string Config { get => config; set => config = this[nameof(config), value] as string; }
 
-        private readonly string displayName;
-        public string DisplayName { get => displayName; set => ExternalSetFieldOnce(nameof(displayName), value); }
+        private string displayName;
+        public string DisplayName { get => displayName; set => displayName = this[nameof(displayName), value] as string; }
 
-        private readonly string region;
-        public string Region { get => region; set => ExternalSetFieldOnce(nameof(region), value); }
+        private string region;
+        public string Region { get => region; set => region = this[nameof(region), value] as string; }
 
-        private readonly string gameId;
-        public string GameId { get => gameId; set => ExternalSetFieldOnce(nameof(gameId), value); }
+        private string gameId;
+        public string GameId { get => gameId; set => gameId = this[nameof(gameId), value] as string; }
 
-        private void ExternalSetFieldOnce(string fieldName, object value)
+        private object this[string fieldName, object value]
         {
-            var field = typeof(GameInfo).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            if (field == null || Assembly.GetCallingAssembly() == Assembly.GetExecutingAssembly()) field.SetValue(this, value);
-            else throw new Exception("Value is already set");
+            get
+            {
+                var field = typeof(GameInfo).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+                if (field == null || Assembly.GetCallingAssembly() == Assembly.GetExecutingAssembly()) field.SetValue(this, value);
+                else throw new Exception("Value is already set");
+                return value;
+            }
         }
 
         internal object this[string propName]
