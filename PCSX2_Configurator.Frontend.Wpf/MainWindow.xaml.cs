@@ -18,6 +18,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private readonly GameLibraryService gameLibraryService;
         private readonly EmulationService emulationService;
         private readonly ConfigurationService configurationService;
+        private readonly RemoteConfigurationService remoteConfigurationService;
 
         public MainWindow()
         {
@@ -26,6 +27,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
             gameLibraryService = new GameLibraryService(null);
             emulationService = new EmulationService();
             configurationService = new ConfigurationService(settingsService.ConfigsDir);
+            remoteConfigurationService = new RemoteConfigurationService(null);
+
 
             UpdateGameModels();
             gamesList.ItemsSource = gameModels; 
