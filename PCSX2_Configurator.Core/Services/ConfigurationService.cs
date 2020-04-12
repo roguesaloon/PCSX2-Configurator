@@ -24,14 +24,14 @@ namespace PCSX2_Configurator.Core
         private const string lilyPadFileName = "LilyPad.ini";
 
         private readonly string configsDir;
-        readonly FileIniDataParser iniParser;
+        private readonly FileIniDataParser iniParser;
         public ConfigurationService(string configsDir)
         {
             iniParser = new FileIniDataParser();
             this.configsDir = configsDir;
         }
 
-        public void CreateConfig(string configName, string inisPath, SettingsOptions settingsOptions)
+        public string CreateConfig(string configName, string inisPath, SettingsOptions settingsOptions)
         {
             var configPath = $"{configsDir}\\{configName}";
             Directory.CreateDirectory(configPath);
@@ -42,6 +42,20 @@ namespace PCSX2_Configurator.Core
             if (settingsOptions.HasFlag(SettingsOptions.CopyGsdxSettings)) File.Copy($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
             if (settingsOptions.HasFlag(SettingsOptions.CopySpu2xSettings)) File.Copy($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
             if (settingsOptions.HasFlag(SettingsOptions.CopyLilyPadSettings)) File.Copy($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
+
+            return configPath;
+        }
+
+        public void ImportConfig(string configPath, string inisPath, SettingsOptions settingsOptions)
+        {
+            var configName = Path.GetDirectoryName(configPath);
+            var importedConfigPath = CreateConfig(configName, inisPath, settingsOptions);
+
+            foreach (var file in Directory.GetFiles(configPath))
+            {
+                var fileName = Path.GetFileName(file);
+                File.Copy(file, $"{importedConfigPath}\\{fileName}");
+            }
         }
 
         private void CreateUiFile(string configPath, string inisPath, SettingsOptions settingsOptions)

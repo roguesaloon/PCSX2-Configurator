@@ -27,7 +27,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             gameLibraryService = new GameLibraryService(null);
             emulationService = new EmulationService();
             configurationService = new ConfigurationService(settingsService.ConfigsDir);
-            remoteConfigurationService = new RemoteConfigurationService(null);
+            remoteConfigurationService = new RemoteConfigurationService(configurationService, null);
 
 
             UpdateGameModels();
