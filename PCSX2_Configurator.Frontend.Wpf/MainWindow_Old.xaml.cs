@@ -1,5 +1,4 @@
 ﻿using PCSX2_Configurator.Core;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -9,9 +8,9 @@ using System.Windows.Input;
 namespace PCSX2_Configurator.Frontend.Wpf
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow_Old.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow_Old : Window
     {
         private ObservableCollection<GameModel> gameModels;
 
@@ -21,18 +20,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private readonly ConfigurationService configurationService;
         private readonly RemoteConfigurationService remoteConfigurationService;
 
-        private void CloseWindow(object sender, RoutedEventArgs e) => Close();
-        private void MaximizeWindow(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
-        private void MinimizeWindow(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-        protected override void OnStateChanged(EventArgs e)
-        {
-
-            titleBar_Maximize.Content = WindowState == WindowState.Maximized ? "🗗": "🗖";
-            base.OnStateChanged(e);
-        }
-
-        public MainWindow()
+        public MainWindow_Old()
         {
             InitializeComponent();
             settingsService = new SettingsService(null);
@@ -43,7 +31,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
 
             UpdateGameModels();
-            //gamesList.ItemsSource = gameModels; 
+            gamesList.ItemsSource = gameModels; 
         }
 
         private void UpdateGameModels()
@@ -74,7 +62,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             foreach (var game in gameModels)
             {
                 var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == game.Game);
-                if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config });
+                if (gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config });
             }
         }
 

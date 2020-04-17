@@ -43,10 +43,6 @@ namespace PCSX2_Configurator.Core
             ConfigsDir = settings["PCSX2_Configurator"]["ConfigsDir"];
         }
 
-        public void UpdateAvailableConfigs()
-        {
-            availableConfigs = null;
-            availableConfigs = AvalialableConfigs;
-        }
+        public void UpdateAvailableConfigs() => availableConfigs = null;
     }
 }
