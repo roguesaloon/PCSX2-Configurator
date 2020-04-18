@@ -17,26 +17,19 @@
             <Button Name="titleBar_Maximize" Height="26" Width="26" Canvas.Right="30" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MaximizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗖</Button>
             <Button Name="titleBar_Close" Height="26" Width="26" Canvas.Right="5" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="CloseWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗙</Button>
         </Canvas>
-        <ScrollViewer Margin="10,100,0,0" HorizontalContentAlignment="Center" VerticalScrollBarVisibility="Auto">
-            <WrapPanel MaxWidth="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActualWidth}" HorizontalAlignment="Center">
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20062.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-21243.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20312.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-21134.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-21115.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20228.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SCUS-97481.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-21269.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SCUS-97199.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20743.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20731.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SCUS-97472.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SCUS-97213.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20001.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20216.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-21120.jpg" Margin="0,0,10,0"/>
-                <Image Width="220" Height="335" Source="Assets/Covers/SLUS-20652.jpg" Margin="0,0,10,0"/>
-            </WrapPanel>
+        <ScrollViewer Margin="10,100,0,0" HorizontalContentAlignment="Center" VerticalScrollBarVisibility="Auto" Drop="DropIso" AllowDrop="True">
+            <ListBox Name="gamesList">
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <WrapPanel MaxWidth="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActualWidth}" HorizontalAlignment="Center" IsItemsHost="True"/>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Image Width="220" Height="335" Source="{Binding CoverPath}" Margin="0,0,10,0"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </ScrollViewer>
     </Grid>
 </Window>

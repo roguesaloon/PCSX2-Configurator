@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -12,5 +10,6 @@ namespace PCSX2_Configurator.Frontend.Wpf
         public string Version { get; set; }
         public IEnumerable<string> Configs { get; set; }
         public string Config { get; set; }
+        public string CoverPath { get; set; }
     }
 }

@@ -27,7 +27,6 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         protected override void OnStateChanged(EventArgs e)
         {
-
             titleBar_Maximize.Content = WindowState == WindowState.Maximized ? "🗗": "🗖";
             base.OnStateChanged(e);
         }
@@ -43,7 +42,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
 
             UpdateGameModels();
-            //gamesList.ItemsSource = gameModels; 
+            gamesList.ItemsSource = gameModels; 
         }
 
         private void UpdateGameModels()
@@ -59,7 +58,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
                     Versions = settingsService.VersionsAndPaths.Keys,
                     Configs = settingsService.AvalialableConfigs.Keys,
                     Version = game.EmuVersion,
-                    Config = game.Config
+                    Config = game.Config,
+                    CoverPath = $"Assets/Covers/{game.GameId}.jpg"
                 });
             }
         }
