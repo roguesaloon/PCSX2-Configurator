@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -11,5 +12,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         public IEnumerable<string> Configs { get; set; }
         public string Config { get; set; }
         public string CoverPath { get; set; }
+
+        public GameModel Clone() => (GameModel) MemberwiseClone();
     }
 }

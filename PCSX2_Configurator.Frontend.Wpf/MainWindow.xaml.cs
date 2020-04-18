@@ -20,6 +20,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private readonly EmulationService emulationService;
         private readonly ConfigurationService configurationService;
         private readonly RemoteConfigurationService remoteConfigurationService;
+        private readonly ICoverService coverService;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
         private void MaximizeWindow(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
@@ -39,28 +40,36 @@ namespace PCSX2_Configurator.Frontend.Wpf
             emulationService = new EmulationService();
             configurationService = new ConfigurationService(settingsService.ConfigsDir);
             remoteConfigurationService = new RemoteConfigurationService(configurationService, null);
-
+            coverService = new ChainedCoverService(null);
 
             UpdateGameModels();
             gamesList.ItemsSource = gameModels; 
         }
 
-        private void UpdateGameModels()
+        private async void UpdateGameModels()
         {
             gameModels ??= new ObservableCollection<GameModel>();
             gameModels.Clear();
             foreach (var game in gameLibraryService.Games)
             {
-                gameModels.Add(new GameModel
+                var gameModel = new GameModel
                 {
                     Game = game.DisplayName ?? game.Name,
                     Path = game.Path,
                     Versions = settingsService.VersionsAndPaths.Keys,
                     Configs = settingsService.AvalialableConfigs.Keys,
                     Version = game.EmuVersion,
-                    Config = game.Config,
-                    CoverPath = $"Assets/Covers/{game.GameId}.jpg"
-                });
+                    Config = game.Config
+                };
+                gameModels.Add(gameModel);
+            }
+
+
+            for(int i = 0; i < gameModels.Count; ++i)
+            {
+                var gameModel = gameModels[i].Clone();
+                gameModel.CoverPath = await coverService.GetCoverForGameAsTask(gameLibraryService.Games[i]);
+                gameModels[i] = gameModel;
             }
         }
 
