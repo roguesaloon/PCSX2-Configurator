@@ -5,7 +5,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets/Icon.ico</ApplicationIcon>
-    <AssemblyName>PCSX2 Configurator</AssemblyName>
+    <AssemblyName>PCSX2_Configurator.Frontend.Wpf</AssemblyName>
+    <PackageId>PCSX2 Configurator</PackageId>
+    <Authors>alec100_94</Authors>
+    <Company>Rogue Saloon</Company>
+    <Product>PCSX2 Configurator</Product>
   </PropertyGroup>
 
   <ItemGroup>
