@@ -50,7 +50,7 @@ namespace PCSX2_Configurator.Core
 
         private void DownloadCoverFromSource(string fileName, string filePath)
         {
-            // Also Need Async Here Way Too Slow
+            // Way Too Slow
             try
             {
                 var formattedName = FormatNameForService(fileName);
