@@ -2,74 +2,47 @@
 using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
 using System.IO;
-using System.Net;
 using System.Text.RegularExpressions;
-using System.Web;
+using System.Threading.Tasks;
 
 namespace PCSX2_Configurator.Core
 {
-    public sealed class Playstation2ArchiveCoverService : ICoverService
+    public sealed class Playstation2ArchiveCoverService : BaseCoverService
     {
-        private readonly string baseUri = "http://www.atensionspan.com/evil/covers/"; // Links From http://www.evilbadman.com/
-        private readonly string missingCoverArt;
-        private readonly string coversPath;
+        private readonly string baseUri = "http://www.atensionspan.com/evil/covers"; // Links From http://www.evilbadman.com/
 
         public Playstation2ArchiveCoverService(string coversPath)
         {
-            coversPath ??= "Assets/Covers";
-            this.coversPath = $"{coversPath}/Playstation2Archive";
-            missingCoverArt = $"{coversPath}/Missing.png";
+            CoversPath = $"{coversPath ?? CoversPath}/Playstation2Archive";
         }
 
-        public string GetCoverForGame(GameInfo game)
+        protected override async Task GetCoverForGame(GameInfo game, string targetFile)
         {
-            var fileName = $"{game.DisplayName}.jpg";
-            var filePath = $"{Directory.GetCurrentDirectory()}/{coversPath}/{game.GameId}.jpg";
-            var missingFilePath = $"{Path.GetDirectoryName(filePath)}/{game.GameId}.missing";
-            if (File.Exists(filePath)) return filePath;
-            if (File.Exists(missingFilePath)) return missingCoverArt;
-            if (!Directory.Exists(coversPath)) Directory.CreateDirectory(coversPath);
+            var sourceFile = $"{game.DisplayName}.jpg";
+            await DownloadCoverFromSource(sourceFile, targetFile);
 
-
-            DownloadCoverFromSource(fileName, filePath);
-
-            if (File.Exists(filePath))
+            if (File.Exists(targetFile))
             {
-                using var image = Image.Load(filePath);
+                using var image = Image.Load(targetFile);
                 var croppedCoverRectangle = GetCroppedCoverRectangle(image.Width, image.Height);
                 image.Mutate(x => x.Crop(croppedCoverRectangle));
-                image.Save(filePath);
-
-                return filePath;
+                image.Save(targetFile);
             }
-
-            if (File.Exists(filePath)) return filePath;
-            File.Create(missingFilePath);
-            return missingCoverArt;
         }
 
-        private void DownloadCoverFromSource(string fileName, string filePath)
+        private async Task DownloadCoverFromSource(string fileName, string filePath)
         {
-            // Way Too Slow
-            try
-            {
-                var formattedName = FormatNameForService(fileName);
-                using var webClient = new WebClient { BaseAddress = baseUri };
-                webClient.DownloadFile(formattedName, filePath);
-            }
-            catch (WebException e)
-            {
-                if (e.Status != WebExceptionStatus.ProtocolError) throw;
-                RetryDownloadWhereFails(fileName, filePath);
-            }
+            var formattedFileName = FormatNameForService(fileName);
+            var sourceFile = $"{baseUri}/{formattedFileName}";
+            if (!await DownloadFile(sourceFile, filePath)) await RetryDownloadWhereFails(fileName, filePath);
         }
 
-        private void RetryDownloadWhereFails(string fileName, string filePath)
+        private async Task RetryDownloadWhereFails(string fileName, string filePath)
         {
             if (!fileName.Contains("(Bonus Disc)"))
             {
                 fileName = Path.GetFileNameWithoutExtension(fileName) + " (Bonus Disc).jpg";
-                DownloadCoverFromSource(fileName, filePath);
+                await DownloadCoverFromSource(fileName, filePath);
                 return;
             }
             fileName = fileName.Replace(" (Bonus Disc)", "");
@@ -77,13 +50,13 @@ namespace PCSX2_Configurator.Core
             if (fileName.Contains("vs."))
             {
                 fileName = fileName.Replace("vs.", "versus");
-                DownloadCoverFromSource(fileName, filePath);
+                await DownloadCoverFromSource(fileName, filePath);
                 return;
             }
             if(fileName.Contains("versus"))
             {
                 fileName = fileName.Replace("versus", "vs");
-                DownloadCoverFromSource(fileName, filePath);
+                await DownloadCoverFromSource(fileName, filePath);
                 return;
             }
             fileName = fileName.Replace("versus", "vs.");
@@ -91,7 +64,7 @@ namespace PCSX2_Configurator.Core
             if (fileName.Contains(" - "))
             {
                 fileName = fileName.Replace(" - ", " ");
-                DownloadCoverFromSource(fileName, filePath);
+                await DownloadCoverFromSource(fileName, filePath);
                 return;
             }
         }
@@ -110,7 +83,6 @@ namespace PCSX2_Configurator.Core
             name = name.Replace(" -", "-");
             name = Regex.Replace(name, "\\[.*?\\]", "");
             name = Path.GetFileNameWithoutExtension(name).Trim() + ".jpg";
-            name = HttpUtility.UrlPathEncode(name);
             return name;
 
             static string ApplyPerGameFixes(string name)

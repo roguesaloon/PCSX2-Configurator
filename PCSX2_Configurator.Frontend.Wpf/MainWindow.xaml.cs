@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -46,7 +47,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             gamesList.ItemsSource = gameModels; 
         }
 
-        private async void UpdateGameModels()
+        private void UpdateGameModels()
         {
             gameModels ??= new ObservableCollection<GameModel>();
             gameModels.Clear();
@@ -64,13 +65,12 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 gameModels.Add(gameModel);
             }
 
-
-            for(int i = 0; i < gameModels.Count; ++i)
+            Task.Run(() => Parallel.For(0, gameModels.Count, async index =>
             {
-                var gameModel = gameModels[i].Clone();
-                gameModel.CoverPath = await coverService.GetCoverForGameAsTask(gameLibraryService.Games[i]);
-                gameModels[i] = gameModel;
-            }
+                var gameModel = gameModels[index].Clone();
+                gameModel.CoverPath = await coverService.GetCoverForGame(gameLibraryService.Games[index]);
+                await Dispatcher.BeginInvoke(new Action(() => gameModels[index] = gameModel));
+            }));
         }
 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)

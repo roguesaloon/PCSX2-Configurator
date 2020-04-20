@@ -1,43 +1,20 @@
-﻿using System.IO;
-using System.Net;
+﻿using System.Threading.Tasks;
 
 namespace PCSX2_Configurator.Core
 {
-    public sealed class PlaystationDataCenterCoverService : ICoverService
+    public sealed class PlaystationDataCenterCoverService : BaseCoverService
     {
-        private readonly string baseUri = "https://psxdatacenter.com/psx2/images2/covers/";
-        private readonly string missingCoverArt;
-        private readonly string coversPath;
+        private readonly string baseUri = "https://psxdatacenter.com/psx2/images2/covers";
 
         public PlaystationDataCenterCoverService(string coversPath)
         {
-            coversPath ??= "Assets/Covers";
-            this.coversPath = $"{coversPath}/PlaystationDataCenter";
-            missingCoverArt = $"{coversPath}/Missing.png";
+            CoversPath = $"{coversPath ?? CoversPath}/PlaystationDataCenter";
         }
 
-        public string GetCoverForGame(GameInfo game)
+        protected override async Task GetCoverForGame(GameInfo game, string targetFile)
         {
-            var fileName = $"{game.GameId}.jpg";
-            var filePath = $"{Directory.GetCurrentDirectory()}/{coversPath}/{game.GameId}.jpg";
-            var missingFilePath = $"{Path.GetDirectoryName(filePath)}/{game.GameId}.missing";
-            if (File.Exists(filePath)) return filePath;
-            if (File.Exists(missingFilePath)) return missingCoverArt;
-            if (!Directory.Exists(coversPath)) Directory.CreateDirectory(coversPath);
-
-            try
-            {
-                using var webClient = new WebClient { BaseAddress = baseUri };
-                webClient.DownloadFile(fileName, filePath);
-            }
-            catch(WebException e)
-            {
-                if (e.Status != WebExceptionStatus.ProtocolError) throw;
-            }
-
-            if (File.Exists(filePath)) return filePath;
-            File.Create(missingFilePath);
-            return missingCoverArt;
+            var sourceFile = $"{baseUri}/{game.GameId}.jpg";
+            await DownloadFile(sourceFile, targetFile);
         }
     }
 }
