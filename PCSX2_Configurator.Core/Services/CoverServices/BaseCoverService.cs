@@ -8,13 +8,18 @@ namespace PCSX2_Configurator.Core
     public abstract class BaseCoverService : ICoverService
     {
         protected string CoversPath { get; set; } = $"{Directory.GetCurrentDirectory()}/Assets/Covers";
-        private static string MissingCoverArt { get => $"{Directory.GetCurrentDirectory()}/Assets/Covers/Missing.png"; }
+        private string MissingCoverArt { get; }
 
         protected static readonly HttpClient httpClient = new HttpClient();
 
         static BaseCoverService()
         {
             httpClient.Timeout = TimeSpan.FromSeconds(30);
+        }
+
+        public BaseCoverService(string missingCoverArt)
+        {
+            MissingCoverArt = missingCoverArt;
         }
 
         public async Task<string> GetCoverForGame(GameInfo game)
@@ -37,7 +42,7 @@ namespace PCSX2_Configurator.Core
             return null;
         }
 
-        private static string CoverArtOrMissing(string filePath)
+        private string CoverArtOrMissing(string filePath)
         {
             if (File.Exists(filePath)) return filePath;
             var missingFilePath = $"{Path.GetDirectoryName(filePath)}/{Path.GetFileNameWithoutExtension(filePath)}.missing";

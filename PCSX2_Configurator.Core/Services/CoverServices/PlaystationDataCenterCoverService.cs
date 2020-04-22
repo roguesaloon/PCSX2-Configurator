@@ -6,7 +6,7 @@ namespace PCSX2_Configurator.Core
     {
         private readonly string baseUri = "https://psxdatacenter.com/psx2/images2/covers";
 
-        public PlaystationDataCenterCoverService(string coversPath)
+        public PlaystationDataCenterCoverService(string coversPath, string missingCoverArt) : base(missingCoverArt)
         {
             CoversPath = $"{coversPath ?? CoversPath}/PlaystationDataCenter";
         }

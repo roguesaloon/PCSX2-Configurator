@@ -41,7 +41,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             emulationService = new EmulationService();
             configurationService = new ConfigurationService(settingsService.ConfigsDir);
             remoteConfigurationService = new RemoteConfigurationService(configurationService, null);
-            coverService = new ChainedCoverService(null);
+            coverService = new ChainedCoverService(null, missingCoverArt: "Assets/Covers/Missing.png");
 
             UpdateGameModels();
             gamesList.ItemsSource = gameModels; 

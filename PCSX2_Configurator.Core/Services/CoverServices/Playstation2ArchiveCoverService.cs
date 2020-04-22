@@ -11,7 +11,7 @@ namespace PCSX2_Configurator.Core
     {
         private readonly string baseUri = "http://www.atensionspan.com/evil/covers"; // Links From http://www.evilbadman.com/
 
-        public Playstation2ArchiveCoverService(string coversPath)
+        public Playstation2ArchiveCoverService(string coversPath, string missingCoverArt) : base(missingCoverArt)
         {
             CoversPath = $"{coversPath ?? CoversPath}/Playstation2Archive";
         }

@@ -7,13 +7,13 @@ namespace PCSX2_Configurator.Core
     {
         private readonly List<ICoverService> chainOfCoverServices;
 
-        public ChainedCoverService(string coversPath)
+        public ChainedCoverService(string coversPath, string missingCoverArt)
         {
             chainOfCoverServices = new List<ICoverService>
             {
-                new PlaystationDataCenterCoverService(coversPath),
-                new TgdbCoverService(coversPath),
-                new Playstation2ArchiveCoverService(coversPath)
+                new PlaystationDataCenterCoverService(coversPath, missingCoverArt),
+                new TgdbCoverService(coversPath, missingCoverArt),
+                new Playstation2ArchiveCoverService(coversPath, missingCoverArt)
             };
         }
 
