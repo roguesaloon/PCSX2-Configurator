@@ -6,7 +6,7 @@
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
         Title="PCSX2 Configurator" Width="1700" Height="800" MinWidth="1000" MinHeight="530"
-        Closing="OnClosing"  WindowStyle="SingleBorderWindow" Background="#FF2D333C">
+        Closing="OnClosing" WindowStyle="SingleBorderWindow" Background="#FF2D333C">
     <WindowChrome.WindowChrome>
         <WindowChrome/>
     </WindowChrome.WindowChrome>
@@ -14,6 +14,7 @@
         <Canvas x:Name="titleBar">
             <Rectangle Height="42" Margin="0,-16,0,0" Fill="#808080" Width="{Binding ElementName=titleBar, Path=ActualWidth}" />
             <Label Content="PCSX2 Configurator" Canvas.Left="10" Foreground="White" FontSize="14"/>
+            <Button Name="titleBar_Fullscreen" Height="26" Width="26" Canvas.Right="85" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="FullscreenWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">⛶</Button>
             <Button Name="titleBar_Minimize" Height="26" Width="26" Canvas.Right="55" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MinimizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗕</Button>
             <Button Name="titleBar_Maximize" Height="26" Width="26" Canvas.Right="30" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MaximizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗖</Button>
             <Button Name="titleBar_Close" Height="26" Width="26" Canvas.Right="5" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="CloseWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗙</Button>

@@ -24,12 +24,25 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private readonly ICoverService coverService;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
-        private void MaximizeWindow(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
+        private void MaximizeWindow(object sender, RoutedEventArgs e)
+        {
+            ResizeMode = ResizeMode.CanResize;
+            WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;  
+        }
         private void MinimizeWindow(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+        private void FullscreenWindow(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Normal;
+            ResizeMode = ResizeMode != ResizeMode.NoResize ? ResizeMode.NoResize : ResizeMode.CanResize;
+            WindowState = ResizeMode == ResizeMode.NoResize ? WindowState.Maximized : WindowState.Normal;
+        }
 
         protected override void OnStateChanged(EventArgs e)
         {
             titleBar_Maximize.Content = WindowState == WindowState.Maximized ? "🗗": "🗖";
+            titleBar_Fullscreen.Visibility = ResizeMode == ResizeMode.CanResize ? Visibility.Visible : Visibility.Hidden;
+            BorderThickness = new Thickness(WindowState == WindowState.Maximized ? 8 : 0);
+            
             base.OnStateChanged(e);
         }
 
