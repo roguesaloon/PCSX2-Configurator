@@ -17,7 +17,7 @@
             <Button Name="titleBar_Maximize" Height="26" Width="26" Canvas.Right="30" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MaximizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗖</Button>
             <Button Name="titleBar_Close" Height="26" Width="26" Canvas.Right="5" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="CloseWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗙</Button>
         </Canvas>
-        <ScrollViewer Margin="10,100,0,0" HorizontalContentAlignment="Center" VerticalScrollBarVisibility="Auto" Drop="DropIso" AllowDrop="True">
+        <ScrollViewer Margin="10,120,0,0" HorizontalContentAlignment="Center" VerticalScrollBarVisibility="Auto" Drop="DropIso" AllowDrop="True">
             <ListBox Name="gamesList">
                 <ListBox.Template>
                     <ControlTemplate>
@@ -26,7 +26,7 @@
                 </ListBox.Template>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Image Width="220" Height="335" Source="{Binding CoverPath}" Margin="4,0,4,0">
+                        <Image Width="220" Height="335" Source="{Binding CoverPath}" Margin="4,0,4,0" MouseDown="StartGame" BindingGroup="{Binding}">
                             <Image.Style>
                                 <Style TargetType="Image">
                                     <Setter Property="Opacity" Value="1" />
@@ -37,12 +37,48 @@
                                     </Style.Triggers>
                                 </Style>
                             </Image.Style>
+                            <Image.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="PCSX2 Version" ItemsSource="{Binding VersionsAndStates}">
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="{Binding Item1}" />
+                                                <Setter Property="IsChecked" Value="{Binding Item2, Mode=OneWay}" />
+                                                <Setter Property="StaysOpenOnClick" Value="True" />
+                                                <Setter Property="BindingGroup" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                                                <EventSetter Event="Click" Handler="SetVersion" />
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
+                                    <MenuItem Header="Config" ItemsSource="{Binding ConfigsAndStates}">
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="{Binding Item1}" />
+                                                <Setter Property="IsChecked" Value="{Binding Item2, Mode=OneWay}" />
+                                                <Setter Property="StaysOpenOnClick" Value="True" />
+                                                <Setter Property="BindingGroup" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                                                <EventSetter Event="Click" Handler="SetConfig" />
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
+                                    <MenuItem Header="Create Config" BindingGroup="{Binding}" Click="ShowConfigWizard"/>
+                                </ContextMenu>
+                            </Image.ContextMenu>
                         </Image>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Focusable" Value="False"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Padding="4">
+                                        <ContentPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>

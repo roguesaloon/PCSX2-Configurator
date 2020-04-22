@@ -49,6 +49,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private void UpdateGameModels()
         {
+            GameModel.Versions = settingsService.VersionsAndPaths.Keys;
+            GameModel.Configs = settingsService.AvalialableConfigs.Keys;
             gameModels ??= new ObservableCollection<GameModel>();
             gameModels.Clear();
             foreach (var game in gameLibraryService.Games)
@@ -57,20 +59,14 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 {
                     Game = game.DisplayName ?? game.Name,
                     Path = game.Path,
-                    Versions = settingsService.VersionsAndPaths.Keys,
-                    Configs = settingsService.AvalialableConfigs.Keys,
                     Version = game.EmuVersion,
                     Config = game.Config
                 };
                 gameModels.Add(gameModel);
             }
 
-            Task.Run(() => Parallel.For(0, gameModels.Count, async index =>
-            {
-                var gameModel = gameModels[index].Clone();
-                gameModel.CoverPath = await coverService.GetCoverForGame(gameLibraryService.Games[index]);
-                await Dispatcher.BeginInvoke(new Action(() => gameModels[index] = gameModel));
-            }));
+            Task.Run(() => Parallel.For(0, gameModels.Count, async index => 
+                gameModels[index].CoverPath = await coverService.GetCoverForGame(gameLibraryService.Games[index])));
         }
 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -112,11 +108,25 @@ namespace PCSX2_Configurator.Frontend.Wpf
             }
         }
 
-        private void OpenSelection(object sender, MouseButtonEventArgs e)
+        private void SetVersion(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var model = ((Control) menuItem.GetBindingExpression(BindingGroupProperty).DataItem).DataContext as GameModel;
+            model.Version = menuItem.Header as string;
+        }
+
+        private void SetConfig(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var model = ((Control)menuItem.GetBindingExpression(BindingGroupProperty).DataItem).DataContext as GameModel;
+            model.Config = menuItem.Header as string;
+        }
+
+        private void StartGame(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount >= 2)
             {
-                var model = ((FrameworkElement)sender).GetBindingExpression(TextBlock.TextProperty).DataItem as GameModel;
+                var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
                 var emulatorPath = settingsService.VersionsAndPaths[model?.Version];
                 var configPath = settingsService.AvalialableConfigs[model?.Config];
                 EmulationService.LaunchWithGame(emulatorPath, model?.Path, configPath);
