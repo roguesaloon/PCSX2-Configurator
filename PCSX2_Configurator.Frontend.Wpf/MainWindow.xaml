@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
         Title="PCSX2 Configurator" Width="1700" Height="800" MinWidth="1000" MinHeight="530"
         Closing="OnClosing"  WindowStyle="SingleBorderWindow" Background="#FF2D333C">
@@ -26,7 +27,7 @@
                 </ListBox.Template>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Image Width="220" Height="335" Source="{Binding CoverPath}" Margin="4,0,4,0" MouseDown="StartGame" BindingGroup="{Binding}">
+                        <Image Width="220" Height="335" gif:ImageBehavior.AnimatedSource="{Binding CoverPath}" Margin="4,0,4,0" MouseDown="StartGame" BindingGroup="{Binding}">
                             <Image.Style>
                                 <Style TargetType="Image">
                                     <Setter Property="Opacity" Value="1" />

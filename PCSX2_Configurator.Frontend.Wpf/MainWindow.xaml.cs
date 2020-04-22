@@ -60,7 +60,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
                     Game = game.DisplayName ?? game.Name,
                     Path = game.Path,
                     Version = game.EmuVersion,
-                    Config = game.Config
+                    Config = game.Config,
+                    CoverPath = "Assets/Covers/Loading.gif"
                 };
                 gameModels.Add(gameModel);
             }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
-using Path = System.IO.Path;
 using PCSX2_Configurator.Core;
+using System.IO;
 using static PCSX2_Configurator.Core.ConfigurationService;
 
 namespace PCSX2_Configurator.Frontend.Wpf

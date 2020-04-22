@@ -20,7 +20,9 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         [AlsoNotifyFor(nameof(VersionsAndStates))] public string Version { get; set; }
         [AlsoNotifyFor(nameof(ConfigsAndStates))] public string Config { get; set; }
-        
+
+        #pragma warning disable 0067
         public event PropertyChangedEventHandler PropertyChanged;
+        #pragma warning restore 0067
     }
 }
