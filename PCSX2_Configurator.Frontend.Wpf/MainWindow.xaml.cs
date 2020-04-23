@@ -32,9 +32,9 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private void MinimizeWindow(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
         private void FullscreenWindow(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Normal;
-            ResizeMode = ResizeMode != ResizeMode.NoResize ? ResizeMode.NoResize : ResizeMode.CanResize;
-            WindowState = ResizeMode == ResizeMode.NoResize ? WindowState.Maximized : WindowState.Normal;
+            WindowState = WindowState.Minimized;
+            ResizeMode = ResizeMode.NoResize;
+            WindowState = WindowState.Maximized;
         }
 
         protected override void OnStateChanged(EventArgs e)
