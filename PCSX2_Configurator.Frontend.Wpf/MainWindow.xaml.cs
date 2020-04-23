@@ -40,7 +40,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         protected override void OnStateChanged(EventArgs e)
         {
             titleBar_Maximize.Content = WindowState == WindowState.Maximized ? "🗗": "🗖";
-            titleBar_Fullscreen.Visibility = ResizeMode == ResizeMode.CanResize ? Visibility.Visible : Visibility.Hidden;
+            titleBar_Fullscreen.Visibility = ResizeMode == ResizeMode.CanResize || WindowState != WindowState.Maximized ? Visibility.Visible : Visibility.Hidden;
             BorderThickness = new Thickness(WindowState == WindowState.Maximized ? 8 : 0);
             
             base.OnStateChanged(e);
@@ -68,15 +68,14 @@ namespace PCSX2_Configurator.Frontend.Wpf
             gameModels.Clear();
             foreach (var game in gameLibraryService.Games)
             {
-                var gameModel = new GameModel
+                gameModels.Add(new GameModel
                 {
                     Game = game.DisplayName ?? game.Name,
                     Path = game.Path,
                     Version = game.EmuVersion,
                     Config = game.Config,
                     CoverPath = "Assets/Covers/Loading.gif"
-                };
-                gameModels.Add(gameModel);
+                });
             }
 
             Task.Run(() => Parallel.For(0, gameModels.Count, async index => 
@@ -100,7 +99,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private void ShowConfigWizard(object sender, RoutedEventArgs e)
         {
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
-            var configWizard = new ConfigWizard(configurationService, settingsService, model, UpdateGameModels);
+            var configWizard = new ConfigWizard(configurationService, settingsService, model);
             configWizard.Show();
         }
 
@@ -141,6 +140,11 @@ namespace PCSX2_Configurator.Frontend.Wpf
             if (e.ChangedButton == MouseButton.Left && e.ClickCount >= 2)
             {
                 var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
+                if (model?.Version == null || model?.Config == null)
+                {
+                    MessageBox.Show("This Game is not configured", "Error");
+                    return;
+                }
                 var emulatorPath = settingsService.VersionsAndPaths[model?.Version];
                 var configPath = settingsService.AvalialableConfigs[model?.Config];
                 EmulationService.LaunchWithGame(emulatorPath, model?.Path, configPath);
