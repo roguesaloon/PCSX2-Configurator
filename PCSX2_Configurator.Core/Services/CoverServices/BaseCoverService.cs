@@ -25,6 +25,7 @@ namespace PCSX2_Configurator.Core
         public async Task<string> GetCoverForGame(GameInfo game)
         {
             var existingCover = FindExistingCoverForGame(game);
+            if (game.GameId == null) return MissingCoverArt;
             if (existingCover != null) return existingCover;
             var targetFile = $"{CoversPath}/{game.GameId}.jpg";
             await GetCoverForGame(game, targetFile);

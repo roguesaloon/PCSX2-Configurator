@@ -66,9 +66,20 @@ namespace PCSX2_Configurator.Core
             if(shouldReloadLibrary) LoadOrReloadFromLibrary();
         }
 
+        public void RemoveFromLibrary(GameInfo gameInfo)
+        {
+            if (!Games.Contains(gameInfo)) return;
+            var gamePath = $"//Game[@Name=\"{gameInfo.Name}\"]";
+            var gameNode = xmlDocument.SelectSingleNode(gamePath);
+
+            xmlDocument.DocumentElement.RemoveChild(gameNode);
+            xmlDocument.Save(targetFile);
+            LoadOrReloadFromLibrary();
+        }
+
         private void LoadOrReloadFromLibrary()
         {
-            Games ??= new List<GameInfo>();
+            Games = new List<GameInfo>();
             xmlDocument.Load(targetFile);
             foreach (XmlElement node in xmlDocument.DocumentElement.ChildNodes)
             {

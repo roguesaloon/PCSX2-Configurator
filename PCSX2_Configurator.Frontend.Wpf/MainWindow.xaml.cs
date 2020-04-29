@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Shell;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -42,7 +43,11 @@ namespace PCSX2_Configurator.Frontend.Wpf
             titleBar_Maximize.Content = WindowState == WindowState.Maximized ? "🗗": "🗖";
             titleBar_Fullscreen.Visibility = ResizeMode == ResizeMode.CanResize || WindowState != WindowState.Maximized ? Visibility.Visible : Visibility.Hidden;
             BorderThickness = new Thickness(WindowState == WindowState.Maximized ? 8 : 0);
-            
+
+            var windowChrome = WindowChrome.GetWindowChrome(this);
+            windowChrome.GlassFrameThickness = new Thickness(WindowState == WindowState.Maximized ? 1 : 0);
+            WindowChrome.SetWindowChrome(this, windowChrome);
+
             base.OnStateChanged(e);
         }
 
@@ -135,18 +140,43 @@ namespace PCSX2_Configurator.Frontend.Wpf
             model.Config = menuItem.Header as string;
         }
 
+        private void RemoveGame(object sender, RoutedEventArgs e)
+        {
+            var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
+            var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == model.Game || x.Name == model.Game);
+            gameLibraryService.RemoveFromLibrary(gameInfo);
+            UpdateGameModels();
+        }
+
+        private void ConfigGame(object sender, RoutedEventArgs e)
+        {
+            var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
+            var version = model?.Version ?? string.Empty;
+            var config = model?.Config ?? string.Empty;
+            if (!settingsService.VersionsAndPaths.ContainsKey(version) || !settingsService.AvalialableConfigs.ContainsKey(config))
+            {
+                MessageBox.Show("This Game is not configured", "Error");
+                return;
+            }
+            var emulatorPath = settingsService.VersionsAndPaths[version];
+            var configPath = settingsService.AvalialableConfigs[config];
+            EmulationService.LaunchWithConfig(emulatorPath, configPath);
+        }
+
         private void StartGame(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount >= 2)
             {
                 var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
-                if (model?.Version == null || model?.Config == null)
+                var version = model?.Version ?? string.Empty;
+                var config = model?.Config ?? string.Empty;
+                if (!settingsService.VersionsAndPaths.ContainsKey(version) || !settingsService.AvalialableConfigs.ContainsKey(config))
                 {
                     MessageBox.Show("This Game is not configured", "Error");
                     return;
                 }
-                var emulatorPath = settingsService.VersionsAndPaths[model?.Version];
-                var configPath = settingsService.AvalialableConfigs[model?.Config];
+                var emulatorPath = settingsService.VersionsAndPaths[version];
+                var configPath = settingsService.AvalialableConfigs[config];
                 EmulationService.LaunchWithGame(emulatorPath, model?.Path, configPath);
             }
         }

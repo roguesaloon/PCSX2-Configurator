@@ -21,13 +21,28 @@ namespace PCSX2_Configurator.Core
             });
         }
 
-        public (string gameTitle, string gameRegion, string gameId) IdentifyGame(string pcsx2Path, string gamePath)
+        public static void LaunchWithConfig(string emulatorPath, string configPath)
+        {
+            Process.Start(new ProcessStartInfo(emulatorPath, $"--cfgpath=\"{configPath}\"")
+            {
+                WorkingDirectory = Path.GetDirectoryName(emulatorPath)
+            });
+        }
+
+        public static string GetInisPath(string emulatorPath)
+        {
+            var inisPath = $"{Path.GetDirectoryName(emulatorPath)}\\inis";
+            inisPath = emulatorPath.Contains("1.4.0") ? inisPath.Replace("\\inis", "\\inis_1.4.0") : inisPath;
+            return inisPath;
+        }
+
+        public (string gameTitle, string gameRegion, string gameId) IdentifyGame(string emulatorPath, string gamePath)
         {
             var gameTitle = default(string);
             var gameRegion = default(string);
             var gameId = default(string);
-            var pcsx2Directory = Path.GetDirectoryName(pcsx2Path);
-            var startInfo = new ProcessStartInfo(pcsx2Path, $"\"{gamePath}\" --windowed --nogui --console --gs=\"{pcsx2Directory}\\plugins\\GSnull.dll\"")
+            var pcsx2Directory = Path.GetDirectoryName(emulatorPath);
+            var startInfo = new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --windowed --nogui --console --gs=\"{pcsx2Directory}\\plugins\\GSnull.dll\"")
             {
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Minimized,

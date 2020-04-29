@@ -34,8 +34,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 MessageBox.Show("You must " + error, "Error");
                 return;
             }
-            var inisPath = $"{Path.GetDirectoryName(settingsService.VersionsAndPaths[selectedVersion])}\\inis";
-            inisPath = selectedVersion.Contains("1.4.0") ? inisPath.Replace("\\inis", "\\inis_1.4.0") : inisPath;
+            var inisPath = EmulationService.GetInisPath(settingsService.VersionsAndPaths[selectedVersion]);
             configurationService.CreateConfig(givenName, inisPath, SettingsOptions.All);
             settingsService.UpdateAvailableConfigs();
             GameModel.Configs = settingsService.AvalialableConfigs.Keys;

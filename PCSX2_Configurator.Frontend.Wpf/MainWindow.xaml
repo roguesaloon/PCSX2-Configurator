@@ -8,18 +8,51 @@
         Title="PCSX2 Configurator" Width="1700" Height="800" MinWidth="1000" MinHeight="530"
         Closing="OnClosing" WindowStyle="SingleBorderWindow" Background="#FF2D333C">
     <WindowChrome.WindowChrome>
-        <WindowChrome/>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0"/>
     </WindowChrome.WindowChrome>
     <Grid>
-        <Canvas x:Name="titleBar">
+        <Canvas Name="titleBar" Height="26" VerticalAlignment="Top">
             <Rectangle Height="42" Margin="0,-16,0,0" Fill="#808080" Width="{Binding ElementName=titleBar, Path=ActualWidth}" />
             <Label Content="PCSX2 Configurator" Canvas.Left="10" Foreground="White" FontSize="14"/>
-            <Button Name="titleBar_Fullscreen" Height="26" Width="26" Canvas.Right="85" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="FullscreenWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">⛶</Button>
-            <Button Name="titleBar_Minimize" Height="26" Width="26" Canvas.Right="55" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MinimizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗕</Button>
-            <Button Name="titleBar_Maximize" Height="26" Width="26" Canvas.Right="30" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MaximizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗖</Button>
-            <Button Name="titleBar_Close" Height="26" Width="26" Canvas.Right="5" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="CloseWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True">🗙</Button>
+            <Button Name="titleBar_Fullscreen" Height="26" Width="26" Canvas.Right="85" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="FullscreenWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="⛶" />
+            <Button Name="titleBar_Minimize" Height="26" Width="26" Canvas.Right="55" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MinimizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗕" />
+            <Button Name="titleBar_Maximize" Height="26" Width="26" Canvas.Right="30" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MaximizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗖" />
+            <Button Name="titleBar_Close" Height="26" Width="26" Canvas.Right="5" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="CloseWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗙" />
         </Canvas>
-        <ScrollViewer Margin="10,120,0,0" HorizontalContentAlignment="Center" VerticalScrollBarVisibility="Auto" Drop="DropIso" AllowDrop="True">
+        <DockPanel Margin="0,26,0,0">
+            <Canvas Name="headerBar" Height="94" VerticalAlignment="Top">
+                <Rectangle Fill="#2E3A4E" Height="{Binding ElementName=headerBar, Path=ActualHeight}" Width="{Binding ElementName=headerBar, Path=ActualWidth}"/>
+                <Button Height="64" Width="64" FontSize="46" Cursor="Hand" Content="⚙" Canvas.Left="40" Canvas.Top="15">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Label Content="Games Library" FontSize="46" Canvas.Top="6" Canvas.Left="130" FontWeight="Bold" Foreground="White"/>
+            </Canvas>
+        </DockPanel>
+        <TextBlock TextAlignment="Center" TextWrapping="Wrap" FontSize="80" Margin="200,250,200,0">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=gamesList, Path=Items.Count}" Value="0">
+                            <Setter Property="Text" Value="Drop PS2 Disc Image Files Here" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <ScrollViewer Margin="0,120,0,0" HorizontalContentAlignment="Center" VerticalScrollBarVisibility="Auto" Drop="DropIso" AllowDrop="True">
             <ListBox Name="gamesList">
                 <ListBox.Template>
                     <ControlTemplate>
@@ -63,7 +96,10 @@
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
-                                    <MenuItem Header="Create Config" BindingGroup="{Binding}" Click="ShowConfigWizard"/>
+                                    <MenuItem Header="Create Config" BindingGroup="{Binding}" Click="ShowConfigWizard" />
+                                    <MenuItem Header="Commandline Parameters" />
+                                    <MenuItem Header="Configure with PCSX2" BindingGroup="{Binding}" Click="ConfigGame" />
+                                    <MenuItem Header="Remove from Library" BindingGroup="{Binding}" Click="RemoveGame" />
                                 </ContextMenu>
                             </Image.ContextMenu>
                         </Image>
@@ -84,6 +120,54 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>
+            <ScrollViewer.Resources>
+                <Style TargetType="ScrollBar">
+                    <Setter Property="Foreground" Value="#606774" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Grid Width="8" Margin="0, 2, 0, 2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Track Name="PART_Track" Grid.Row="0" IsDirectionReversed="True" Focusable="False">
+                                        <Track.Thumb>
+                                            <Thumb Name="Thumb" Background="{TemplateBinding Foreground}">
+                                                <Thumb.Style>
+                                                    <Style TargetType="Thumb">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Thumb">
+                                                                    <Grid>
+                                                                        <Rectangle Fill="Transparent" />
+                                                                        <Border CornerRadius="5" Background="{TemplateBinding Background}" />
+                                                                    </Grid>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Thumb.Style>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="False" />
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="False" />
+                                        </Track.DecreaseRepeatButton>
+                                    </Track>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger SourceName="Thumb" Property="IsMouseOver" Value="True">
+                                        <Setter Value="#7B8392" TargetName="Thumb" Property="Background" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ScrollViewer.Resources>
         </ScrollViewer>
     </Grid>
 </Window>
