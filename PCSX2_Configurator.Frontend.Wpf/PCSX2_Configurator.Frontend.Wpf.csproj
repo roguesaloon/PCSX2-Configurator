@@ -8,8 +8,7 @@
     <AssemblyName>PCSX2_Configurator.Frontend.Wpf</AssemblyName>
     <PackageId>PCSX2 Configurator</PackageId>
     <Authors>alec100_94</Authors>
-    <Company>Rogue Saloon</Company>
-    <Product>PCSX2 Configurator</Product>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Release'">true</CopyLocalLockFileAssemblies>
     <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Debug'">false</CopyLocalLockFileAssemblies>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
