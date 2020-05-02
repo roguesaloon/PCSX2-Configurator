@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace PCSX2_Configurator.MainUi
@@ -13,5 +9,16 @@ namespace PCSX2_Configurator.MainUi
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            var thirdPartyAssembliesDirectory = $"{Directory.GetCurrentDirectory()}\\ThirdParty";
+            if (Directory.Exists(thirdPartyAssembliesDirectory))
+            {
+                foreach (var assembly in Directory.GetFiles(thirdPartyAssembliesDirectory, "*dll"))
+                {
+                    Assembly.LoadFrom(assembly);
+                }
+            }
+        }
     }
 }

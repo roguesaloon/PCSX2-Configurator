@@ -10,6 +10,9 @@
     <Authors>alec100_94</Authors>
     <Company>Rogue Saloon</Company>
     <Product>PCSX2 Configurator</Product>
+    <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Release'">true</CopyLocalLockFileAssemblies>
+    <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Debug'">false</CopyLocalLockFileAssemblies>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,5 +41,9 @@
   <ItemGroup>
     <ProjectReference Include="..\PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="cd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir /s /q runtimes&#xD;&#xA;mkdir ThirdParty&#xD;&#xA;robocopy . ThirdParty *.dll /mov /is /xf PCSX2_Configurator*.dll&#xD;&#xA;del *.deps.json&#xD;&#xA;del *.runtimeconfig.dev.json&#xD;&#xA;del *.pdb" />
+  </Target>
 
 </Project>

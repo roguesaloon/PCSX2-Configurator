@@ -21,7 +21,6 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private readonly GameLibraryService gameLibraryService;
         private readonly EmulationService emulationService;
         private readonly ConfigurationService configurationService;
-        private readonly RemoteConfigurationService remoteConfigurationService;
         private readonly ICoverService coverService;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
@@ -58,7 +57,6 @@ namespace PCSX2_Configurator.Frontend.Wpf
             gameLibraryService = new GameLibraryService(null);
             emulationService = new EmulationService();
             configurationService = new ConfigurationService(settingsService.ConfigsDir);
-            remoteConfigurationService = new RemoteConfigurationService(configurationService, null);
             coverService = new ChainedCoverService(null, missingCoverArt: "Assets/Covers/Missing.png");
 
             UpdateGameModels();
