@@ -1,4 +1,5 @@
 ﻿using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Settings;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
     {
         private ObservableCollection<GameModel> gameModels;
 
-        private readonly SettingsService settingsService;
+        private readonly AppSettings settings;
         private readonly GameLibraryService gameLibraryService;
         private readonly EmulationService emulationService;
         private readonly ConfigurationService configurationService;
@@ -50,14 +51,13 @@ namespace PCSX2_Configurator.Frontend.Wpf
             base.OnStateChanged(e);
         }
 
-        public MainWindow()
+        public MainWindow(AppSettings settings, GameLibraryService gameLibraryService, EmulationService emulationService, ICoverService coverService)
         {
             InitializeComponent();
-            settingsService = new SettingsService(null);
-            gameLibraryService = new GameLibraryService(null);
-            emulationService = new EmulationService();
-            configurationService = new ConfigurationService(settingsService.ConfigsDir);
-            coverService = new ChainedCoverService(null, missingCoverArt: "Assets/Covers/Missing.png");
+            this.settings = settings;
+            this.gameLibraryService = gameLibraryService;
+            this.emulationService = emulationService;
+            this.coverService = coverService;
 
             UpdateGameModels();
             gamesList.ItemsSource = gameModels; 
@@ -65,8 +65,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private void UpdateGameModels()
         {
-            GameModel.Versions = settingsService.VersionsAndPaths.Keys;
-            GameModel.Configs = settingsService.AvalialableConfigs.Keys;
+            GameModel.Versions = settings.Versions.Keys;
+            GameModel.Configs = settings.Configs.Keys;
             gameModels ??= new ObservableCollection<GameModel>();
             gameModels.Clear();
             foreach (var game in gameLibraryService.Games)
@@ -77,7 +77,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                     Path = game.Path,
                     Version = game.EmuVersion,
                     Config = game.Config,
-                    CoverPath = "Assets/Covers/Loading.gif"
+                    CoverPath = settings.Covers.LoadingCover
                 });
             }
 
@@ -102,7 +102,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private void ShowConfigWizard(object sender, RoutedEventArgs e)
         {
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
-            var configWizard = new ConfigWizard(configurationService, settingsService, model);
+            var configWizard = new ConfigWizard(settings, configurationService, model);
             configWizard.Show();
         }
 
@@ -116,7 +116,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 {
                     Mouse.OverrideCursor = Cursors.Wait;
                     var gameInfo = gameLibraryService.AddToLibrary(file);
-                    var (name, region, id) = emulationService.IdentifyGame(settingsService.VersionsAndPaths["v1.4.0"], file);
+                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions["v1.4.0"], file);
                     gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
                     Mouse.OverrideCursor = null;
                 }
@@ -151,13 +151,13 @@ namespace PCSX2_Configurator.Frontend.Wpf
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
             var version = model?.Version ?? string.Empty;
             var config = model?.Config ?? string.Empty;
-            if (!settingsService.VersionsAndPaths.ContainsKey(version) || !settingsService.AvalialableConfigs.ContainsKey(config))
+            if (!settings.Versions.ContainsKey(version) || !settings.Configs.ContainsKey(config))
             {
                 MessageBox.Show("This Game is not configured", "Error");
                 return;
             }
-            var emulatorPath = settingsService.VersionsAndPaths[version];
-            var configPath = settingsService.AvalialableConfigs[config];
+            var emulatorPath = settings.Versions[version];
+            var configPath = settings.Configs[config];
             EmulationService.LaunchWithConfig(emulatorPath, configPath);
         }
 
@@ -168,13 +168,13 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
                 var version = model?.Version ?? string.Empty;
                 var config = model?.Config ?? string.Empty;
-                if (!settingsService.VersionsAndPaths.ContainsKey(version) || !settingsService.AvalialableConfigs.ContainsKey(config))
+                if (!settings.Versions.ContainsKey(version) || !settings.Configs.ContainsKey(config))
                 {
                     MessageBox.Show("This Game is not configured", "Error");
                     return;
                 }
-                var emulatorPath = settingsService.VersionsAndPaths[version];
-                var configPath = settingsService.AvalialableConfigs[config];
+                var emulatorPath = settings.Versions[version];
+                var configPath = settings.Configs[config];
                 EmulationService.LaunchWithGame(emulatorPath, model?.Path, configPath);
             }
         }

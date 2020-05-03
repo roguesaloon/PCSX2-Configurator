@@ -17,8 +17,10 @@ namespace PCSX2_Configurator.Core
             httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-        public BaseCoverService(string missingCoverArt)
+        protected BaseCoverService(string coversPath, string missingCoverArt)
         {
+            var rootedPath = Path.IsPathRooted(coversPath) ? coversPath : $"{Directory.GetCurrentDirectory()}/{coversPath}";
+            CoversPath = coversPath != null ? rootedPath : CoversPath; 
             MissingCoverArt = missingCoverArt;
         }
 

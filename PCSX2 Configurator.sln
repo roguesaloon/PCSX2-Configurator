@@ -7,7 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Frontend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Core", "PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj", "{AA25A598-E31C-447F-96F0-9D2FF251D9EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCSX2_Configurator.Utils.RemoteDbBuilder", "PCSX2_Configurator.Utils.RemoteDbBuilder\PCSX2_Configurator.Utils.RemoteDbBuilder.csproj", "{A734483E-7864-4561-9EA3-C7A042C9BBEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Utils.RemoteDbBuilder", "PCSX2_Configurator.Utils.RemoteDbBuilder\PCSX2_Configurator.Utils.RemoteDbBuilder.csproj", "{A734483E-7864-4561-9EA3-C7A042C9BBEC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.VersionManager", "PCSX2_Configurator.VersionManager\PCSX2_Configurator.VersionManager.csproj", "{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCSX2_Configurator.Settings", "PCSX2_Configurator.Settings\PCSX2_Configurator.Settings.csproj", "{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,22 @@ Global
 		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.Release (StyleCop)|Any CPU.ActiveCfg = Release|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.Release (StyleCop)|Any CPU.Build.0 = Release|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{BC6108FF-9EF5-42B5-81DE-0A243FA15E66}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Release (StyleCop)|Any CPU.ActiveCfg = Release|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Release (StyleCop)|Any CPU.Build.0 = Release|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

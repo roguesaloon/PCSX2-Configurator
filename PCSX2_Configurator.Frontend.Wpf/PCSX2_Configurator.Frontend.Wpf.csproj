@@ -33,16 +33,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.3" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj" />
+    <ProjectReference Include="..\PCSX2_Configurator.Settings\PCSX2_Configurator.Settings.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="cd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir /s /q runtimes&#xD;&#xA;mkdir ThirdParty&#xD;&#xA;robocopy . ThirdParty *.dll /mov /is /xf PCSX2_Configurator*.dll&#xD;&#xA;del *.deps.json&#xD;&#xA;del *.runtimeconfig.dev.json&#xD;&#xA;del *.pdb" />
+    <Exec Command="cd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir /s /q runtimes&#xD;&#xA;mkdir ThirdParty&#xD;&#xA;mkdir Microsoft&#xD;&#xA;robocopy . Microsoft Microsoft*.dll /mov /is&#xD;&#xA;robocopy . ThirdParty *.dll /mov /is /xf PCSX2_Configurator*.dll&#xD;&#xA;del *.deps.json&#xD;&#xA;del *.runtimeconfig.dev.json&#xD;&#xA;del *.pdb" />
   </Target>
 
 </Project>

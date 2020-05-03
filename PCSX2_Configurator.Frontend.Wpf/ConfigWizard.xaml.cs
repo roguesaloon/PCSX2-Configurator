@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using System.IO;
 using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Settings;
 using static PCSX2_Configurator.Core.ConfigurationService;
 
 namespace PCSX2_Configurator.Frontend.Wpf
@@ -10,15 +10,15 @@ namespace PCSX2_Configurator.Frontend.Wpf
     /// </summary>
     public partial class ConfigWizard : Window
     {
+        private readonly AppSettings settings;
         private readonly ConfigurationService configurationService;
-        private readonly SettingsService settingsService;
         private readonly GameModel gameModel;
 
-        public ConfigWizard(ConfigurationService configurationService, SettingsService settingsService, GameModel gameModel)
+        public ConfigWizard(AppSettings settings, ConfigurationService configurationService, GameModel gameModel)
         {
             InitializeComponent();
             this.configurationService = configurationService;
-            this.settingsService = settingsService;
+            this.settings = settings;
             this.gameModel = gameModel;
             version.ItemsSource = GameModel.Versions;
             version.SelectedItem = gameModel.Version;
@@ -34,10 +34,10 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 MessageBox.Show("You must " + error, "Error");
                 return;
             }
-            var inisPath = EmulationService.GetInisPath(settingsService.VersionsAndPaths[selectedVersion]);
+            var inisPath = EmulationService.GetInisPath(settings.Versions[selectedVersion]);
             configurationService.CreateConfig(givenName, inisPath, SettingsOptions.All);
-            settingsService.UpdateAvailableConfigs();
-            GameModel.Configs = settingsService.AvalialableConfigs.Keys;
+            settings.UpdateConfigs();
+            GameModel.Configs = settings.Configs.Keys;
             gameModel.Version = selectedVersion;
             gameModel.Config = givenName;
             Close();

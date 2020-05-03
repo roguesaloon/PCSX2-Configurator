@@ -15,9 +15,9 @@ namespace PCSX2_Configurator.Core
         private readonly string byGameNameApiUri = "https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey={apiKey}&filter%5Bplatform%5D=11&name=";
         private readonly string cdnThumbsBoxFrontUri = "https://cdn.thegamesdb.net/images/thumb/boxart/front/";
 
-        public TgdbCoverService(string coversPath, string missingCoverArt) : base(missingCoverArt)
+        public TgdbCoverService(string coversPath, string missingCoverArt) : base(coversPath, missingCoverArt)
         {
-            CoversPath = $"{coversPath ?? CoversPath}/TGDB";
+            CoversPath = $"{CoversPath}/TGDB";
             byGameNameApiUri = byGameNameApiUri.Replace("{apiKey}", Encoding.ASCII.GetString(Convert.FromBase64String(apiKey)));
         }
 
