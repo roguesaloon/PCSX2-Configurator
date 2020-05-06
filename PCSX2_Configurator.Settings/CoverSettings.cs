@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PCSX2_Configurator.Settings
+﻿namespace PCSX2_Configurator.Settings
 {
-    public class Covers
+    public class CoverSettings
     {
         public string CoversPath { get; private set; }
         public string MissingCover { get; private set; }

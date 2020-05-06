@@ -1,0 +1,13 @@
+﻿<Window x:Class="PCSX2_Configurator.Frontend.Wpf.VersionManager"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="VersionManager" Height="450" Width="800">
+    <Grid>
+        <ComboBox Name="versionSelector" HorizontalAlignment="Center" Margin="0,125,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Install" HorizontalAlignment="Center" Margin="0,226,0,0" VerticalAlignment="Top" Height="37" Width="97" Click="InstallVersion"/>
+
+    </Grid>
+</Window>

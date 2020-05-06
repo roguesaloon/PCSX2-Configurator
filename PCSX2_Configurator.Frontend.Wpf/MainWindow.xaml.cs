@@ -1,5 +1,7 @@
-﻿using PCSX2_Configurator.Core;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.VersionManager;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,7 +23,6 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private readonly AppSettings settings;
         private readonly GameLibraryService gameLibraryService;
         private readonly EmulationService emulationService;
-        private readonly ConfigurationService configurationService;
         private readonly ICoverService coverService;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
@@ -65,8 +66,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private void UpdateGameModels()
         {
-            GameModel.Versions = settings.Versions.Keys;
-            GameModel.Configs = settings.Configs.Keys;
+            GameModel.Versions = settings.Versions?.Keys;
+            GameModel.Configs = settings.Configs?.Keys;
             gameModels ??= new ObservableCollection<GameModel>();
             gameModels.Clear();
             foreach (var game in gameLibraryService.Games)
@@ -102,8 +103,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private void ShowConfigWizard(object sender, RoutedEventArgs e)
         {
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
-            var configWizard = new ConfigWizard(settings, configurationService, model);
-            configWizard.Show();
+            App.Get<ConfigWizard>().Show(model);
         }
 
 
@@ -159,6 +159,11 @@ namespace PCSX2_Configurator.Frontend.Wpf
             var emulatorPath = settings.Versions[version];
             var configPath = settings.Configs[config];
             EmulationService.LaunchWithConfig(emulatorPath, configPath);
+        }
+
+        private void OpenVersionManager(object sender, RoutedEventArgs e)
+        {
+            App.Get<VersionManager>().Show();
         }
 
         private void StartGame(object sender, MouseButtonEventArgs e)

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
@@ -6,12 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.VersionManager;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
     public partial class App : Application
     {
         private readonly IHost host;
+        private static IServiceProvider ServiceProvider { get; set; }
+
+        public static T Get<T>()
+        {
+            return ServiceProvider.GetRequiredService<T>();
+        }
 
         static App()
         {
@@ -22,7 +30,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         public App()
         {
             host = Host.CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) => builder.AddJsonFile("Settings.json", optional: false))
+                .ConfigureAppConfiguration((context, builder) => builder.AddJsonFile("Settings.json", optional: false, reloadOnChange: true))
                 .ConfigureServices(ConfigureServices)
                 .Build();
         }
@@ -37,19 +45,21 @@ namespace PCSX2_Configurator.Frontend.Wpf
             services.AddSingleton(provider => new EmulationService());
             services.AddSingleton(provider => new ConfigurationService(settings.ConfigsDirectory));
             services.AddSingleton<ICoverService>(provider => new ChainedCoverService(settings.Covers.CoversPath, settings.Covers.MissingCover));
+            services.AddSingleton(provider => new VersionManagementService(settings.VersionManager, settings.SevenZipLibraryPath));
             services.AddSingleton<MainWindow>();
+            services.AddTransient<ConfigWizard>();
+            services.AddTransient<VersionManager>();
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        private void Application_Startup(object sender, StartupEventArgs e)
         {
-            host.Services.GetRequiredService<MainWindow>().Show();
-            base.OnStartup(e);
+            ServiceProvider = host.Services;
+            Get<MainWindow>().Show();
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        private void Application_Exit(object sender, ExitEventArgs e)
         {
             host.Dispose();
-            base.OnExit(e);
         }
 
         private static void LoadAssembliesFromDirectory(string path)

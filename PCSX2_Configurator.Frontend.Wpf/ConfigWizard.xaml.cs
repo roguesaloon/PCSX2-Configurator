@@ -12,16 +12,21 @@ namespace PCSX2_Configurator.Frontend.Wpf
     {
         private readonly AppSettings settings;
         private readonly ConfigurationService configurationService;
-        private readonly GameModel gameModel;
+        private GameModel gameModel;
 
-        public ConfigWizard(AppSettings settings, ConfigurationService configurationService, GameModel gameModel)
+        public ConfigWizard(AppSettings settings, ConfigurationService configurationService)
         {
             InitializeComponent();
             this.configurationService = configurationService;
             this.settings = settings;
+        }
+
+        public void Show(GameModel gameModel)
+        {
             this.gameModel = gameModel;
             version.ItemsSource = GameModel.Versions;
             version.SelectedItem = gameModel.Version;
+            Show();
         }
 
         private void CreateConfig(object sender, RoutedEventArgs e)

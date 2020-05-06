@@ -22,7 +22,7 @@
         <DockPanel Margin="0,26,0,0">
             <Canvas Name="headerBar" Height="94" VerticalAlignment="Top">
                 <Rectangle Fill="#2E3A4E" Height="{Binding ElementName=headerBar, Path=ActualHeight}" Width="{Binding ElementName=headerBar, Path=ActualWidth}"/>
-                <Button Height="64" Width="64" FontSize="46" Cursor="Hand" Content="⚙" Canvas.Left="40" Canvas.Top="15">
+                <Button Height="64" Width="64" FontSize="46" Cursor="Hand" Content="⚙" Canvas.Left="40" Canvas.Top="15" Click="OpenVersionManager">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Background" Value="Transparent"/>
@@ -74,7 +74,7 @@
                             </Image.Style>
                             <Image.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="PCSX2 Version" ItemsSource="{Binding VersionsAndStates}">
+                                    <MenuItem Header="PCSX2 Version" ItemsSource="{Binding VersionsAndStates}" Visibility="{Binding HasVersions, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem">
                                                 <Setter Property="Header" Value="{Binding Item1}" />
@@ -85,7 +85,7 @@
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
-                                    <MenuItem Header="Config" ItemsSource="{Binding ConfigsAndStates}">
+                                    <MenuItem Header="Config" ItemsSource="{Binding ConfigsAndStates}" Visibility="{Binding HasConfigs, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem">
                                                 <Setter Property="Header" Value="{Binding Item1}" />

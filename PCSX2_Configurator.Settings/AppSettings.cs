@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace PCSX2_Configurator.Settings
@@ -7,10 +6,12 @@ namespace PCSX2_Configurator.Settings
     public class AppSettings
     {
         public string ConfigsDirectory { get; private set; }
-        public Dictionary<string, string> Versions { get; private set; }
+        public Dictionary<string, string> Versions { get; private set; } = new Dictionary<string, string>();
         public string GameLibraryFile { get; private set; }
-        public Covers Covers { get; private set; }
-
+        public string SevenZipLibraryPath { get; private set; }
+        public CoverSettings Covers { get; private set; }
+        public VersionManagerSettings VersionManager { get; private set; }
+        
         private Dictionary<string, string> configs;
         public Dictionary<string, string> Configs
         {
