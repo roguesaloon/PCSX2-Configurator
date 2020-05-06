@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Authors>alec100_94</Authors>
+    <Company>Rogue Saloon</Company>
+    <Product>PCSX2 Configurator</Product>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,10 +8,11 @@
     <AssemblyName>PCSX2_Configurator.Frontend.Wpf</AssemblyName>
     <PackageId>PCSX2 Configurator</PackageId>
     <Authors>alec100_94</Authors>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Release'">true</CopyLocalLockFileAssemblies>
     <CopyLocalLockFileAssemblies Condition="'$(Configuration)' == 'Debug'">false</CopyLocalLockFileAssemblies>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <Company>Rogue Saloon</Company>
+    <Product>PCSX2 Configurator</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,15 +35,19 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="4.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.3" />
-    <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
+    <PackageReference Include="Costura.Fody" Version="4.1.0" />
+    <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <VerPatchPath>C:\Users\alec2\.nuget\packages\verpatch\1.0.14\lib\win\verpatch.exe</VerPatchPath>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj" />
@@ -51,7 +56,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="cd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir /s /q runtimes&#xD;&#xA;mkdir ThirdParty&#xD;&#xA;robocopy . ThirdParty *.dll /mov /is /xf PCSX2_Configurator*.dll&#xD;&#xA;del *.deps.json&#xD;&#xA;del *.runtimeconfig.dev.json&#xD;&#xA;del *.pdb" />
+    <Exec Command="cd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir /s /q runtimes&#xD;&#xA;mkdir ThirdParty&#xD;&#xA;$(VerPatchPath) PCSX2_Configurator.Frontend.Wpf.exe /s FileDescription &quot;PCSX2 Configurator&quot;&#xD;&#xA;robocopy . ThirdParty *.dll /mov /is /xf PCSX2_Configurator*.dll&#xD;&#xA;del *.deps.json&#xD;&#xA;del *.runtimeconfig.dev.json&#xD;&#xA;del *.pdb" />
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
