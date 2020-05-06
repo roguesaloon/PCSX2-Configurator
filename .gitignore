@@ -3,3 +3,4 @@
 */bin/*
 */obj/*
 PCSX2_Configurator.Utils.RemoteDbBuilder/
+PCSX2_Configurator.Frontend.Wpf/FodyWeavers.xml
