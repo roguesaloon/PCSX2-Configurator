@@ -1,5 +1,5 @@
-﻿using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.VersionManager;
+﻿using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Settings;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;

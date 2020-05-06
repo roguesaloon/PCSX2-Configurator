@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.VersionManager;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {

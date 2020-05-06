@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using PCSX2_Configurator.Core;
+﻿using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.VersionManager;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;

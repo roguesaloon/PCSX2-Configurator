@@ -52,7 +52,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj" />
     <ProjectReference Include="..\PCSX2_Configurator.Settings\PCSX2_Configurator.Settings.csproj" />
-    <ProjectReference Include="..\PCSX2_Configurator.VersionManager\PCSX2_Configurator.VersionManager.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">

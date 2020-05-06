@@ -1,16 +1,16 @@
 ﻿using HtmlAgilityPack;
+using PCSX2_Configurator.Settings;
+using SevenZip;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Net.Http;
-using PCSX2_Configurator.Settings;
-using System.IO;
-using SevenZip;
 
-namespace PCSX2_Configurator.VersionManager
+namespace PCSX2_Configurator.Core
 {
     public sealed class VersionManagementService
     {
@@ -57,7 +57,7 @@ namespace PCSX2_Configurator.VersionManager
                 headResponse.EnsureSuccessStatusCode();
 
                 version.Directory = "PCSX2 " + new StringBuilder(version.Name) { [version.Name.LastIndexOf('-')] = ' ' }.ToString().Substring(1);
-                version.ArchiveName = headResponse.Content.Headers.ContentDisposition.FileName.Replace("\"","");
+                version.ArchiveName = headResponse.Content.Headers.ContentDisposition.FileName.Replace("\"", "");
 
                 availableVersions.Add(version.Name, version);
             }
@@ -67,7 +67,7 @@ namespace PCSX2_Configurator.VersionManager
             latestBuild.Directory = latestBuild.Directory.Substring(0, latestBuild.Directory.LastIndexOf(" ")) + " latest";
             latestBuild.ShouldUpdate = true;
             availableVersions.Add(latestBuild.Name, latestBuild);
-            
+
             return availableVersions;
         }
 
@@ -78,15 +78,22 @@ namespace PCSX2_Configurator.VersionManager
             var biosDirectory = Directory.CreateDirectory($"{versionsDirectory}/{settings.BiosDirectory}");
 
             var archive = $"{archivesDirectory}/{version.ArchiveName}";
-            if(!File.Exists(archive)) await DownloadFile(version.DownloadLink, archive);
+            if (!File.Exists(archive)) await DownloadFile(version.DownloadLink, archive);
 
             using var extractor = new SevenZipExtractor(archive);
-            await extractor.ExtractArchiveAsync(versionsDirectory.ToString());
+            await extractor.ExtractArchiveAsync($"{versionsDirectory}");
 
             var extractedPath = $"{versionsDirectory}/{Path.GetFileNameWithoutExtension(archive)}";
+            var targetPath = $"{versionsDirectory}/{version.Directory}";
             if (Directory.Exists(extractedPath))
             {
-                Directory.Move(extractedPath, $"{versionsDirectory}/{version.Directory}");
+                Directory.Move(extractedPath, targetPath);
+            }
+
+            Directory.CreateDirectory($"{targetPath}/Bios");
+            foreach (var biosFile in biosDirectory.GetFiles())
+            {
+                File.Copy($"{biosFile}", $"{targetPath}/Bios/{biosFile.Name}");
             }
         }
 
