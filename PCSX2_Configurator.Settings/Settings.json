@@ -2,11 +2,6 @@
   "ConfigsDirectory": "Configs",
   "RemoteConfigsPath":  "Remote",
   "Versions": {
-    //"v1.0.0": "G:\\PCSX2 with Configurator\\PCSX2 v1.0.0\\pcsx2-r5350.exe",
-    //"v1.2.1": "G:\\PCSX2 with Configurator\\PCSX2 v1.0.0\\pcsx2-r5875.exe",
-    //"v1.4.0": "G:\\PCSX2 with Configurator\\PCSX2 v1.4.0\\pcsx2.exe",
-    //"v1.5.0-3391": "G:\\PCSX2 with Configurator\\PCSX2 v1.5.0-3391\\pcsx2.exe",
-    //"v1.6.0-rc": "G:\\PCSX2 with Configurator\\PCSX2 v1.6.0-rc\\pcsx2.exe"
   },
   "GameLibraryFile": "GameLibrary.xml",
   "SevenZipLibraryPath": "C:\\Program Files\\7-Zip\\7z.dll",
@@ -19,19 +14,20 @@
     "VersionsDirectory": "PCSX2",
     "ArchivesDirectory": "Archives",
     "BiosDirectory": "Bios",
-    "CopyBiosFile": true,
     "StableVersions": [
       {
         "Name": "v1.0.0",
         "ArchiveName": "pcsx2-1.0.0-r5350-binaries.7z",
         "DownloadLink": "https://pcsx2.net/download/releases/archive-download/send/39-pcsx2-v1-0-0/81-pcsx2-1-0-0-r5350-binaries.html",
-        "Directory": "PCSX2 1.0.0"
+        "Directory": "PCSX2 1.0.0",
+        "Executable":  "pcsx2-r5350.exe"
       },
       {
         "Name": "v1.2.1",
         "ArchiveName": "pcsx2-1.2.1-r5875-binaries.7z",
         "DownloadLink": "https://pcsx2.net/download/releases/archive-download/send/42-pcsx2-v1-2-1/106-pcsx2-1-2-1-r5875-binaries.html",
-        "Directory": "PCSX2 1.2.1"
+        "Directory": "PCSX2 1.2.1",
+        "Executable": "pcsx2-r5875.exe"
       },
       {
         "Name": "v1.4.0",

@@ -114,7 +114,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 {
                     Mouse.OverrideCursor = Cursors.Wait;
                     var gameInfo = gameLibraryService.AddToLibrary(file);
-                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions["v1.4.0"], file);
+                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions["v1.6.0"], file);
                     gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
                     Mouse.OverrideCursor = null;
                 }

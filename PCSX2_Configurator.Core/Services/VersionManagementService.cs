@@ -5,9 +5,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Web;
 using SevenZip;
 using HtmlAgilityPack;
+using IniParser;
+using IniParser.Model;
+using NaturalSort.Extension;
 using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
@@ -16,24 +20,39 @@ namespace PCSX2_Configurator.Core
     {
         private readonly HttpClient httpClient;
         private readonly VersionManagerSettings settings;
+        private readonly AppSettings appSettings;
+        private readonly FileIniDataParser iniParser;
 
-        public VersionManagementService(VersionManagerSettings settings, IHttpClientFactory httpClientFactory, AppSettings appSettings)
+        public VersionManagementService(VersionManagerSettings settings, AppSettings appSettings, IHttpClientFactory httpClientFactory)
         {
-            httpClient = httpClientFactory.CreateClient();
             this.settings = settings;
+            this.appSettings = appSettings;
+            httpClient = httpClientFactory.CreateClient();
+            
             SevenZipBase.SetLibraryPath(appSettings.SevenZipLibraryPath);
+            iniParser = new FileIniDataParser();
         }
 
         public async Task<IDictionary<string, VersionSettings>> GetAvailableVersions()
         {
-            var availableVersions = new SortedDictionary<string, VersionSettings>();
-            foreach (var version in settings.StableVersions)
-            {
-                availableVersions.Add(version.Name, version);
-            }
+            var versions = new List<VersionSettings>();
+            versions.AddRange(settings.StableVersions);
 
+            var devVersions = await GetDevVersions();
+            versions.AddRange(devVersions);
+
+            var latestDevVersion = GetLatestDevVersion(devVersions);
+            versions.Add(latestDevVersion);
+
+            var availableVersions = versions.Where(version => !appSettings.Versions.Any(installed => version.Name == installed.Key));
+            return new SortedDictionary<string, VersionSettings>(availableVersions.ToDictionary(x => x.Name), StringComparer.OrdinalIgnoreCase.WithNaturalSort());
+        }
+
+        private async Task<List<VersionSettings>> GetDevVersions()
+        {
             var uri = new Uri(settings.DevVersions);
             var htmlDocument = await new HtmlWeb().LoadFromWebAsync(uri.AbsoluteUri);
+            var versions = new List<VersionSettings>();
 
             var tableNodes = htmlDocument.DocumentNode.SelectNodes("//table[@class='listing']/tr");
             foreach (var node in tableNodes.Where(node => node.Descendants().Any(x => x.Name == "td")))
@@ -46,12 +65,11 @@ namespace PCSX2_Configurator.Core
 
                 var commitRefIndex = name.LastIndexOf("-g");
                 var version = new VersionSettings
-                {     
+                {
                     Name = name.Substring(0, commitRefIndex < 0 ? name.Length : commitRefIndex),
                     DownloadLink = $"{uri.Scheme}://{uri.Host}{query}",
                     IsDevBuild = true
                 };
-
 
                 var headResponse = await httpClient.SendAsync(new HttpRequestMessage
                 {
@@ -63,23 +81,40 @@ namespace PCSX2_Configurator.Core
                 version.Directory = "PCSX2 " + new StringBuilder(version.Name) { [version.Name.LastIndexOf('-')] = ' ' }.ToString().Substring(1);
                 version.ArchiveName = headResponse.Content.Headers.ContentDisposition.FileName.Replace("\"", "");
 
-                availableVersions.Add(version.Name, version);
+                versions.Add(version);
             }
 
-            var latestBuild = availableVersions.Last(x => x.Value.IsDevBuild).Value;
-            latestBuild.Name = latestBuild.Name.Substring(0, latestBuild.Name.LastIndexOf('-')) + "-latest";
-            latestBuild.Directory = latestBuild.Directory.Substring(0, latestBuild.Directory.LastIndexOf(" ")) + " latest";
-            latestBuild.ShouldUpdate = true;
-            availableVersions.Add(latestBuild.Name, latestBuild);
+            return versions;
+        }
 
-            return availableVersions;
+        private VersionSettings GetLatestDevVersion(IEnumerable<VersionSettings> versions)
+        {
+            var version = versions.First(x => x.IsDevBuild);
+            return new VersionSettings
+            {
+                Name = version.Name.Substring(0, version.Name.LastIndexOf('-')) + "-latest",
+                DownloadLink = version.DownloadLink,
+                Directory = version.Directory.Substring(0, version.Directory.LastIndexOf(" ")) + " latest",
+                ShouldUpdate = true,
+                IsDevBuild = true
+            };
         }
 
         public async Task InstallVersion(VersionSettings version)
         {
+            var installPath = await ExtractArchive(version);
+            ConfigureBiosDirectory(installPath, version.InisDirectory);
+
+            appSettings.Versions.Add(version.Name, $"{Path.GetFullPath(installPath)}\\{version.Executable}");
+            await appSettings.UpdateVersions();
+
+            Process.Start($"{installPath}/{version.Executable}");
+        }
+
+        private async Task<string> ExtractArchive(VersionSettings version)
+        {
             var versionsDirectory = Directory.CreateDirectory(settings.VersionsDirectory);
             var archivesDirectory = Directory.CreateDirectory($"{versionsDirectory}/{settings.ArchivesDirectory}");
-            var biosDirectory = Directory.CreateDirectory($"{versionsDirectory}/{settings.BiosDirectory}");
 
             var archive = $"{archivesDirectory}/{version.ArchiveName}";
             if (!File.Exists(archive)) await httpClient.DownloadFile(version.DownloadLink, archive);
@@ -94,11 +129,18 @@ namespace PCSX2_Configurator.Core
                 Directory.Move(extractedPath, targetPath);
             }
 
-            Directory.CreateDirectory($"{targetPath}/Bios");
-            foreach (var biosFile in biosDirectory.GetFiles())
-            {
-                File.Copy($"{biosFile}", $"{targetPath}/Bios/{biosFile.Name}");
-            }
+            return targetPath;
+        }
+
+        private void ConfigureBiosDirectory(string installPath, string inisDirectory)
+        {
+            if (string.IsNullOrWhiteSpace(settings.BiosDirectory)) return;
+            var biosDirectory = Directory.CreateDirectory($"{settings.VersionsDirectory}/{settings.BiosDirectory}");
+            var config = new IniData();
+            config["Folders"]["Bios"] = Path.GetFullPath($"{biosDirectory}").Replace("\\", "\\\\");
+            config["Folders"]["UseDefaultBios"] = "disabled";
+            Directory.CreateDirectory($"{installPath}/{inisDirectory}");
+            iniParser.WriteFile($"{inisDirectory}/PCSX2_ui.ini", config);
         }
     }
 }

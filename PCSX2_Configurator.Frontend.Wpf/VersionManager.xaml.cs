@@ -33,6 +33,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
             Mouse.OverrideCursor = Cursors.Wait;
             await versionManagementService.InstallVersion(availableVersions[selectedVersion]);
             Mouse.OverrideCursor = null;
+
+            Close();
         }
     }
 }

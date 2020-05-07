@@ -14,16 +14,11 @@ namespace PCSX2_Configurator.Frontend.Wpf
     {
         private readonly IHost host;
         private static IServiceProvider ServiceProvider { get; set; }
-
-        public static T Get<T>()
-        {
-            return ServiceProvider.GetRequiredService<T>();
-        }
+        public static T Get<T>() => ServiceProvider.GetRequiredService<T>();
 
         static App()
         {
             LoadAssembliesFromDirectory($"{Directory.GetCurrentDirectory()}\\ThirdParty");
-            LoadAssembliesFromDirectory($"{Directory.GetCurrentDirectory()}\\Microsoft");
         }
 
         public App()
