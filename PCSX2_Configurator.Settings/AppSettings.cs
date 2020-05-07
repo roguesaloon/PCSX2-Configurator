@@ -6,6 +6,7 @@ namespace PCSX2_Configurator.Settings
     public class AppSettings
     {
         public string ConfigsDirectory { get; private set; }
+        public string RemoteConfigsPath { get; private set; } 
         public Dictionary<string, string> Versions { get; private set; } = new Dictionary<string, string>();
         public string GameLibraryFile { get; private set; }
         public string SevenZipLibraryPath { get; private set; }
@@ -20,9 +21,12 @@ namespace PCSX2_Configurator.Settings
                 if (configs == null)
                 {
                     configs = new Dictionary<string, string>();
-                    var directories = Directory.GetDirectories(ConfigsDirectory);
-                    foreach (var directory in directories)
-                        configs.Add(new DirectoryInfo(directory).Name, directory);
+                    if (Directory.Exists(ConfigsDirectory))
+                    {
+                        var directories = Directory.GetDirectories(ConfigsDirectory);
+                        foreach (var directory in directories)
+                            configs.Add(new DirectoryInfo(directory).Name, directory);
+                    }
                 }
 
                 return configs;

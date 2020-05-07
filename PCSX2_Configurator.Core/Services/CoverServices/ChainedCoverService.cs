@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
@@ -7,13 +9,13 @@ namespace PCSX2_Configurator.Core
     {
         private readonly List<ICoverService> chainOfCoverServices;
 
-        public ChainedCoverService(string coversPath, string missingCoverArt)
+        public ChainedCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory)
         {
             chainOfCoverServices = new List<ICoverService>
             {
-                new PlaystationDataCenterCoverService(coversPath, missingCoverArt),
-                new TgdbCoverService(coversPath, missingCoverArt),
-                new Playstation2ArchiveCoverService(coversPath, missingCoverArt)
+                new PlaystationDataCenterCoverService(settings, httpClientFactory),
+                new TgdbCoverService(settings, httpClientFactory),
+                new Playstation2ArchiveCoverService(settings, httpClientFactory)
             };
         }
 

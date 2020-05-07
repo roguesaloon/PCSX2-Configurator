@@ -1,7 +1,4 @@
-﻿using HtmlAgilityPack;
-using PCSX2_Configurator.Settings;
-using SevenZip;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,18 +6,22 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using SevenZip;
+using HtmlAgilityPack;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
     public sealed class VersionManagementService
     {
-        private static readonly HttpClient httpClient = new HttpClient();
+        private readonly HttpClient httpClient;
         private readonly VersionManagerSettings settings;
 
-        public VersionManagementService(VersionManagerSettings settings, string sevenZipLibraryPath)
+        public VersionManagementService(VersionManagerSettings settings, IHttpClientFactory httpClientFactory, AppSettings appSettings)
         {
+            httpClient = httpClientFactory.CreateClient();
             this.settings = settings;
-            SevenZipBase.SetLibraryPath(sevenZipLibraryPath);
+            SevenZipBase.SetLibraryPath(appSettings.SevenZipLibraryPath);
         }
 
         public async Task<IDictionary<string, VersionSettings>> GetAvailableVersions()
@@ -41,9 +42,12 @@ namespace PCSX2_Configurator.Core
                 var name = cells.First().InnerText;
                 var query = HttpUtility.HtmlDecode(cells.ElementAt(3).FirstChild.GetAttributeValue("href", string.Empty));
 
+                if (string.IsNullOrWhiteSpace(query)) continue;
+
+                var commitRefIndex = name.LastIndexOf("-g");
                 var version = new VersionSettings
-                {
-                    Name = name.Substring(0, name.LastIndexOf('-')),
+                {     
+                    Name = name.Substring(0, commitRefIndex < 0 ? name.Length : commitRefIndex),
                     DownloadLink = $"{uri.Scheme}://{uri.Host}{query}",
                     IsDevBuild = true
                 };
@@ -78,7 +82,7 @@ namespace PCSX2_Configurator.Core
             var biosDirectory = Directory.CreateDirectory($"{versionsDirectory}/{settings.BiosDirectory}");
 
             var archive = $"{archivesDirectory}/{version.ArchiveName}";
-            if (!File.Exists(archive)) await DownloadFile(version.DownloadLink, archive);
+            if (!File.Exists(archive)) await httpClient.DownloadFile(version.DownloadLink, archive);
 
             using var extractor = new SevenZipExtractor(archive);
             await extractor.ExtractArchiveAsync($"{versionsDirectory}");
@@ -95,16 +99,6 @@ namespace PCSX2_Configurator.Core
             {
                 File.Copy($"{biosFile}", $"{targetPath}/Bios/{biosFile.Name}");
             }
-        }
-
-        private async static Task<bool> DownloadFile(string source, string destination)
-        {
-            using var response = await httpClient.GetAsync(source, HttpCompletionOption.ResponseHeadersRead);
-            if (!response.IsSuccessStatusCode) return false;
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            using var fileStream = File.Open(destination, FileMode.Create);
-            await responseStream.CopyToAsync(fileStream);
-            return true;
         }
     }
 }

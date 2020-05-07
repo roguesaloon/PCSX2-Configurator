@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
@@ -6,7 +8,7 @@ namespace PCSX2_Configurator.Core
     {
         private readonly string baseUri = "https://psxdatacenter.com/psx2/images2/covers";
 
-        public PlaystationDataCenterCoverService(string coversPath, string missingCoverArt) : base(coversPath, missingCoverArt)
+        public PlaystationDataCenterCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
         {
             CoversPath = $"{CoversPath}/PlaystationDataCenter";
         }
@@ -14,7 +16,7 @@ namespace PCSX2_Configurator.Core
         protected override async Task GetCoverForGame(GameInfo game, string targetFile)
         {
             var sourceFile = $"{baseUri}/{game.GameId}.jpg";
-            await DownloadFile(sourceFile, targetFile);
+            await httpClient.DownloadFile(sourceFile, targetFile);
         }
     }
 }

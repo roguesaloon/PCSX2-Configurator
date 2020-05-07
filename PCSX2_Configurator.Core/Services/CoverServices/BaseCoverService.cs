@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
@@ -10,18 +11,17 @@ namespace PCSX2_Configurator.Core
         protected string CoversPath { get; set; } = $"{Directory.GetCurrentDirectory()}/Assets/Covers";
         private string MissingCoverArt { get; }
 
-        protected static readonly HttpClient httpClient = new HttpClient();
+        protected readonly HttpClient httpClient;
 
-        static BaseCoverService()
+        protected BaseCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory)
         {
+            httpClient = httpClientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromSeconds(30);
-        }
 
-        protected BaseCoverService(string coversPath, string missingCoverArt)
-        {
+            var coversPath = settings.CoversPath;
             var rootedPath = Path.IsPathRooted(coversPath) ? coversPath : $"{Directory.GetCurrentDirectory()}/{coversPath}";
             CoversPath = coversPath != null ? rootedPath : CoversPath; 
-            MissingCoverArt = missingCoverArt;
+            MissingCoverArt = settings.MissingCover;
         }
 
         public async Task<string> GetCoverForGame(GameInfo game)
@@ -51,16 +51,6 @@ namespace PCSX2_Configurator.Core
             var missingFilePath = $"{Path.GetDirectoryName(filePath)}/{Path.GetFileNameWithoutExtension(filePath)}.missing";
             File.Create(missingFilePath);
             return MissingCoverArt;
-        }
-
-        protected async static Task<bool> DownloadFile(string source, string destination)
-        {
-            using var response = await httpClient.GetAsync(source, HttpCompletionOption.ResponseHeadersRead);
-            if (!response.IsSuccessStatusCode) return false;
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            using var fileStream = File.Open(destination, FileMode.Create);
-            await responseStream.CopyToAsync(fileStream);
-            return true;
         }
     }
 }

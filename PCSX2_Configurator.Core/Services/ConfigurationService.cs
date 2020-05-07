@@ -1,8 +1,9 @@
-﻿using IniParser;
-using IniParser.Model;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using IniParser;
+using IniParser.Model;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
@@ -25,10 +26,10 @@ namespace PCSX2_Configurator.Core
 
         private readonly string configsDir;
         private readonly FileIniDataParser iniParser;
-        public ConfigurationService(string configsDir)
+        public ConfigurationService(AppSettings appSettings)
         {
             iniParser = new FileIniDataParser();
-            this.configsDir = configsDir;
+            configsDir = appSettings.ConfigsDirectory;
         }
 
         public string CreateConfig(string configName, string inisPath, SettingsOptions settingsOptions)

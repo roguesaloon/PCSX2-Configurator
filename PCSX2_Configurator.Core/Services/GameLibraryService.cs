@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Xml;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
@@ -12,10 +13,9 @@ namespace PCSX2_Configurator.Core
         private readonly XmlDocument xmlDocument;
         private readonly string targetFile;
         
-        public GameLibraryService(string targetFile)
+        public GameLibraryService(AppSettings appSettings)
         {
-            targetFile ??= "GameLibrary.xml";
-            this.targetFile = targetFile;
+            targetFile = appSettings.GameLibraryFile ?? "GameLibrary.xml";
             xmlDocument = new XmlDocument();
 
             if (!File.Exists(targetFile))

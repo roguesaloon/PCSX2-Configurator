@@ -1,5 +1,6 @@
 {
-  "ConfigsDirectory": "G:\\PCSX2 with Configurator\\PCSX2 Configurator\\Configs",
+  "ConfigsDirectory": "Configs",
+  "RemoteConfigsPath":  "Remote",
   "Versions": {
     //"v1.0.0": "G:\\PCSX2 with Configurator\\PCSX2 v1.0.0\\pcsx2-r5350.exe",
     //"v1.2.1": "G:\\PCSX2 with Configurator\\PCSX2 v1.0.0\\pcsx2-r5875.exe",
@@ -36,7 +37,14 @@
         "Name": "v1.4.0",
         "ArchiveName": "pcsx2 - 1.4.0 - binaries.7z",
         "DownloadLink": "https://pcsx2.net/download/releases/windows/send/40-windows/119-pcsx2-1-4-0-binaries.html",
-        "Directory": "PCSX2 1.4.0"
+        "Directory": "PCSX2 1.4.0",
+        "InisDirectory":  "inis_1.4.0"
+      },
+      {
+        "Name": "v1.6.0",
+        "ArchiveName": "pcsx2-1.6.0-binaries.7z",
+        "DownloadLink": "https://pcsx2.net/download/releases/windows/send/40-windows/125-pcsx2-1-6-0-binaries.html",
+        "Directory":  "PCSX2 1.6.0"
       }
     ],
     "DevVersions": "https://buildbot.orphis.net/pcsx2/index.php"

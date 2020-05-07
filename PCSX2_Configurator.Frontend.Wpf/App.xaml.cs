@@ -39,12 +39,16 @@ namespace PCSX2_Configurator.Frontend.Wpf
             var settings = new AppSettings();
             context.Configuration.Bind(settings, options => options.BindNonPublicProperties = true);
             services.AddTransient(provider => settings);
+            services.AddTransient(provider => settings.Covers);
+            services.AddTransient(provider => settings.VersionManager);
 
-            services.AddSingleton(provider => new GameLibraryService(settings.GameLibraryFile));
-            services.AddSingleton(provider => new EmulationService());
-            services.AddSingleton(provider => new ConfigurationService(settings.ConfigsDirectory));
-            services.AddSingleton<ICoverService>(provider => new ChainedCoverService(settings.Covers.CoversPath, settings.Covers.MissingCover));
-            services.AddSingleton(provider => new VersionManagementService(settings.VersionManager, settings.SevenZipLibraryPath));
+            services.AddHttpClient();
+            services.AddSingleton<GameLibraryService>();
+            services.AddSingleton<EmulationService>();
+            services.AddSingleton<ConfigurationService>();
+            services.AddSingleton<ICoverService, ChainedCoverService>();
+            services.AddSingleton<VersionManagementService>();
+
             services.AddSingleton<MainWindow>();
             services.AddTransient<ConfigWizard>();
             services.AddTransient<VersionManager>();

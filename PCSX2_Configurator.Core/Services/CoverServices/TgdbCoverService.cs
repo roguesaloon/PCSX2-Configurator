@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
@@ -15,7 +17,7 @@ namespace PCSX2_Configurator.Core
         private readonly string byGameNameApiUri = "https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey={apiKey}&filter%5Bplatform%5D=11&name=";
         private readonly string cdnThumbsBoxFrontUri = "https://cdn.thegamesdb.net/images/thumb/boxart/front/";
 
-        public TgdbCoverService(string coversPath, string missingCoverArt) : base(coversPath, missingCoverArt)
+        public TgdbCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
         {
             CoversPath = $"{CoversPath}/TGDB";
             byGameNameApiUri = byGameNameApiUri.Replace("{apiKey}", Encoding.ASCII.GetString(Convert.FromBase64String(apiKey)));
@@ -28,7 +30,7 @@ namespace PCSX2_Configurator.Core
             {
                 for(int i = 1; i < 9; ++i)
                 {
-                    var hasDownloaded = await DownloadFile($"{cdnThumbsBoxFrontUri}/{gameId}-{i}.jpg", targetFile);
+                    var hasDownloaded = await httpClient.DownloadFile($"{cdnThumbsBoxFrontUri}/{gameId}-{i}.jpg", targetFile);
                     if (hasDownloaded) break;
                 }
             }

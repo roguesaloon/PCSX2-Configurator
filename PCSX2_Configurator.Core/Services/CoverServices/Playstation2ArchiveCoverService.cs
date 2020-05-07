@@ -1,9 +1,11 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
-using System.IO;
+﻿using System.IO;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.Primitives;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
 {
@@ -11,7 +13,7 @@ namespace PCSX2_Configurator.Core
     {
         private readonly string baseUri = "http://www.atensionspan.com/evil/covers"; // Links From http://www.evilbadman.com/
 
-        public Playstation2ArchiveCoverService(string coversPath, string missingCoverArt) : base(coversPath, missingCoverArt)
+        public Playstation2ArchiveCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
         {
             CoversPath = $"{CoversPath}/Playstation2Archive";
         }
@@ -34,7 +36,7 @@ namespace PCSX2_Configurator.Core
         {
             var formattedFileName = FormatNameForService(fileName);
             var sourceFile = $"{baseUri}/{formattedFileName}";
-            if (!await DownloadFile(sourceFile, filePath)) await RetryDownloadWhereFails(fileName, filePath);
+            if (!await httpClient.DownloadFile(sourceFile, filePath)) await RetryDownloadWhereFails(fileName, filePath);
         }
 
         private async Task RetryDownloadWhereFails(string fileName, string filePath)
