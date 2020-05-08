@@ -5,6 +5,7 @@
   },
   "GameLibraryFile": "GameLibrary.xml",
   "SevenZipLibraryPath": "C:\\Program Files\\7-Zip\\7z.dll",
+  "AdditionalPluginsDirectory":  "Assets/Plugins",
   "Covers": {
     "CoversPath": "Assets/Covers",
     "MissingCover": "Assets/Covers/Missing.png",

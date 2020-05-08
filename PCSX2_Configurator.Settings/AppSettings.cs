@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using System.IO;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PCSX2_Configurator.Settings
 {
@@ -12,6 +12,7 @@ namespace PCSX2_Configurator.Settings
         public string RemoteConfigsPath { get; private set; } 
         public string GameLibraryFile { get; private set; }
         public string SevenZipLibraryPath { get; private set; }
+        public string AdditionalPluginsDirectory { get; private set; }
         public CoverSettings Covers { get; private set; }
         public VersionManagerSettings VersionManager { get; private set; }
 

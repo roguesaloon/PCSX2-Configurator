@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
-        Title="PCSX2 Configurator" Width="1700" Height="800" MinWidth="1000" MinHeight="530"
+        Title="PCSX2 Configurator" Width="1700" Height="820" MinWidth="1000" MinHeight="530"
         Closing="OnClosing" WindowStyle="SingleBorderWindow" Background="#FF2D333C">
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0" CornerRadius="0"/>

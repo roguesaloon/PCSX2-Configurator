@@ -114,7 +114,14 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 {
                     Mouse.OverrideCursor = Cursors.Wait;
                     var gameInfo = gameLibraryService.AddToLibrary(file);
-                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions["v1.6.0"], file);
+                    var versionToUse = VersionManagementService.GetMostRecentStableVersion(settings.Versions.Keys);
+                    if (versionToUse == null)
+                    {
+                        MessageBox.Show("PCSX2 Configurator requires at least one installed PCSX2 version", "Error");
+                        return;
+                    }
+
+                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions[versionToUse], file);
                     gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
                     Mouse.OverrideCursor = null;
                 }
@@ -178,7 +185,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 }
                 var emulatorPath = settings.Versions[version];
                 var configPath = settings.Configs[config];
-                EmulationService.LaunchWithGame(emulatorPath, model?.Path, configPath);
+                emulationService.LaunchWithGame(emulatorPath, model?.Path, configPath);
             }
         }
     }

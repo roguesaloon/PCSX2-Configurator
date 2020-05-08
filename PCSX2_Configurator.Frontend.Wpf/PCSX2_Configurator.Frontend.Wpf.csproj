@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\GSnull.dll">
+    <None Update="Assets\Plugins\GSnull.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

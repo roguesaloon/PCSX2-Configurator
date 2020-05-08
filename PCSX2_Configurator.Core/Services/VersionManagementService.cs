@@ -48,6 +48,24 @@ namespace PCSX2_Configurator.Core
             return new SortedDictionary<string, VersionSettings>(availableVersions.ToDictionary(x => x.Name), StringComparer.OrdinalIgnoreCase.WithNaturalSort());
         }
 
+        public async Task InstallVersion(VersionSettings version)
+        {
+            var installPath = await ExtractArchive(version);
+            ConfigureBiosDirectory(installPath, version.InisDirectory);
+
+            appSettings.Versions.Add(version.Name, $"{Path.GetFullPath(installPath)}\\{version.Executable}");
+            await appSettings.UpdateVersions();
+
+            Process.Start($"{installPath}/{version.Executable}");
+        }
+
+        public static string GetMostRecentStableVersion(IEnumerable<string> versionNames)
+        {
+            var sortedVersions = versionNames.OrderBy(version => version, StringComparer.OrdinalIgnoreCase.WithNaturalSort());
+            var latestStable = sortedVersions.LastOrDefault(version => !version.Contains("dev"));
+            return latestStable ?? sortedVersions.LastOrDefault();
+        }
+
         private async Task<List<VersionSettings>> GetDevVersions()
         {
             var uri = new Uri(settings.DevVersions);
@@ -100,17 +118,6 @@ namespace PCSX2_Configurator.Core
             };
         }
 
-        public async Task InstallVersion(VersionSettings version)
-        {
-            var installPath = await ExtractArchive(version);
-            ConfigureBiosDirectory(installPath, version.InisDirectory);
-
-            appSettings.Versions.Add(version.Name, $"{Path.GetFullPath(installPath)}\\{version.Executable}");
-            await appSettings.UpdateVersions();
-
-            Process.Start($"{installPath}/{version.Executable}");
-        }
-
         private async Task<string> ExtractArchive(VersionSettings version)
         {
             var versionsDirectory = Directory.CreateDirectory(settings.VersionsDirectory);
@@ -139,8 +146,8 @@ namespace PCSX2_Configurator.Core
             var config = new IniData();
             config["Folders"]["Bios"] = Path.GetFullPath($"{biosDirectory}").Replace("\\", "\\\\");
             config["Folders"]["UseDefaultBios"] = "disabled";
-            Directory.CreateDirectory($"{installPath}/{inisDirectory}");
-            iniParser.WriteFile($"{inisDirectory}/PCSX2_ui.ini", config);
+            var inisPath = Directory.CreateDirectory($"{installPath}/{inisDirectory}");
+            iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config);
         }
     }
 }
