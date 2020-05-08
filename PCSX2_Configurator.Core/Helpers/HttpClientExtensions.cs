@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace PCSX2_Configurator.Core
 {
-    public static class HttpClientExtensions
+    internal static class HttpClientExtensions
     {
         public async static Task<bool> DownloadFile(this HttpClient httpClient, string source, string destination)
         {
