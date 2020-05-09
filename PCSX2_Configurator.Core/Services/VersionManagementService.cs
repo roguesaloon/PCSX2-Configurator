@@ -50,7 +50,7 @@ namespace PCSX2_Configurator.Core
 
         public async Task InstallVersion(VersionSettings version)
         {
-            var installPath = await ExtractArchive(version);
+            var installPath = await DownloadAndExtractArchive(version);
             ConfigureBiosDirectory(installPath, version.InisDirectory);
 
             appSettings.Versions.Add(version.Name, $"{Path.GetFullPath(installPath)}\\{version.Executable}");
@@ -118,23 +118,29 @@ namespace PCSX2_Configurator.Core
             };
         }
 
-        private async Task<string> ExtractArchive(VersionSettings version)
+        private async Task<string> DownloadAndExtractArchive(VersionSettings version)
         {
             var versionsDirectory = Directory.CreateDirectory(settings.VersionsDirectory);
-            var archivesDirectory = Directory.CreateDirectory($"{versionsDirectory}/{settings.ArchivesDirectory}");
+            var archivesDirectory = Directory.CreateDirectory($"{versionsDirectory}\\{settings.ArchivesDirectory}");
 
-            var archive = $"{archivesDirectory}/{version.ArchiveName}";
-            if (!File.Exists(archive)) await httpClient.DownloadFile(version.DownloadLink, archive);
+            var archive = $"{archivesDirectory}\\{version.ArchiveName}";
+            if (!File.Exists(archive)) await httpClient.DownloadFile(version.DownloadLink, archive, referer: "https://pcsx2.net");
 
             using var extractor = new SevenZipExtractor(archive);
-            await extractor.ExtractArchiveAsync($"{versionsDirectory}");
+            var rootStructure = extractor.ArchiveFileNames.Where(x => !string.IsNullOrEmpty(x) && !x.Contains("\\"));
 
-            var extractedPath = $"{versionsDirectory}/{Path.GetFileNameWithoutExtension(archive)}";
-            var targetPath = $"{versionsDirectory}/{version.Directory}";
-            if (Directory.Exists(extractedPath))
+            var targetPath = $"{versionsDirectory}\\{version.Directory}";
+            if (rootStructure.Count() == 1)
             {
-                Directory.Move(extractedPath, targetPath);
+                await extractor.ExtractArchiveAsync($"{versionsDirectory}");
+                var extractedPath = $"{versionsDirectory}\\{rootStructure.First()}";
+
+                if (Directory.Exists(extractedPath) && extractedPath != targetPath)
+                {
+                    Directory.Move(extractedPath, targetPath);
+                }
             }
+            else await extractor.ExtractArchiveAsync(targetPath);
 
             return targetPath;
         }
