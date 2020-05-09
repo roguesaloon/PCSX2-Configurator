@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -15,7 +15,6 @@ namespace PCSX2_Configurator.Frontend.Wpf
         public string CoverPath { get; set; }
 
         private static IEnumerable<string> versions = new List<string>();
-        private static IEnumerable<string> configs = new List<string>();
         public static IEnumerable<string> Versions 
         {
             get => versions;
@@ -30,6 +29,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             }
         }
 
+        private static IEnumerable<string> configs = new List<string>();
         public static IEnumerable<string> Configs 
         {
             get => configs;
