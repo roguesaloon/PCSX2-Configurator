@@ -10,11 +10,13 @@ namespace PCSX2_Configurator.Core
     public sealed class ConfigurationService
     {
         [Flags]
-        public enum SettingsOptions
+        public enum ConfigOptions
         {
-            CopyLogSettings, CopyFolderSettings, CopyFileSettings, CopyWindowSettings,
-            UseAdvancedSettings, 
-            CopyVmSettings, CopyGsdxSettings, CopySpu2xSettings, CopyLilyPadSettings,
+            None = 0,
+            CopyLogSettings = 1, CopyFolderSettings = 2, CopyFileSettings = 4, CopyWindowSettings = 8,
+            DisablePresets = 16, EnableGameFixes = 32, EnableSpeedHacks = 64,
+            CopyVmSettings = 128, CopyGsdxSettings = 256, CopySpu2xSettings = 512, CopyLilyPadSettings = 1024,
+            UseAdvancedSettings = DisablePresets | EnableGameFixes | EnableSpeedHacks,
             All = CopyLogSettings | CopyFolderSettings | CopyFileSettings | CopyWindowSettings | UseAdvancedSettings | CopyVmSettings | CopyGsdxSettings | CopySpu2xSettings | CopyLilyPadSettings
         }
 
@@ -32,22 +34,22 @@ namespace PCSX2_Configurator.Core
             configsDir = appSettings.ConfigsDirectory;
         }
 
-        public string CreateConfig(string configName, string inisPath, SettingsOptions settingsOptions)
+        public string CreateConfig(string configName, string inisPath, ConfigOptions settingsOptions)
         {
             var configPath = $"{configsDir}\\{configName}";
             Directory.CreateDirectory(configPath);
 
             CreateUiFile(configPath, inisPath, settingsOptions);
 
-            if (settingsOptions.HasFlag(SettingsOptions.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{vmFileName}", $"{configPath}\\{vmFileName}");
-            if (settingsOptions.HasFlag(SettingsOptions.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
-            if (settingsOptions.HasFlag(SettingsOptions.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
-            if (settingsOptions.HasFlag(SettingsOptions.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
+            if (settingsOptions.HasFlag(ConfigOptions.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{vmFileName}", $"{configPath}\\{vmFileName}");
+            if (settingsOptions.HasFlag(ConfigOptions.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
+            if (settingsOptions.HasFlag(ConfigOptions.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
+            if (settingsOptions.HasFlag(ConfigOptions.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
 
             return configPath;
         }
 
-        public void ImportConfig(string configPath, string inisPath, SettingsOptions settingsOptions)
+        public void ImportConfig(string configPath, string inisPath, ConfigOptions settingsOptions)
         {
             var configName = Path.GetDirectoryName(configPath);
             var importedConfigPath = CreateConfig(configName, inisPath, settingsOptions);
@@ -59,22 +61,19 @@ namespace PCSX2_Configurator.Core
             }
         }
 
-        private void CreateUiFile(string configPath, string inisPath, SettingsOptions settingsOptions)
+        private void CreateUiFile(string configPath, string inisPath, ConfigOptions settingsOptions)
         {
             var baseUiConfig = iniParser.ReadFile($"{inisPath}\\{uiFileName}");
             var targetUiConfig = new IniData();
 
-            if (settingsOptions.HasFlag(SettingsOptions.CopyLogSettings)) targetUiConfig["ProgramLog"].Merge(baseUiConfig["ProgramLog"]);
-            if (settingsOptions.HasFlag(SettingsOptions.CopyFolderSettings)) targetUiConfig["Folders"].Merge(baseUiConfig["Folders"]);
-            if (settingsOptions.HasFlag(SettingsOptions.CopyFileSettings)) targetUiConfig["Filenames"].Merge(baseUiConfig["Filenames"]);
-            if (settingsOptions.HasFlag(SettingsOptions.CopyWindowSettings)) targetUiConfig["GSWindow"].Merge(baseUiConfig["GSWindow"]);
+            if (settingsOptions.HasFlag(ConfigOptions.CopyLogSettings)) targetUiConfig["ProgramLog"].Merge(baseUiConfig["ProgramLog"]);
+            if (settingsOptions.HasFlag(ConfigOptions.CopyFolderSettings)) targetUiConfig["Folders"].Merge(baseUiConfig["Folders"]);
+            if (settingsOptions.HasFlag(ConfigOptions.CopyFileSettings)) targetUiConfig["Filenames"].Merge(baseUiConfig["Filenames"]);
+            if (settingsOptions.HasFlag(ConfigOptions.CopyWindowSettings)) targetUiConfig["GSWindow"].Merge(baseUiConfig["GSWindow"]);
 
-            if (settingsOptions.HasFlag(SettingsOptions.UseAdvancedSettings))
-            {
-                targetUiConfig.Global["EnablePresets"] = "disabled";
-                targetUiConfig.Global["EnableGameFixes"] = "enabled";
-                targetUiConfig.Global["EnableSpeedHacks"] = "enabled";
-            }
+            if (settingsOptions.HasFlag(ConfigOptions.DisablePresets)) targetUiConfig.Global["EnablePresets"] = "disabled";
+            if (settingsOptions.HasFlag(ConfigOptions.EnableGameFixes)) targetUiConfig.Global["EnableGameFixes"] = "enabled";
+            if (settingsOptions.HasFlag(ConfigOptions.EnableSpeedHacks)) targetUiConfig.Global["EnableSpeedHacks"] = "enabled";
 
             iniParser.WriteFile($"{configPath}\\{uiFileName}", targetUiConfig, Encoding.UTF8);
         }

@@ -40,12 +40,30 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 return;
             }
             var inisPath = EmulationService.GetInisPath(settings.Versions[selectedVersion]);
-            configurationService.CreateConfig(givenName, inisPath, SettingsOptions.All);
+            var options = GetConfigOptions();
+            configurationService.CreateConfig(givenName, inisPath, options);
             settings.UpdateConfigs();
             GameModel.Configs = settings.Configs.Keys;
             gameModel.Version = selectedVersion;
             gameModel.Config = givenName;
             Close();
+        }
+
+        private ConfigOptions GetConfigOptions()
+        {
+            var options = ConfigOptions.None;
+            if (options_Logs.IsChecked.Value) options |= ConfigOptions.CopyLogSettings;
+            if (options_Folders.IsChecked.Value) options |= ConfigOptions.CopyFolderSettings;
+            if (options_Files.IsChecked.Value) options |= ConfigOptions.CopyFileSettings;
+            if (options_Window.IsChecked.Value) options |= ConfigOptions.CopyWindowSettings;
+            if (options_VM.IsChecked.Value) options |= ConfigOptions.CopyVmSettings;
+            if (options_GSdx.IsChecked.Value) options |= ConfigOptions.CopyGsdxSettings;
+            if (options_SPU2X.IsChecked.Value) options |= ConfigOptions.CopySpu2xSettings;
+            if (options_LilyPad.IsChecked.Value) options |= ConfigOptions.CopyLilyPadSettings;
+            if (options_NoPresets.IsChecked.Value) options |= ConfigOptions.DisablePresets;
+            if (options_GameFixes.IsChecked.Value) options |= ConfigOptions.EnableGameFixes;
+            if (options_SpeedHacks.IsChecked.Value) options |= ConfigOptions.EnableSpeedHacks;
+            return options;
         }
     }
 }

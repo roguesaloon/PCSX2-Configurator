@@ -1,5 +1,6 @@
 ﻿#NoEnv
 #NoTrayIcon
+#SingleInstance Ignore
 
 Esc::KillPCSX2()
 

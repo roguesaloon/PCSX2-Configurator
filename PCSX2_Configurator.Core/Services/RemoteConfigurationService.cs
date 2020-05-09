@@ -23,7 +23,7 @@ namespace PCSX2_Configurator.Core
         public void ImportConfig(string directoryName, string inisPath)
         {
             if (!Directory.GetDirectories(remoteConfigsPath).Any(directory => directory == directoryName)) throw new Exception("Config does not exist");
-            configurationService.ImportConfig($"{remoteConfigsPath}\\{directoryName}", inisPath, ConfigurationService.SettingsOptions.All);
+            configurationService.ImportConfig($"{remoteConfigsPath}\\{directoryName}", inisPath, ConfigurationService.ConfigOptions.All);
         }
 
         private void UpdateFromRemote()

@@ -32,9 +32,9 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
             Mouse.OverrideCursor = Cursors.Wait;
             await versionManagementService.InstallVersion(availableVersions[selectedVersion]);
+            GameModel.Versions = GameModel.Versions;
             Mouse.OverrideCursor = null;
 
-            GameModel.Versions = GameModel.Versions;
             Close();
         }
     }
