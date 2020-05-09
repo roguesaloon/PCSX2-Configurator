@@ -52,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\HelperScript.ahk">
+    <None Update="Assets\BackgroundHelper.ahk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Plugins\GSnull.dll">

@@ -1,8 +1,8 @@
-﻿using PCSX2_Configurator.Core;
-using PCSX2_Configurator.Settings;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using System.Collections.Generic;
+using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -34,6 +34,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             await versionManagementService.InstallVersion(availableVersions[selectedVersion]);
             Mouse.OverrideCursor = null;
 
+            GameModel.Versions = GameModel.Versions;
             Close();
         }
     }
