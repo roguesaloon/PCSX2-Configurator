@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <VerPatchPath>C:\Users\alec2\.nuget\packages\verpatch\1.0.14\lib\win\verpatch.exe</VerPatchPath>
+    <VerPatchPath>Tools\verpatch.exe</VerPatchPath>
   </PropertyGroup>
 
   <ItemGroup>
