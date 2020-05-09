@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
     public partial class App : Application
     {
         private readonly IHost host;
+        private Process autoHotkeyProcess;
         private static IServiceProvider ServiceProvider { get; set; }
         public static T Get<T>() => ServiceProvider.GetRequiredService<T>();
 
@@ -53,11 +55,22 @@ namespace PCSX2_Configurator.Frontend.Wpf
         {
             ServiceProvider = host.Services;
             Get<MainWindow>().Show();
+            StartAutoHotkeyScript();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             host.Dispose();
+            autoHotkeyProcess?.Kill();
+        }
+
+        private void StartAutoHotkeyScript()
+        {
+            var settings = Get<AppSettings>();
+            var executable = Path.GetFullPath(settings.AutoHotkeyExecutable);
+            var scriptPath = Path.GetFullPath(settings.AutoHotkeyScript);
+            if(File.Exists(executable) && File.Exists(scriptPath))
+                autoHotkeyProcess = Process.Start(settings.AutoHotkeyExecutable, $"\"{scriptPath}\"");
         }
 
         private static void LoadAssembliesFromDirectory(string path)

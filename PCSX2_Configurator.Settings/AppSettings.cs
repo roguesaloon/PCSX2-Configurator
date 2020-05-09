@@ -12,6 +12,8 @@ namespace PCSX2_Configurator.Settings
         public string RemoteConfigsPath { get; private set; } 
         public string GameLibraryFile { get; private set; }
         public string SevenZipLibraryPath { get; private set; }
+        public string AutoHotkeyExecutable { get; private set; }
+        public string AutoHotkeyScript { get; private set; }
         public string AdditionalPluginsDirectory { get; private set; }
         public CoverSettings Covers { get; private set; }
         public VersionManagerSettings VersionManager { get; private set; }

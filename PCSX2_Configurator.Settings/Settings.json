@@ -1,11 +1,13 @@
 {
   "ConfigsDirectory": "Configs",
-  "RemoteConfigsPath":  "Remote",
+  "RemoteConfigsPath": "Remote",
   "Versions": {
   },
   "GameLibraryFile": "GameLibrary.xml",
   "SevenZipLibraryPath": "C:\\Program Files\\7-Zip\\7z.dll",
-  "AdditionalPluginsDirectory":  "Assets/Plugins",
+  "AutoHotkeyExecutable": "C:\\Program Files\\AutoHotkey\\AutoHotkey.exe",
+  "AutoHotkeyScript": "Assets/BackgroundHelper.ahk",
+  "AdditionalPluginsDirectory": "Assets/Plugins",
   "Covers": {
     "CoversPath": "Assets/Covers",
     "MissingCover": "Assets/Covers/Missing.png",
@@ -21,7 +23,7 @@
         "ArchiveName": "pcsx2-1.0.0-r5350-binaries.7z",
         "DownloadLink": "https://pcsx2.net/download/releases/archive-download/send/39-pcsx2-v1-0-0/81-pcsx2-1-0-0-r5350-binaries.html",
         "Directory": "PCSX2 1.0.0",
-        "Executable":  "pcsx2-r5350.exe"
+        "Executable": "pcsx2-r5350.exe"
       },
       {
         "Name": "v1.2.1",
@@ -35,13 +37,13 @@
         "ArchiveName": "pcsx2 - 1.4.0 - binaries.7z",
         "DownloadLink": "https://pcsx2.net/download/releases/windows/send/40-windows/119-pcsx2-1-4-0-binaries.html",
         "Directory": "PCSX2 1.4.0",
-        "InisDirectory":  "inis_1.4.0"
+        "InisDirectory": "inis_1.4.0"
       },
       {
         "Name": "v1.6.0",
         "ArchiveName": "pcsx2-1.6.0-binaries.7z",
         "DownloadLink": "https://pcsx2.net/download/releases/windows/send/40-windows/125-pcsx2-1-6-0-binaries.html",
-        "Directory":  "PCSX2 1.6.0"
+        "Directory": "PCSX2 1.6.0"
       }
     ],
     "DevVersions": "https://buildbot.orphis.net/pcsx2/index.php"
