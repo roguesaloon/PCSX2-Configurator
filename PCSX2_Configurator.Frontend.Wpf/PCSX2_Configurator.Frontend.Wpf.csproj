@@ -46,10 +46,6 @@
     <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <VerPatchPath>Tools\verpatch.exe</VerPatchPath>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj" />
     <ProjectReference Include="..\PCSX2_Configurator.Settings\PCSX2_Configurator.Settings.csproj" />
@@ -62,7 +58,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="cd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir /s /q runtimes&#xD;&#xA;mkdir ThirdParty&#xD;&#xA;$(VerPatchPath) PCSX2_Configurator.Frontend.Wpf.exe /s FileDescription &quot;PCSX2 Configurator&quot;&#xD;&#xA;robocopy . ThirdParty *.dll /mov /is /xf PCSX2_Configurator*.dll&#xD;&#xA;del *.deps.json&#xD;&#xA;del *.runtimeconfig.dev.json&#xD;&#xA;del *.pdb" />
+    <Exec Command="cd &quot;$(TargetDir)&quot;&#xD;&#xA;rmdir /s /q runtimes&#xD;&#xA;mkdir ThirdParty&#xD;&#xA;&quot;$(ProjectDir)\Tools\verpatch.exe&quot; PCSX2_Configurator.Frontend.Wpf.exe /s FileDescription &quot;PCSX2 Configurator&quot;&#xD;&#xA;robocopy . ThirdParty *.dll /mov /is /xf PCSX2_Configurator*.dll&#xD;&#xA;del *.deps.json&#xD;&#xA;del *.runtimeconfig.dev.json&#xD;&#xA;del *.pdb" />
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
