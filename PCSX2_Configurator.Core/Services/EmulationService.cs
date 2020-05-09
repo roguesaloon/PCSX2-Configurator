@@ -23,7 +23,8 @@ namespace PCSX2_Configurator.Core
 
         public void LaunchWithGame(string emulatorPath, string gamePath, string configPath)
         {
-            EnsureUsingIso(emulatorPath);
+            configPath = Path.GetFullPath(configPath);
+            EnsureUsingIso(configPath);
             Process.Start(new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --fullscreen --nogui --cfgpath=\"{configPath}\"")
             {
                 WorkingDirectory = Path.GetDirectoryName(emulatorPath)
@@ -47,7 +48,8 @@ namespace PCSX2_Configurator.Core
 
         public (string gameTitle, string gameRegion, string gameId) IdentifyGame(string emulatorPath, string gamePath)
         {
-            EnsureUsingIso(emulatorPath);
+            var inisPath = GetInisPath(emulatorPath);
+            EnsureUsingIso(inisPath);
             var startInfo = new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --windowed --nogui --console --gs=\"{additionalPluginsDirectory}\\GSnull.dll\"")
             {
                 UseShellExecute = true,
@@ -62,9 +64,8 @@ namespace PCSX2_Configurator.Core
             return gameInfo;
         }
 
-        private void EnsureUsingIso(string emulatorPath)
+        private void EnsureUsingIso(string inisPath)
         {
-            var inisPath = GetInisPath(emulatorPath);
             var config = iniParser.ReadFile($"{inisPath}/PCSX2_ui.ini");
             config.Global["CdvdSource"] = "ISO";
             iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config);
