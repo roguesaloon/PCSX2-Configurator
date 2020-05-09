@@ -33,6 +33,7 @@ namespace PCSX2_Configurator.Core
 
         public static void LaunchWithConfig(string emulatorPath, string configPath)
         {
+            configPath = Path.GetFullPath(configPath);
             Process.Start(new ProcessStartInfo(emulatorPath, $"--cfgpath=\"{configPath}\"")
             {
                 WorkingDirectory = Path.GetDirectoryName(emulatorPath)
