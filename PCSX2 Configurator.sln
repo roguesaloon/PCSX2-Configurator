@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Frontend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Core", "PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj", "{AA25A598-E31C-447F-96F0-9D2FF251D9EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Utils.RemoteDbBuilder", "PCSX2_Configurator.Utils.RemoteDbBuilder\PCSX2_Configurator.Utils.RemoteDbBuilder.csproj", "{A734483E-7864-4561-9EA3-C7A042C9BBEC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Settings", "PCSX2_Configurator.Settings\PCSX2_Configurator.Settings.csproj", "{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}"
 EndProject
 Global
@@ -35,14 +33,6 @@ Global
 		{AA25A598-E31C-447F-96F0-9D2FF251D9EF}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{AA25A598-E31C-447F-96F0-9D2FF251D9EF}.SignedRelease|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA25A598-E31C-447F-96F0-9D2FF251D9EF}.SignedRelease|Any CPU.Build.0 = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.Release (StyleCop)|Any CPU.ActiveCfg = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.Release (StyleCop)|Any CPU.Build.0 = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.SignedRelease|Any CPU.ActiveCfg = Debug|Any CPU
-		{A734483E-7864-4561-9EA3-C7A042C9BBEC}.SignedRelease|Any CPU.Build.0 = Debug|Any CPU
 		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}.Release (StyleCop)|Any CPU.ActiveCfg = Debug|Any CPU
