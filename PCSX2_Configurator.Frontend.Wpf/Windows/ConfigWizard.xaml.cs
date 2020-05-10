@@ -1,7 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
-using static PCSX2_Configurator.Core.ConfigurationService;
+using static PCSX2_Configurator.Core.ConfigOptions;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -49,20 +53,32 @@ namespace PCSX2_Configurator.Frontend.Wpf
             Close();
         }
 
+        private void OnlyAcceptNumbers(object sender, TextCompositionEventArgs e) =>
+            e.Handled = Regex.IsMatch(e.Text, "[^0-9]");
+
         private ConfigOptions GetConfigOptions()
         {
-            var options = ConfigOptions.None;
-            if (options_Logs.IsChecked.Value) options |= ConfigOptions.CopyLogSettings;
-            if (options_Folders.IsChecked.Value) options |= ConfigOptions.CopyFolderSettings;
-            if (options_Files.IsChecked.Value) options |= ConfigOptions.CopyFileSettings;
-            if (options_Window.IsChecked.Value) options |= ConfigOptions.CopyWindowSettings;
-            if (options_VM.IsChecked.Value) options |= ConfigOptions.CopyVmSettings;
-            if (options_GSdx.IsChecked.Value) options |= ConfigOptions.CopyGsdxSettings;
-            if (options_SPU2X.IsChecked.Value) options |= ConfigOptions.CopySpu2xSettings;
-            if (options_LilyPad.IsChecked.Value) options |= ConfigOptions.CopyLilyPadSettings;
-            if (options_NoPresets.IsChecked.Value) options |= ConfigOptions.DisablePresets;
-            if (options_GameFixes.IsChecked.Value) options |= ConfigOptions.EnableGameFixes;
-            if (options_SpeedHacks.IsChecked.Value) options |= ConfigOptions.EnableSpeedHacks;
+            var options = new ConfigOptions();
+
+            if (options_Logs.IsChecked.Value) options.Flags |= ConfigFlags.CopyLogSettings;
+            if (options_Folders.IsChecked.Value) options.Flags |= ConfigFlags.CopyFolderSettings;
+            if (options_Files.IsChecked.Value) options.Flags |= ConfigFlags.CopyFileSettings;
+            if (options_Window.IsChecked.Value) options.Flags |= ConfigFlags.CopyWindowSettings;
+            if (options_VM.IsChecked.Value) options.Flags |= ConfigFlags.CopyVmSettings;
+            if (options_GSdx.IsChecked.Value) options.Flags |= ConfigFlags.CopyGsdxSettings;
+            if (options_SPU2X.IsChecked.Value) options.Flags |= ConfigFlags.CopySpu2xSettings;
+            if (options_LilyPad.IsChecked.Value) options.Flags |= ConfigFlags.CopyLilyPadSettings;
+            if (options_NoPresets.IsChecked.Value) options.Flags |= ConfigFlags.DisablePresets;
+            if (options_GameFixes.IsChecked.Value) options.Flags |= ConfigFlags.EnableGameFixes;
+            if (options_SpeedHacks.IsChecked.Value) options.Flags |= ConfigFlags.EnableSpeedHacks;
+            if (options_WidescreenPatches.IsChecked.Value) options.Flags |= ConfigFlags.EnableWidescreenPatches;
+            if (options_Cheats.IsChecked.Value) options.Flags |= ConfigFlags.EnableCheats;
+
+            var aspectRatio = (options_AspectRatio.SelectedItem as ComboBoxItem).Content as string;
+            aspectRatio = Regex.Replace(aspectRatio, @" ?\(.*?\)", string.Empty).Trim();
+            options.AspectRatio = (ConfigAspectRatio) Enum.Parse(typeof(ConfigAspectRatio), aspectRatio);
+            options.ZoomLevel = int.Parse(options_Zoom.Text);
+
             return options;
         }
     }

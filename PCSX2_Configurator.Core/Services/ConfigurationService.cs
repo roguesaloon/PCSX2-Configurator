@@ -1,25 +1,15 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using IniParser;
 using IniParser.Model;
 using PCSX2_Configurator.Settings;
+using static PCSX2_Configurator.Core.ConfigOptions;
+
 
 namespace PCSX2_Configurator.Core
 {
     public sealed class ConfigurationService
     {
-        [Flags]
-        public enum ConfigOptions
-        {
-            None = 0,
-            CopyLogSettings = 1, CopyFolderSettings = 2, CopyFileSettings = 4, CopyWindowSettings = 8,
-            DisablePresets = 16, EnableGameFixes = 32, EnableSpeedHacks = 64,
-            CopyVmSettings = 128, CopyGsdxSettings = 256, CopySpu2xSettings = 512, CopyLilyPadSettings = 1024,
-            UseAdvancedSettings = DisablePresets | EnableGameFixes | EnableSpeedHacks,
-            All = CopyLogSettings | CopyFolderSettings | CopyFileSettings | CopyWindowSettings | UseAdvancedSettings | CopyVmSettings | CopyGsdxSettings | CopySpu2xSettings | CopyLilyPadSettings
-        }
-
         private const string uiFileName = "PCSX2_ui.ini";
         private const string vmFileName = "PCSX2_vm.ini";
         private const string gsdxFileName = "Gsdx.ini";
@@ -41,10 +31,12 @@ namespace PCSX2_Configurator.Core
 
             CreateUiFile(configPath, inisPath, configOptions);
 
-            if (configOptions.HasFlag(ConfigOptions.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{vmFileName}", $"{configPath}\\{vmFileName}");
-            if (configOptions.HasFlag(ConfigOptions.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
-            if (configOptions.HasFlag(ConfigOptions.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
-            if (configOptions.HasFlag(ConfigOptions.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{vmFileName}", $"{configPath}\\{vmFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
+
+            SetVmSettings(configPath, configOptions);
 
             return configPath;
         }
@@ -61,19 +53,36 @@ namespace PCSX2_Configurator.Core
             }
         }
 
-        private void CreateUiFile(string configPath, string inisPath, ConfigOptions settingsOptions)
+        private void SetVmSettings(string configPath, ConfigOptions configOptions)
+        {
+            var targetVmFile = $"{configPath}\\{vmFileName}";
+            var targetVmConfig = File.Exists(targetVmFile) ? iniParser.ReadFile(targetVmFile) : new IniData();
+
+            if (configOptions.Flags.HasFlag(ConfigFlags.EnableWidescreenPatches)) targetVmConfig["EmuCore"]["EnableWideScreenPatches"] = "enabled";
+            if (configOptions.Flags.HasFlag(ConfigFlags.EnableCheats)) targetVmConfig["EmuCore"]["EnableCheats"] = "enabled";
+
+            iniParser.WriteFile(targetVmFile, targetVmConfig, Encoding.UTF8);
+        }
+
+        private void CreateUiFile(string configPath, string inisPath, ConfigOptions configOptions)
         {
             var baseUiConfig = iniParser.ReadFile($"{inisPath}\\{uiFileName}");
             var targetUiConfig = new IniData();
 
-            if (settingsOptions.HasFlag(ConfigOptions.CopyLogSettings)) targetUiConfig["ProgramLog"].Merge(baseUiConfig["ProgramLog"]);
-            if (settingsOptions.HasFlag(ConfigOptions.CopyFolderSettings)) targetUiConfig["Folders"].Merge(baseUiConfig["Folders"]);
-            if (settingsOptions.HasFlag(ConfigOptions.CopyFileSettings)) targetUiConfig["Filenames"].Merge(baseUiConfig["Filenames"]);
-            if (settingsOptions.HasFlag(ConfigOptions.CopyWindowSettings)) targetUiConfig["GSWindow"].Merge(baseUiConfig["GSWindow"]);
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyLogSettings)) targetUiConfig["ProgramLog"].Merge(baseUiConfig["ProgramLog"]);
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyFolderSettings)) targetUiConfig["Folders"].Merge(baseUiConfig["Folders"]);
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyFileSettings)) targetUiConfig["Filenames"].Merge(baseUiConfig["Filenames"]);
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyWindowSettings)) targetUiConfig["GSWindow"].Merge(baseUiConfig["GSWindow"]);
 
-            if (settingsOptions.HasFlag(ConfigOptions.DisablePresets)) targetUiConfig.Global["EnablePresets"] = "disabled";
-            if (settingsOptions.HasFlag(ConfigOptions.EnableGameFixes)) targetUiConfig.Global["EnableGameFixes"] = "enabled";
-            if (settingsOptions.HasFlag(ConfigOptions.EnableSpeedHacks)) targetUiConfig.Global["EnableSpeedHacks"] = "enabled";
+            if (configOptions.Flags.HasFlag(ConfigFlags.DisablePresets)) targetUiConfig.Global["EnablePresets"] = "disabled";
+            if (configOptions.Flags.HasFlag(ConfigFlags.EnableGameFixes)) targetUiConfig.Global["EnableGameFixes"] = "enabled";
+            if (configOptions.Flags.HasFlag(ConfigFlags.EnableSpeedHacks)) targetUiConfig.Global["EnableSpeedHacks"] = "enabled";
+
+            if (configOptions.ZoomLevel != null) targetUiConfig["GSWindow"]["Zoom"] = configOptions.ZoomLevel.ToString();
+            targetUiConfig["GSWindow"]["AspectRatio"] =
+                configOptions.AspectRatio == ConfigAspectRatio.Original ? "4:3":
+                configOptions.AspectRatio == ConfigAspectRatio.Widescreen ? "16:9":
+                configOptions.AspectRatio == ConfigAspectRatio.Stretched ? "Stretch": "";
 
             iniParser.WriteFile($"{configPath}\\{uiFileName}", targetUiConfig, Encoding.UTF8);
         }

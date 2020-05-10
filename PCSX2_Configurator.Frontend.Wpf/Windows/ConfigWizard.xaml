@@ -4,45 +4,72 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Create Config" Width="250" Height="300" ResizeMode="NoResize">
+        Title="Create Config" Width="250" Height="400" ResizeMode="NoResize">
     <Grid>
         <Label Content="Config Name:" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,2,0,0"/>
         <TextBox Name="configName" HorizontalAlignment="Center" Margin="0,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextAlignment="Center"/>
         <Label Content="Version:" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,51,0,0"/>
         <ComboBox Name="version" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,77,0,0"/>
         
-        <GroupBox Header="Copy Settings" VerticalAlignment="Center" Margin="5,20,5,0" Height="65"  FontSize="9">
-            <Grid Margin="0,5,0,0">
+        <GroupBox Header="Copy Settings" VerticalAlignment="Center" Margin="5,-80,5,0" Height="65"  FontSize="9">
+            <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
-                <CheckBox Name="options_Logs" Content="Logs" FontSize="9" Grid.Row="0" Grid.Column="0" IsChecked="True"/>
-                <CheckBox Name="options_Folders" Content="Folders" FontSize="9" Grid.Row="0" Grid.Column="1" IsChecked="True"/>
-                <CheckBox Name="options_Files" Content="Files" FontSize="9" Grid.Row="0" Grid.Column="2" IsChecked="True"/>
-                <CheckBox Name="options_Window" Content="Window" FontSize="9" Grid.Row="0" Grid.Column="3" IsChecked="True"/>
-                <CheckBox Name="options_VM" Content="VM" FontSize="9" Grid.Row="1" Grid.Column="0" IsChecked="True"/>
-                <CheckBox Name="options_GSdx" Content="GSdx" FontSize="9" Grid.Row="1" Grid.Column="1" IsChecked="True"/>
-                <CheckBox Name="options_SPU2X" Content="SPU2-X" FontSize="9" Grid.Row="1" Grid.Column="2" />
-                <CheckBox Name="options_LilyPad" Content="LilyPad" FontSize="9" Grid.Row="1" Grid.Column="3" />
+                <CheckBox Name="options_Logs" Content="Logs" Grid.Row="0" Grid.Column="0" IsChecked="True"/>
+                <CheckBox Name="options_Folders" Content="Folders" Grid.Row="0" Grid.Column="1" IsChecked="True"/>
+                <CheckBox Name="options_Files" Content="Files" Grid.Row="0" Grid.Column="2" IsChecked="True"/>
+                <CheckBox Name="options_Window" Content="Window" Grid.Row="0" Grid.Column="3" IsChecked="True"/>
+                <CheckBox Name="options_VM" Content="VM" Grid.Row="2" Grid.Column="0" IsChecked="True"/>
+                <CheckBox Name="options_GSdx" Content="GSdx" Grid.Row="2" Grid.Column="1" IsChecked="True"/>
+                <CheckBox Name="options_SPU2X" Content="SPU2-X" Grid.Row="2" Grid.Column="2" />
+                <CheckBox Name="options_LilyPad" Content="LilyPad" Grid.Row="2" Grid.Column="3" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Common Settings" VerticalAlignment="Center" Height="90"  Margin="5,90,5,0" FontSize="9">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <CheckBox Name="options_WidescreenPatches" Content="Widescreen&#10;Patches" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" IsChecked="True"/>
+                <CheckBox Name="options_Cheats" Content="Cheats" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" IsChecked="True"/>
+                <CheckBox Name="options_NewMemoryCard" Content="Create&#10;Mem Card" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" />
+                <Label Grid.Row="2" Grid.Column="0" Content="Aspect Ratio" HorizontalAlignment="Center"/>
+                <Label Grid.Row="2" Grid.Column="1" Content="Zoom" HorizontalAlignment="Center"/>
+                <ComboBox Name="options_AspectRatio" Grid.Row="3" Grid.Column="0" Width="60">
+                    <ComboBoxItem Content="Original (4:3)" IsSelected="True"/>
+                    <ComboBoxItem Content="Widescreen (16:9)"/>
+                    <ComboBoxItem Content="Stretched"/>
+                </ComboBox>
+                <TextBox Name="options_Zoom" Grid.Row="3" Grid.Column="1" Width="30" HorizontalContentAlignment="Center" Text="100" PreviewTextInput="OnlyAcceptNumbers"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="Advanced Settings" VerticalAlignment="Bottom" Margin="5,0,5,35" Height="50" FontSize="9">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Name="options_NoPresets" Content="No Presets" VerticalAlignment="Center" FontSize="9" Grid.Column="0"/>
-                <CheckBox Name="options_GameFixes" Content="Game Fixes" VerticalAlignment="Center" FontSize="9" Grid.Column="1"/>
-                <CheckBox Name="options_SpeedHacks" Content="Speed hacks" VerticalAlignment="Center" FontSize="9" Grid.Column="2"/>
+                <CheckBox Name="options_NoPresets" Content="No Presets" VerticalAlignment="Center" Grid.Column="0"/>
+                <CheckBox Name="options_GameFixes" Content="Game Fixes" VerticalAlignment="Center" Grid.Column="1"/>
+                <CheckBox Name="options_SpeedHacks" Content="Speed hacks" VerticalAlignment="Center" Grid.Column="2"/>
             </Grid>
         </GroupBox>
 

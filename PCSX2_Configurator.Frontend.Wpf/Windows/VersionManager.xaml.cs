@@ -28,13 +28,12 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private async void InstallVersion(object sender, RoutedEventArgs e)
         {
-            var selectedVersion = versionSelector.SelectedItem as string;
+            if (!(versionSelector.SelectedItem is string selectedVersion)) return;
 
             Mouse.OverrideCursor = Cursors.Wait;
             await versionManagementService.InstallVersion(availableVersions[selectedVersion]);
             GameModel.Versions = GameModel.Versions;
             Mouse.OverrideCursor = null;
-
             Close();
         }
     }
