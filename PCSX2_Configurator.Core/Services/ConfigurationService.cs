@@ -34,17 +34,17 @@ namespace PCSX2_Configurator.Core
             configsDir = appSettings.ConfigsDirectory;
         }
 
-        public string CreateConfig(string configName, string inisPath, ConfigOptions settingsOptions)
+        public string CreateConfig(string configName, string inisPath, ConfigOptions configOptions)
         {
             var configPath = $"{configsDir}\\{configName}";
             Directory.CreateDirectory(configPath);
 
-            CreateUiFile(configPath, inisPath, settingsOptions);
+            CreateUiFile(configPath, inisPath, configOptions);
 
-            if (settingsOptions.HasFlag(ConfigOptions.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{vmFileName}", $"{configPath}\\{vmFileName}");
-            if (settingsOptions.HasFlag(ConfigOptions.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
-            if (settingsOptions.HasFlag(ConfigOptions.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
-            if (settingsOptions.HasFlag(ConfigOptions.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
+            if (configOptions.HasFlag(ConfigOptions.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{vmFileName}", $"{configPath}\\{vmFileName}");
+            if (configOptions.HasFlag(ConfigOptions.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
+            if (configOptions.HasFlag(ConfigOptions.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
+            if (configOptions.HasFlag(ConfigOptions.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
 
             return configPath;
         }

@@ -8,6 +8,7 @@
   "AutoHotkeyExecutable": "C:\\Program Files\\AutoHotkey\\AutoHotkey.exe",
   "AutoHotkeyScript": "Assets/BackgroundHelper.ahk",
   "AdditionalPluginsDirectory": "Assets/Plugins",
+  "DefaultLaunchOptions":  "--fullscreen",
   "Covers": {
     "CoversPath": "Assets/Covers",
     "MissingCover": "Assets/Covers/Missing.png",

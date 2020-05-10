@@ -1,13 +1,15 @@
-﻿using PCSX2_Configurator.Core;
-using PCSX2_Configurator.Settings;
+﻿
 using System;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shell;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -76,6 +78,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                     Path = game.Path,
                     Version = game.EmuVersion,
                     Config = game.Config,
+                    LaunchOptions = game.LaunchOptions,
                     CoverPath = settings.Covers.LoadingCover
                 });
             }
@@ -84,7 +87,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 gameModels[index].CoverPath = await coverService.GetCoverForGame(gameLibraryService.Games[index])));
         }
 
-        private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void OnClosing(object sender, CancelEventArgs e)
         {
             SaveBindings();
         }
@@ -94,7 +97,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             foreach (var game in gameModels)
             {
                 var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == game.Game);
-                if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config });
+                if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config, LaunchOptions = game.LaunchOptions });
             }
         }
 
@@ -168,7 +171,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private void SetLaunchOptions(object sender, RoutedEventArgs e)
         {
-            App.Get<LaunchOptions>().Show();
+            var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
+            App.Get<LaunchOptions>().Show(model);
         }
 
         private void OpenVersionManager(object sender, RoutedEventArgs e)
@@ -190,7 +194,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 }
                 var emulatorPath = settings.Versions[version];
                 var configPath = settings.Configs[config];
-                emulationService.LaunchWithGame(emulatorPath, model?.Path, configPath);
+                emulationService.LaunchWithGame(emulatorPath, model?.Path, configPath, model?.LaunchOptions);
             }
         }
     }

@@ -13,6 +13,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
         public string Game { get; set; }
         public string Path { get; set; }
         public string CoverPath { get; set; }
+        public string LaunchOptions { get; set; }
 
         private static IEnumerable<string> versions = new List<string>();
         public static IEnumerable<string> Versions 

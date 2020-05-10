@@ -23,7 +23,10 @@ namespace PCSX2_Configurator.Core
 
         private string emuVersion;
         public string EmuVersion { get => emuVersion; set => emuVersion = this[nameof(emuVersion), value] as string; }
-        
+
+        private string launchOptions;
+        public string LaunchOptions { get => launchOptions; set => launchOptions = this[nameof(launchOptions), value] as string; }
+
         private string config;
         public string Config { get => config; set => config = this[nameof(config), value] as string; }
 

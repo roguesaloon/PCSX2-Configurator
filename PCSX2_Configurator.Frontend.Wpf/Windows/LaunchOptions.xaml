@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Launch Options" Height="130" Width="400" ResizeMode="NoResize">
+        Title="Launch Options" Height="130" Width="400" ResizeMode="NoResize" Closing="OnClosing">
     <Grid>
         <Label Content="Options to be passed to PCSX2 on the Command Line:" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Top" Width="360"/>
         <TextBox Name="params" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Width="355" Height="30" VerticalContentAlignment="Center" FontSize="14"/>

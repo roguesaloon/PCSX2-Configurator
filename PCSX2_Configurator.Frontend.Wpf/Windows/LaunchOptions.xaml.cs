@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -11,9 +9,23 @@ namespace PCSX2_Configurator.Frontend.Wpf
     /// </summary>
     public partial class LaunchOptions : Window
     {
+        private GameModel gameModel;
+
         public LaunchOptions()
         {
             InitializeComponent();
+        }
+
+        public void Show(GameModel gameModel)
+        {
+            this.gameModel = gameModel;
+            @params.Text = gameModel.LaunchOptions;
+            Show();
+        }
+
+        private void OnClosing(object sender, CancelEventArgs e)
+        {
+            gameModel.LaunchOptions = @params.Text;
         }
 
         private void AddFullScreenParam(object sender, MouseButtonEventArgs e) => SetParam("--fullscreen");

@@ -21,11 +21,11 @@ namespace PCSX2_Configurator.Core
             processHelpers = new WindowsProcessHelpers();
         }
 
-        public void LaunchWithGame(string emulatorPath, string gamePath, string configPath)
+        public void LaunchWithGame(string emulatorPath, string gamePath, string configPath, string launchOptions)
         {
             configPath = Path.GetFullPath(configPath);
             EnsureUsingIso(configPath);
-            Process.Start(new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --fullscreen --nogui --cfgpath=\"{configPath}\"")
+            Process.Start(new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" {launchOptions} --cfgpath=\"{configPath}\"")
             {
                 WorkingDirectory = Path.GetDirectoryName(emulatorPath)
             });

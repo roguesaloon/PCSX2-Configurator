@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Collections.Generic;
 using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
@@ -12,10 +12,12 @@ namespace PCSX2_Configurator.Core
 
         private readonly XmlDocument xmlDocument;
         private readonly string targetFile;
+        private readonly string defaultLaunchOptions;
         
         public GameLibraryService(AppSettings appSettings)
         {
             targetFile = appSettings.GameLibraryFile ?? "GameLibrary.xml";
+            defaultLaunchOptions = appSettings.DefaultLaunchOptions;
             xmlDocument = new XmlDocument();
 
             if (!File.Exists(targetFile))
@@ -30,10 +32,13 @@ namespace PCSX2_Configurator.Core
         {
             var gameNode = xmlDocument.CreateElement("Game");
             var pathNode = xmlDocument.CreateElement("Path");
+            var launchOptionsNode = xmlDocument.CreateElement("LaunchOptions");
             var gameName = xmlDocument.CreateAttribute("Name");
 
             pathNode.InnerText = isoPath;
             gameNode.AppendChild(pathNode);
+            launchOptionsNode.InnerText = defaultLaunchOptions;
+            gameNode.AppendChild(launchOptionsNode);
             gameName.Value = Path.GetFileNameWithoutExtension(isoPath);
             gameNode.Attributes.Append(gameName);
             
