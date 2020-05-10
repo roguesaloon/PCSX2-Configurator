@@ -97,7 +97,7 @@
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
                                     <MenuItem Header="Create Config" BindingGroup="{Binding}" Click="ShowConfigWizard" />
-                                    <MenuItem Header="Commandline Parameters" />
+                                    <MenuItem Header="Launch Options" BindingGroup="{Binding}" Click="SetLaunchOptions"/>
                                     <MenuItem Header="Configure with PCSX2" BindingGroup="{Binding}" Click="ConfigGame" />
                                     <MenuItem Header="Remove from Library" BindingGroup="{Binding}" Click="RemoveGame" />
                                 </ContextMenu>

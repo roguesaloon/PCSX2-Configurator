@@ -49,6 +49,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             services.AddSingleton<MainWindow>();
             services.AddTransient<ConfigWizard>();
             services.AddTransient<VersionManager>();
+            services.AddTransient<LaunchOptions>();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

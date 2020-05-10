@@ -7,21 +7,27 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="ConfigWizard.xaml.cs">
+    <Compile Update="Windows\ConfigWizard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="VersionManager.xaml.cs">
+    <Compile Update="Windows\LaunchOptions.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Windows\VersionManager.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="ConfigWizard.xaml">
+    <Page Update="Windows\ConfigWizard.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MainWindow.xaml">
+    <Page Update="Windows\LaunchOptions.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="VersionManager.xaml">
+    <Page Update="Windows\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\VersionManager.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

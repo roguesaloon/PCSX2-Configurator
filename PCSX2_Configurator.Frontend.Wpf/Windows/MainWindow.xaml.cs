@@ -166,6 +166,11 @@ namespace PCSX2_Configurator.Frontend.Wpf
             EmulationService.LaunchWithConfig(emulatorPath, configPath);
         }
 
+        private void SetLaunchOptions(object sender, RoutedEventArgs e)
+        {
+            App.Get<LaunchOptions>().Show();
+        }
+
         private void OpenVersionManager(object sender, RoutedEventArgs e)
         {
             App.Get<VersionManager>().Show();
