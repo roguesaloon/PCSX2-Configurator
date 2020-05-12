@@ -5,6 +5,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using IniParser;
 using PCSX2_Configurator.Settings;
+using System.Threading.Tasks;
 
 namespace PCSX2_Configurator.Core
 {
@@ -42,11 +43,17 @@ namespace PCSX2_Configurator.Core
 
         public void ConfigureGraphicsPlugin(string emulatorPath, string configPath)
         {
-            var autoHotkeyWindowHandle = appSettings.AutoHotkeyWindowHandle;
-            if(autoHotkeyWindowHandle != null)
-            {
-                processHelpers.SendMessageCopyDataToWindowAnsi(autoHotkeyWindowHandle, "OpenGSPlugin_{pluginPath}");
-            }
+            ConfigurePluginWithAutoHotkey("GS", emulatorPath, configPath);
+        }
+
+        public void ConfigureSoundPlugin(string emulatorPath, string configPath)
+        {
+            ConfigurePluginWithAutoHotkey("SPU2", emulatorPath, configPath);
+        }
+
+        public void ConfigureInputPlugin(string emulatorPath, string configPath)
+        {
+            ConfigurePluginWithAutoHotkey("PAD", emulatorPath, configPath);
         }
 
         public static string GetInisPath(string emulatorPath)
@@ -73,6 +80,21 @@ namespace PCSX2_Configurator.Core
             emulator.Kill();
 
             return gameInfo;
+        }
+
+        private void ConfigurePluginWithAutoHotkey(string plugin, string emulatorPath, string configPath)
+        {
+            var autoHotkeyWindowHandle = appSettings.AutoHotkeyWindowHandle;
+            if (autoHotkeyWindowHandle != IntPtr.Zero)
+            {
+                configPath = Path.GetFullPath(configPath);
+                var config = iniParser.ReadFile($"{configPath}/PCSX2_ui.ini");
+                var pluginsDir = config["Folders"]["PluginsFolder"];
+                var pluginName = config["Filenames"][plugin];
+                pluginsDir = Path.IsPathRooted(pluginsDir) ? pluginsDir : $"{Path.GetDirectoryName(emulatorPath)}\\{pluginsDir}";
+                var messageData = $"Open{plugin}Plugin->{pluginsDir}\\{pluginName}".Replace(".dll", "");
+                Task.Run(() => processHelpers.SendMessageCopyDataToWindowAnsi(autoHotkeyWindowHandle, messageData));
+            }
         }
 
         private void EnsureUsingIso(string inisPath)

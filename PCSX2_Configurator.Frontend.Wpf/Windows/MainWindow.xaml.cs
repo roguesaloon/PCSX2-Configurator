@@ -180,6 +180,28 @@ namespace PCSX2_Configurator.Frontend.Wpf
             emulationService.ConfigureGraphicsPlugin(emulatorPath, configPath);
         }
 
+        private void ConfigureSoundPlugin(object sender, RoutedEventArgs e)
+        {
+            var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
+            var version = model?.Version ?? string.Empty;
+            var config = model?.Config ?? string.Empty;
+            var emulatorPath = settings.Versions[version];
+            var configPath = settings.Configs[config];
+
+            emulationService.ConfigureSoundPlugin(emulatorPath, configPath);
+        }
+
+        private void ConfigureInputPlugin(object sender, RoutedEventArgs e)
+        {
+            var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
+            var version = model?.Version ?? string.Empty;
+            var config = model?.Config ?? string.Empty;
+            var emulatorPath = settings.Versions[version];
+            var configPath = settings.Configs[config];
+
+            emulationService.ConfigureInputPlugin(emulatorPath, configPath);
+        }
+
         private void SetLaunchOptions(object sender, RoutedEventArgs e)
         {
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;

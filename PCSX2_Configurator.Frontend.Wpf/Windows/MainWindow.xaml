@@ -100,8 +100,8 @@
                                     <MenuItem Header="Launch Options" BindingGroup="{Binding}" Click="SetLaunchOptions"/>
                                     <MenuItem Header="Config Settings" Visibility="{Binding HasConfig, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <MenuItem Header="Graphics Plugin" BindingGroup="{Binding}" Click="ConfigureGraphicsPlugin"/>
-                                        <MenuItem Header="Sound Plugin"/>
-                                        <MenuItem Header="Input Plugin"/>
+                                        <MenuItem Header="Sound Plugin" BindingGroup="{Binding}" Click="ConfigureSoundPlugin"/>
+                                        <MenuItem Header="Input Plugin" BindingGroup="{Binding}" Click="ConfigureInputPlugin"/>
                                         <MenuItem Header="Open PCSX2" BindingGroup="{Binding}" Click="ConfigGame"/>
                                     </MenuItem>
                                     <MenuItem Header="Remove from Library" BindingGroup="{Binding}" Click="RemoveGame" />
