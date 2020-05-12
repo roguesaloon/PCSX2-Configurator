@@ -7,5 +7,6 @@ namespace PCSX2_Configurator.Core
     {
         string GetWindowTitleText(IntPtr window);
         IEnumerable<IntPtr> GetProcessWindows(int pid);
+        void SendMessageCopyDataToWindowAnsi(IntPtr window, string data);
     }
 }

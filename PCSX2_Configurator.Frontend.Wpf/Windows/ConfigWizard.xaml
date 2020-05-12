@@ -50,14 +50,14 @@
                 <CheckBox Name="options_WidescreenPatches" Content="Widescreen&#10;Patches" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" IsChecked="True"/>
                 <CheckBox Name="options_Cheats" Content="Cheats" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" IsChecked="True"/>
                 <CheckBox Name="options_NewMemoryCard" Content="Create&#10;Mem Card" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" />
-                <Label Grid.Row="2" Grid.Column="0" Content="Aspect Ratio" HorizontalAlignment="Center"/>
-                <Label Grid.Row="2" Grid.Column="1" Content="Zoom" HorizontalAlignment="Center"/>
-                <ComboBox Name="options_AspectRatio" Grid.Row="3" Grid.Column="0" Width="60">
+                <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Aspect Ratio" Margin="20,0,0,0"/>
+                <Label Grid.Row="2" Grid.Column="2" Content="Zoom" HorizontalAlignment="Center"/>
+                <ComboBox Name="options_AspectRatio" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Width="100" HorizontalAlignment="Left">
                     <ComboBoxItem Content="Original (4:3)" IsSelected="True"/>
                     <ComboBoxItem Content="Widescreen (16:9)"/>
                     <ComboBoxItem Content="Stretched"/>
                 </ComboBox>
-                <TextBox Name="options_Zoom" Grid.Row="3" Grid.Column="1" Width="30" HorizontalContentAlignment="Center" Text="100" PreviewTextInput="OnlyAcceptNumbers"/>
+                <TextBox Name="options_Zoom" Grid.Row="3" Grid.Column="2" Width="30" HorizontalContentAlignment="Center" Text="100" PreviewTextInput="OnlyAcceptNumbers"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="Advanced Settings" VerticalAlignment="Bottom" Margin="5,0,5,35" Height="50" FontSize="9">

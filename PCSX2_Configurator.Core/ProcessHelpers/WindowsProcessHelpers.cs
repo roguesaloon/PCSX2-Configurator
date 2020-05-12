@@ -22,6 +22,16 @@ namespace PCSX2_Configurator.Core
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
 
+        private struct CopyData
+        {
+            public IntPtr dwData;
+            public int cbData;
+            public IntPtr lpData;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref CopyData lParam);
+
         public IEnumerable<IntPtr> GetProcessWindows(int pid)
         {
             IEnumerable<IntPtr> rootWindows = GetChildWindows(IntPtr.Zero);
@@ -33,6 +43,17 @@ namespace PCSX2_Configurator.Core
                     dsProcRootWindows.Add(hWnd);
             }
             return dsProcRootWindows;
+        }
+
+        public void SendMessageCopyDataToWindowAnsi(IntPtr hWnd, string data)
+        {
+            var copyData = new CopyData
+            {
+                dwData = IntPtr.Zero,
+                cbData = data.Length + 1,
+                lpData = Marshal.StringToCoTaskMemAnsi(data)
+            };
+            SendMessage(hWnd, 0x004A, IntPtr.Zero, ref copyData);
         }
 
         public string GetWindowTitleText(IntPtr hWnd)

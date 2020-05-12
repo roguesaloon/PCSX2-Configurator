@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
@@ -9,14 +10,13 @@ namespace PCSX2_Configurator.Core
 {
     public sealed class EmulationService
     {
-        private readonly string additionalPluginsDirectory;
+        private AppSettings appSettings;
         private readonly FileIniDataParser iniParser;
         private readonly IProcessHelpers processHelpers;
 
         public EmulationService(AppSettings appSettings)
         {
-            var pluginsDir = appSettings.AdditionalPluginsDirectory;
-            additionalPluginsDirectory = Path.IsPathRooted(pluginsDir) ? pluginsDir : $"{Directory.GetCurrentDirectory()}/{pluginsDir}";
+            this.appSettings = appSettings;
             iniParser = new FileIniDataParser();
             processHelpers = new WindowsProcessHelpers();
         }
@@ -40,6 +40,15 @@ namespace PCSX2_Configurator.Core
             });
         }
 
+        public void ConfigureGraphicsPlugin(string emulatorPath, string configPath)
+        {
+            var autoHotkeyWindowHandle = appSettings.AutoHotkeyWindowHandle;
+            if(autoHotkeyWindowHandle != null)
+            {
+                processHelpers.SendMessageCopyDataToWindowAnsi(autoHotkeyWindowHandle, "OpenGSPlugin_{pluginPath}");
+            }
+        }
+
         public static string GetInisPath(string emulatorPath)
         {
             var inisPath = $"{Path.GetDirectoryName(emulatorPath)}\\inis";
@@ -50,6 +59,7 @@ namespace PCSX2_Configurator.Core
         public (string gameTitle, string gameRegion, string gameId) IdentifyGame(string emulatorPath, string gamePath)
         {
             var inisPath = GetInisPath(emulatorPath);
+            var additionalPluginsDirectory = Path.GetFullPath(appSettings.AdditionalPluginsDirectory);
             EnsureUsingIso(inisPath);
             var startInfo = new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --windowed --nogui --console --gs=\"{additionalPluginsDirectory}\\GSnull.dll\"")
             {

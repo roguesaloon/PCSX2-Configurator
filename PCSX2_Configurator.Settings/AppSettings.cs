@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace PCSX2_Configurator.Settings
         public string DefaultLaunchOptions { get; private set; }
         public CoverSettings Covers { get; private set; }
         public VersionManagerSettings VersionManager { get; private set; }
+        public IntPtr AutoHotkeyWindowHandle { get; private set; }
 
         public Dictionary<string, string> Versions { get; private set; } = new Dictionary<string, string>();
         public async Task UpdateVersions()

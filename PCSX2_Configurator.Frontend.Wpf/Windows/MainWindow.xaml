@@ -98,7 +98,12 @@
                                     </MenuItem>
                                     <MenuItem Header="Create Config" BindingGroup="{Binding}" Click="ShowConfigWizard" />
                                     <MenuItem Header="Launch Options" BindingGroup="{Binding}" Click="SetLaunchOptions"/>
-                                    <MenuItem Header="Configure with PCSX2" BindingGroup="{Binding}" Click="ConfigGame" />
+                                    <MenuItem Header="Config Settings" Visibility="{Binding HasConfig, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <MenuItem Header="Graphics Plugin" BindingGroup="{Binding}" Click="ConfigureGraphicsPlugin"/>
+                                        <MenuItem Header="Sound Plugin"/>
+                                        <MenuItem Header="Input Plugin"/>
+                                        <MenuItem Header="Open PCSX2" BindingGroup="{Binding}" Click="ConfigGame"/>
+                                    </MenuItem>
                                     <MenuItem Header="Remove from Library" BindingGroup="{Binding}" Click="RemoveGame" />
                                 </ContextMenu>
                             </Image.ContextMenu>

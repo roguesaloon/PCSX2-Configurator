@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,8 +72,13 @@ namespace PCSX2_Configurator.Frontend.Wpf
             var settings = Get<AppSettings>();
             var executable = Path.GetFullPath(settings.AutoHotkeyExecutable);
             var scriptPath = Path.GetFullPath(settings.AutoHotkeyScript);
-            if(File.Exists(executable) && File.Exists(scriptPath))
+            if (File.Exists(executable) && File.Exists(scriptPath))
+            {
                 autoHotkeyProcess = Process.Start(settings.AutoHotkeyExecutable, $"\"{scriptPath}\"");
+                Task.Delay(500)
+                    .ContinueWith(x => typeof(AppSettings).GetProperty(nameof(settings.AutoHotkeyWindowHandle))
+                    .SetValue(settings, autoHotkeyProcess.MainWindowHandle));
+            }
         }
 
         private static void LoadAssembliesFromDirectory(string path)
