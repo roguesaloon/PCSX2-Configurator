@@ -2,10 +2,11 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using IniParser;
 using PCSX2_Configurator.Settings;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace PCSX2_Configurator.Core
 {
@@ -31,7 +32,7 @@ namespace PCSX2_Configurator.Core
             });
         }
 
-        public static void LaunchWithConfig(string emulatorPath, string configPath)
+        public void LaunchWithConfig(string emulatorPath, string configPath)
         {
             Process.Start(new ProcessStartInfo(emulatorPath, $"--cfgpath=\"{configPath}\"")
             {
@@ -65,7 +66,10 @@ namespace PCSX2_Configurator.Core
         {
             var inisPath = GetInisPath(emulatorPath);
             EnsureUsingIso(inisPath);
-            var startInfo = new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --windowed --nogui --console --gs=\"{appSettings.AdditionalPluginsDirectory}\\GSnull.dll\"")
+            var startInfo = new ProcessStartInfo(emulatorPath, 
+                $"\"{gamePath}\" --windowed --nogui --console " +
+                $"--gs=\"{appSettings.AdditionalPluginsDirectory}\\GSnull.dll\" " +
+                $"--spu2=\"{appSettings.AdditionalPluginsDirectory}\\SPU2null.dll\"")
             {
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Minimized,
@@ -88,7 +92,7 @@ namespace PCSX2_Configurator.Core
                 var pluginsDir = config["Folders"]["PluginsFolder"];
                 var pluginName = config["Filenames"][plugin];
                 pluginsDir = Path.IsPathRooted(pluginsDir) ? pluginsDir : $"{Path.GetDirectoryName(emulatorPath)}\\{pluginsDir}";
-                var messageData = $"Open{plugin}Plugin->{pluginsDir}\\{pluginName}".Replace(".dll", "");
+                var messageData = $"Open{plugin}Plugin->{pluginsDir}\\{pluginName}|{configPath}".Replace(".dll", "");
                 Task.Run(() => processHelpers.SendMessageCopyDataToWindowAnsi(autoHotkeyWindowHandle, messageData));
             }
         }

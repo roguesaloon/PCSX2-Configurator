@@ -12,37 +12,39 @@ Receive_WM_COPYDATA(wParam, lParam)
     address := NumGet(lParam + 2*A_PtrSize)  ; Retrieves the CopyDataStruct's lpData member.
     data := StrGet(address)  ; Copy the string out of the structure.
 
-    if InStr(data, "OpenGSPlugin->")
-    {
-        parts := StrSplit(data, "->")
-        path := parts[2]
-        configPath = %path%\GSconfigure
-        closePath = %path%\GSclose
-        DllCall(configPath)
-        DllCall(closePath)
+    if InStr(data, "OpenGSPlugin->") {
+        OpenPlugin("GS", data)
     }
 
-    if InStr(data, "OpenSPU2Plugin->")
-    {
-        parts := StrSplit(data, "->")
-        path := parts[2]
-        configPath = %path%\SPU2configure
-        closePath = %path%\SPU2close
-        DllCall(configPath)
-        DllCall(closePath)
+    if InStr(data, "OpenSPU2Plugin->") {
+        OpenPlugin("SPU2", data)
     }
 
-    if InStr(data, "OpenPADPlugin->")
-    {
-        parts := StrSplit(data, "->")
-        path := parts[2]
-        configPath = %path%\PADconfigure
-        closePath = %path%\PADclose
-        DllCall(configPath)
-        DllCall(closePath)
+    if InStr(data, "OpenPADPlugin->") {
+        OpenPlugin("PAD", data)
     }
-    
+
     return true
+}
+
+OpenPlugin(plugin, data)
+{
+    parts := StrSplit(data, ["->","|"])
+    path := parts[2]
+    configPath:= parts[3]
+    SetWorkingDir, %configPath%
+
+    FileCreateDir, inis
+    FileCopy, *.ini, inis
+
+    openPath = %path%\%plugin%configure
+    closePath = %path%\%plugin%close
+
+    DllCall(openPath)
+    DllCall(closePath)
+
+    FileCopy, inis\*ini, %A_WorkingDir%, 1
+    FileRemoveDir, inis, 1
 }
 
 KillPCSX2()
@@ -53,4 +55,3 @@ KillPCSX2()
             Process, Close, % process.Name
     }
 }
-
