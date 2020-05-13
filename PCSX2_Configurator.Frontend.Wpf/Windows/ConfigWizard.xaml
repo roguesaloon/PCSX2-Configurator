@@ -6,11 +6,11 @@
         mc:Ignorable="d"
         Title="Create Config" Width="250" Height="400" ResizeMode="NoResize">
     <Grid>
-        <Label Content="Config Name:" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,2,0,0"/>
-        <TextBox Name="configName" HorizontalAlignment="Center" Margin="0,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextAlignment="Center"/>
+        <Label Content="Config Name:" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,2,0,0"/>
+        <TextBox Name="configName" HorizontalAlignment="Center" Margin="0,28,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="210" TextAlignment="Center"/>
         <Label Content="Version:" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,51,0,0"/>
         <ComboBox Name="version" HorizontalAlignment="Center" VerticalAlignment="Top" Width="120" Margin="0,77,0,0"/>
-        
+
         <GroupBox Header="Copy Settings" VerticalAlignment="Center" Margin="5,-80,5,0" Height="65"  FontSize="9">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
@@ -68,7 +68,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <CheckBox Name="options_NoPresets" Content="No Presets" VerticalAlignment="Center" Grid.Column="0"/>
-                <CheckBox Name="options_GameFixes" Content="Game Fixes" VerticalAlignment="Center" Grid.Column="1"/>
+                <CheckBox Name="options_GameFixes" Content="Game Fixes" VerticalAlignment="Center" Grid.Column="1" IsChecked="True"/>
                 <CheckBox Name="options_SpeedHacks" Content="Speed hacks" VerticalAlignment="Center" Grid.Column="2"/>
             </Grid>
         </GroupBox>

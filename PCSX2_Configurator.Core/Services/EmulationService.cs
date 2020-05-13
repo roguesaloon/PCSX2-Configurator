@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using IniParser;
 using PCSX2_Configurator.Settings;
-using System.Linq;
 
 namespace PCSX2_Configurator.Core
 {
