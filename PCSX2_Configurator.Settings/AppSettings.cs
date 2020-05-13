@@ -9,13 +9,27 @@ namespace PCSX2_Configurator.Settings
 {
     public class AppSettings
     {
-        public string ConfigsDirectory { get; private set; }
-        public string RemoteConfigsPath { get; private set; } 
-        public string GameLibraryFile { get; private set; }
-        public string SevenZipLibraryPath { get; private set; }
-        public string AutoHotkeyExecutable { get; private set; }
-        public string AutoHotkeyScript { get; private set; }
-        public string AdditionalPluginsDirectory { get; private set; }
+        private string configsDirectory;
+        public string ConfigsDirectory { get => configsDirectory; private set => configsDirectory = Path.GetFullPath(value); }
+
+        private string remoteConfigsPath;
+        public string RemoteConfigsPath { get => remoteConfigsPath; private set => remoteConfigsPath = Path.GetFullPath(value); }
+
+        private string gameLibraryFile;
+        public string GameLibraryFile { get => gameLibraryFile; private set => gameLibraryFile = Path.GetFullPath(value); }
+
+        private string sevenZipLibraryPath;
+        public string SevenZipLibraryPath { get => sevenZipLibraryPath; private set => sevenZipLibraryPath = Path.GetFullPath(value); }
+
+        private string autoHotkeyExecutable;
+        public string AutoHotkeyExecutable { get => autoHotkeyExecutable; private set => autoHotkeyExecutable = Path.GetFullPath(value); }
+
+        private string autoHotkeyScript;
+        public string AutoHotkeyScript { get => autoHotkeyScript; private set => autoHotkeyScript = Path.GetFullPath(value); }
+
+        private string additionalPluginsDirectory;
+        public string AdditionalPluginsDirectory { get => additionalPluginsDirectory; private set => additionalPluginsDirectory = Path.GetFullPath(value); }
+
         public string DefaultLaunchOptions { get; private set; }
         public CoverSettings Covers { get; private set; }
         public VersionManagerSettings VersionManager { get; private set; }

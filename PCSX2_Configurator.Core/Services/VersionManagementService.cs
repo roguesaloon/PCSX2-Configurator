@@ -113,6 +113,7 @@ namespace PCSX2_Configurator.Core
                 Name = version.Name.Substring(0, version.Name.LastIndexOf('-')) + "-latest",
                 DownloadLink = version.DownloadLink,
                 Directory = version.Directory.Substring(0, version.Directory.LastIndexOf(" ")) + " latest",
+                ArchiveName = version.ArchiveName,
                 ShouldUpdate = true,
                 IsDevBuild = true
             };

@@ -70,11 +70,11 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private void StartAutoHotkeyScript()
         {
             var settings = Get<AppSettings>();
-            var executable = Path.GetFullPath(settings.AutoHotkeyExecutable);
-            var scriptPath = Path.GetFullPath(settings.AutoHotkeyScript);
+            var executable = settings.AutoHotkeyExecutable;
+            var scriptPath = settings.AutoHotkeyScript;
             if (File.Exists(executable) && File.Exists(scriptPath))
             {
-                autoHotkeyProcess = Process.Start(settings.AutoHotkeyExecutable, $"\"{scriptPath}\"");
+                autoHotkeyProcess = Process.Start(executable, $"\"{scriptPath}\"");
                 Task.Delay(500)
                     .ContinueWith(x => typeof(AppSettings).GetProperty(nameof(settings.AutoHotkeyWindowHandle))
                     .SetValue(settings, autoHotkeyProcess.MainWindowHandle));

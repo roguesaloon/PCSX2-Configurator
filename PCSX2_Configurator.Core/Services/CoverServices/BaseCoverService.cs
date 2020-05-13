@@ -18,9 +18,7 @@ namespace PCSX2_Configurator.Core
             httpClient = httpClientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromSeconds(30);
 
-            var coversPath = settings.CoversPath;
-            var rootedPath = Path.IsPathRooted(coversPath) ? coversPath : $"{Directory.GetCurrentDirectory()}/{coversPath}";
-            CoversPath = coversPath != null ? rootedPath : CoversPath; 
+            CoversPath = settings.CoversPath;
             MissingCoverArt = settings.MissingCover;
         }
 

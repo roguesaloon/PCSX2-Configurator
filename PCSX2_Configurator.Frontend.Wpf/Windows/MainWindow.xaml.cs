@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -115,8 +116,6 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 var files = e.Data.GetData(DataFormats.FileDrop) as string[];
                 foreach (var file in files)
                 {
-                    Mouse.OverrideCursor = Cursors.Wait;
-                    var gameInfo = gameLibraryService.AddToLibrary(file);
                     var versionToUse = VersionManagementService.GetMostRecentStableVersion(settings.Versions.Keys);
                     if (versionToUse == null)
                     {
@@ -124,6 +123,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
                         return;
                     }
 
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    var gameInfo = gameLibraryService.AddToLibrary(file);
                     var (name, region, id) = emulationService.IdentifyGame(settings.Versions[versionToUse], file);
                     gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
                     Mouse.OverrideCursor = null;

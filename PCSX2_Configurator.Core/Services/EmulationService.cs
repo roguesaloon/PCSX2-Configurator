@@ -24,7 +24,6 @@ namespace PCSX2_Configurator.Core
 
         public void LaunchWithGame(string emulatorPath, string gamePath, string configPath, string launchOptions)
         {
-            configPath = Path.GetFullPath(configPath);
             EnsureUsingIso(configPath);
             Process.Start(new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" {launchOptions} --cfgpath=\"{configPath}\"")
             {
@@ -34,7 +33,6 @@ namespace PCSX2_Configurator.Core
 
         public static void LaunchWithConfig(string emulatorPath, string configPath)
         {
-            configPath = Path.GetFullPath(configPath);
             Process.Start(new ProcessStartInfo(emulatorPath, $"--cfgpath=\"{configPath}\"")
             {
                 WorkingDirectory = Path.GetDirectoryName(emulatorPath)
@@ -66,9 +64,8 @@ namespace PCSX2_Configurator.Core
         public (string gameTitle, string gameRegion, string gameId) IdentifyGame(string emulatorPath, string gamePath)
         {
             var inisPath = GetInisPath(emulatorPath);
-            var additionalPluginsDirectory = Path.GetFullPath(appSettings.AdditionalPluginsDirectory);
             EnsureUsingIso(inisPath);
-            var startInfo = new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --windowed --nogui --console --gs=\"{additionalPluginsDirectory}\\GSnull.dll\"")
+            var startInfo = new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" --windowed --nogui --console --gs=\"{appSettings.AdditionalPluginsDirectory}\\GSnull.dll\"")
             {
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Minimized,
@@ -87,7 +84,6 @@ namespace PCSX2_Configurator.Core
             var autoHotkeyWindowHandle = appSettings.AutoHotkeyWindowHandle;
             if (autoHotkeyWindowHandle != IntPtr.Zero)
             {
-                configPath = Path.GetFullPath(configPath);
                 var config = iniParser.ReadFile($"{configPath}/PCSX2_ui.ini");
                 var pluginsDir = config["Folders"]["PluginsFolder"];
                 var pluginName = config["Filenames"][plugin];
