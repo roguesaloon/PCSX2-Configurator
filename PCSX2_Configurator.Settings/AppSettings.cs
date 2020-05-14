@@ -18,8 +18,9 @@ namespace PCSX2_Configurator.Settings
         private string gameLibraryFile;
         public string GameLibraryFile { get => gameLibraryFile; private set => gameLibraryFile = Path.GetFullPath(value); }
 
-        private string sevenZipLibraryPath;
-        public string SevenZipLibraryPath { get => sevenZipLibraryPath; private set => sevenZipLibraryPath = Path.GetFullPath(value); }
+        private string SevenZipx86_LibraryPath { get;  set; }
+        private string SevenZipx64_LibraryPath { get; set; }
+        public string SevenZipLibraryPath { get =>  Path.GetFullPath(Environment.Is64BitProcess ? SevenZipx64_LibraryPath : SevenZipx86_LibraryPath); }
 
         private string autoHotkeyExecutable;
         public string AutoHotkeyExecutable { get => autoHotkeyExecutable; private set => autoHotkeyExecutable = Path.GetFullPath(value); }

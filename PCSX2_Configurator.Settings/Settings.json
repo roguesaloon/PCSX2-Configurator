@@ -4,8 +4,9 @@
   "Versions": {
   },
   "GameLibraryFile": "GameLibrary.xml",
-  "SevenZipLibraryPath": "C:\\Program Files\\7-Zip\\7z.dll",
-  "AutoHotkeyExecutable": "C:\\Program Files\\AutoHotkey\\AutoHotkeyA32.exe",
+  "SevenZipx64_LibraryPath": "Tools\\7za_x64.dll",
+  "SevenZipx86_LibraryPath": "Tools\\7za_x86.dll",
+  "AutoHotkeyExecutable": "Tools\\AutoHotkeyA32.exe",
   "AutoHotkeyScript": "Assets/BackgroundHelper.ahk",
   "AdditionalPluginsDirectory": "Assets/Plugins",
   "DefaultLaunchOptions":  "--fullscreen",
