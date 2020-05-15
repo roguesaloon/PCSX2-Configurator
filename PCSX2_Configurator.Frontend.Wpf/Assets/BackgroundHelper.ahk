@@ -5,26 +5,36 @@ Gui +LastFound -AlwaysOnTop -Caption +ToolWindow
 Gui, Show
 
 OnMessage(0x4a, "Receive_WM_COPYDATA")
-Esc::KillPCSX2()
+
+gameProcessId = null
+Esc::KillGameProcessWhenRunning()
 
 Receive_WM_COPYDATA(wParam, lParam)
 {
     address := NumGet(lParam + 2*A_PtrSize)  ; Retrieves the CopyDataStruct's lpData member.
     data := StrGet(address)  ; Copy the string out of the structure.
 
+    if InStr(data, "GameIsRunning->") {
+        parts := StrSplit(data, ["->"])
+        global gameProcessId = parts[2]
+    }
+
     if InStr(data, "OpenGSPlugin->") {
         OpenPlugin("GS", data)
+        return true
     }
 
     if InStr(data, "OpenSPU2Plugin->") {
         OpenPlugin("SPU2", data)
+        return true
     }
 
     if InStr(data, "OpenPADPlugin->") {
         OpenPlugin("PAD", data)
+        return true
     }
 
-    return true
+    return false
 }
 
 OpenPlugin(plugin, data)
@@ -47,11 +57,11 @@ OpenPlugin(plugin, data)
     FileRemoveDir, inis, 1
 }
 
-KillPCSX2()
+KillGameProcessWhenRunning()
 {
-    for process in ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process")
-    {
-        if process.Name == "pcsx2.exe" OR InStr(process.Name, "pcsx2-r")
-            Process, Close, % process.Name
+    global gameProcessId
+    if (gameProcessId != "null") {
+        Process, Close, %gameProcessId%
+        gameProcessId = null
     }
 }

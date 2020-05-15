@@ -25,10 +25,11 @@ namespace PCSX2_Configurator.Core
         public void LaunchWithGame(string emulatorPath, string gamePath, string configPath, string launchOptions)
         {
             EnsureUsingIso(configPath);
-            Process.Start(new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" {launchOptions} --cfgpath=\"{configPath}\"")
+            var process = Process.Start(new ProcessStartInfo(emulatorPath, $"\"{gamePath}\" {launchOptions} --cfgpath=\"{configPath}\"")
             {
                 WorkingDirectory = Path.GetDirectoryName(emulatorPath)
             });
+            processHelpers.SendMessageCopyDataToWindowAnsi(appSettings.AutoHotkeyWindowHandle, $"GameIsRunning->{process.Id}");
         }
 
         public void LaunchWithConfig(string emulatorPath, string configPath)
