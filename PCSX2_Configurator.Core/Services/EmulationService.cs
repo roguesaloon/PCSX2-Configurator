@@ -32,8 +32,9 @@ namespace PCSX2_Configurator.Core
             processHelpers.SendMessageCopyDataToWindowAnsi(appSettings.AutoHotkeyWindowHandle, $"GameIsRunning->{process.Id}");
         }
 
-        public void LaunchWithConfig(string emulatorPath, string configPath)
+        public void LaunchWithConfig(string emulatorPath, string gamePath, string configPath)
         {
+            UseIsoForGame(gamePath, configPath);
             Process.Start(new ProcessStartInfo(emulatorPath, $"--cfgpath=\"{configPath}\"")
             {
                 WorkingDirectory = Path.GetDirectoryName(emulatorPath)
@@ -102,6 +103,13 @@ namespace PCSX2_Configurator.Core
             var config = iniParser.ReadFile($"{inisPath}/PCSX2_ui.ini");
             config.Global["CdvdSource"] = "ISO";
             iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config);
+        }
+
+        private void UseIsoForGame(string gamePath, string configPath)
+        {
+            var config = iniParser.ReadFile($"{configPath}/PCSX2_ui.ini");
+            config.Global["CurrentIso"] = gamePath.Replace("\\","\\\\");
+            iniParser.WriteFile($"{configPath}/PCSX2_ui.ini", config);
         }
 
         private (string gameTitle, string gameRegion, string gameId) ReadInfoFromEmulatorWindow(Process runningEmulator, int retryCount)

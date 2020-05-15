@@ -167,7 +167,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             }
             var emulatorPath = settings.Versions[version];
             var configPath = settings.Configs[config];
-            emulationService.LaunchWithConfig(emulatorPath, configPath);
+            emulationService.LaunchWithConfig(emulatorPath, model?.Path, configPath);
         }
 
         private void ConfigureGraphicsPlugin(object sender, RoutedEventArgs e)

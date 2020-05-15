@@ -31,6 +31,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             version.ItemsSource = GameModel.Versions;
             version.SelectedItem = gameModel.Version;
             configName.Text = gameModel.Game.ToLowerInvariant().Replace(" - ", "-").Replace(" ", "-");
+            configName.Text = FileHelpers.GetFileNameSafeString(configName.Text);
             Show();
         }
 

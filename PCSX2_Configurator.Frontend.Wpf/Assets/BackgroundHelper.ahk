@@ -17,6 +17,7 @@ Receive_WM_COPYDATA(wParam, lParam)
     if InStr(data, "GameIsRunning->") {
         parts := StrSplit(data, ["->"])
         global gameProcessId = parts[2]
+        return true
     }
 
     if InStr(data, "OpenGSPlugin->") {

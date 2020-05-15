@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 
 namespace PCSX2_Configurator.Core
 {
-    internal static class FileHelpers
+    public static class FileHelpers
     {
-        public static void CopyWithoutException(string sourceFileName, string destFileName)
+        internal static void CopyWithoutException(string sourceFileName, string destFileName)
         {
             try
             {
@@ -18,5 +17,8 @@ namespace PCSX2_Configurator.Core
                 if (!(e is FileNotFoundException)) throw;
             }
         }
+
+        public static string GetFileNameSafeString(string fileName) => 
+            Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
     }
 }
