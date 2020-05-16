@@ -144,6 +144,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             {
                 foreach (var model in gameModels)
                 {
+                    if (model.GameInfo.GameId != null) continue;
                     var (name, region, id) = emulationService.IdentifyGame(settings.Versions[versionToUse], model.Path);
                     gameLibraryService.UpdateGameInfo(model.GameInfo, new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
                     Task.Run(async () => model.CoverPath = await coverService.GetCoverForGame(model.GameInfo));

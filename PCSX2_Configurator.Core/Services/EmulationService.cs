@@ -3,8 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text;
 using System.Text.RegularExpressions;
 using IniParser;
+using IniParser.Model;
 using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Core
@@ -67,14 +69,15 @@ namespace PCSX2_Configurator.Core
         {
             var inisPath = GetInisPath(emulatorPath);
             EnsureUsingIso(inisPath);
+            var gsNullPluginOverride = $"--gs=\"{appSettings.AdditionalPluginsDirectory}\\GSnull.dll\"";
+            var spu2NullPluginOverride = $"--spu2=\"{appSettings.AdditionalPluginsDirectory}\\SPU2null.dll\"";
+            var cdvdNullPluginOverride = $"--cdvd=\"{appSettings.AdditionalPluginsDirectory}\\CDVDnull.dll\"";
             var startInfo = new ProcessStartInfo(emulatorPath, 
-                $"\"{gamePath}\" --windowed --nogui --console " +
-                $"--gs=\"{appSettings.AdditionalPluginsDirectory}\\GSnull.dll\" " +
-                $"--spu2=\"{appSettings.AdditionalPluginsDirectory}\\SPU2null.dll\"")
+                $"\"{gamePath}\" --windowed --nogui --console {gsNullPluginOverride} {spu2NullPluginOverride} {cdvdNullPluginOverride}")
             {
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Minimized,
-                WorkingDirectory = Path.GetDirectoryName(emulatorPath),
+                WorkingDirectory = Path.GetDirectoryName(emulatorPath)
             };
 
             using var emulator = Process.Start(startInfo);
@@ -84,7 +87,6 @@ namespace PCSX2_Configurator.Core
             emulator.Kill();
             emulator.WaitForExit();
             emulator.Close();
-            Thread.Sleep(500);
             return gameInfo;
         }
 
@@ -105,15 +107,18 @@ namespace PCSX2_Configurator.Core
         private void EnsureUsingIso(string inisPath)
         {
             var config = iniParser.ReadFile($"{inisPath}/PCSX2_ui.ini");
-            config.Global["CdvdSource"] = "ISO";
-            iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config);
+            if (config.Global["CdvdSource"].ToLowerInvariant() != "iso")
+            {
+                config.Global["CdvdSource"] = "ISO";
+                iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config, Encoding.UTF8);
+            }
         }
 
         private void UseIsoForGame(string gamePath, string configPath)
         {
             var config = iniParser.ReadFile($"{configPath}/PCSX2_ui.ini");
             config.Global["CurrentIso"] = gamePath.Replace("\\","\\\\");
-            iniParser.WriteFile($"{configPath}/PCSX2_ui.ini", config);
+            iniParser.WriteFile($"{configPath}/PCSX2_ui.ini", config, Encoding.UTF8);
         }
 
         private (string gameTitle, string gameRegion, string gameId) ReadInfoFromEmulatorWindow(Process runningEmulator, int retryCount)
