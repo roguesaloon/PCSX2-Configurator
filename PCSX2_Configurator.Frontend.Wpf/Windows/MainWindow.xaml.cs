@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
+using System.Collections.Generic;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -105,7 +106,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             foreach (var game in gameModels)
             {
                 var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == game.Game);
-                if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config, LaunchOptions = game.LaunchOptions });
+                if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo.Name, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config, LaunchOptions = game.LaunchOptions });
             }
         }
 
@@ -142,13 +143,20 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
             Task.Run(() =>
             {
-                foreach (var model in gameModels)
+                var updateGameInfos = new Queue<Action>();
+                var emulatorPath = settings.Versions[versionToUse];
+                var inisPath = EmulationService.GetInisPath(emulatorPath);
+                emulationService.EnsureUsingIso(inisPath);
+                Parallel.ForEach(gameModels, model =>
                 {
-                    if (model.GameInfo.GameId != null) continue;
-                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions[versionToUse], model.Path);
-                    gameLibraryService.UpdateGameInfo(model.GameInfo, new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
+                    if (model.GameInfo.GameId != null) return;
+                    var (name, region, id) = emulationService.IdentifyGame(emulatorPath, model.Path);
+                    model.GameInfo = new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id };
+                    updateGameInfos.Enqueue(() => gameLibraryService.UpdateGameInfo(model.Game, model.GameInfo, shouldReloadLibrary: true));
                     Task.Run(async () => model.CoverPath = await coverService.GetCoverForGame(model.GameInfo));
-                }
+                });
+
+                while (updateGameInfos.Count > 0) updateGameInfos.Dequeue()();
             });
         }
 

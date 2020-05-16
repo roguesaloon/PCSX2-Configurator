@@ -65,15 +65,28 @@ namespace PCSX2_Configurator.Core
             return inisPath;
         }
 
+        public void EnsureUsingIso(string inisPath)
+        {
+            var config = iniParser.ReadFile($"{inisPath}/PCSX2_ui.ini");
+            if (config.Global["CdvdSource"].ToLowerInvariant() != "iso")
+            {
+                config.Global["CdvdSource"] = "ISO";
+                iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config, Encoding.UTF8);
+            }
+        }
+
         public (string gameTitle, string gameRegion, string gameId) IdentifyGame(string emulatorPath, string gamePath)
         {
-            var inisPath = GetInisPath(emulatorPath);
-            EnsureUsingIso(inisPath);
             var gsNullPluginOverride = $"--gs=\"{appSettings.AdditionalPluginsDirectory}\\GSnull.dll\"";
             var spu2NullPluginOverride = $"--spu2=\"{appSettings.AdditionalPluginsDirectory}\\SPU2null.dll\"";
             var cdvdNullPluginOverride = $"--cdvd=\"{appSettings.AdditionalPluginsDirectory}\\CDVDnull.dll\"";
+            var padNullPluginOverride = $"--pad=\"{appSettings.AdditionalPluginsDirectory}\\xpad.dll\"";
+            var usbNullPluginOverride = $"--usb=\"{appSettings.AdditionalPluginsDirectory}\\USBnull.dll\"";
+            var dev9NullPluginOverride = $"--dev9=\"{appSettings.AdditionalPluginsDirectory}\\DEV9null.dll\"";
+            var fwNullPluginOverride = $"--fw=\"{appSettings.AdditionalPluginsDirectory}\\FWnull.dll\"";
             var startInfo = new ProcessStartInfo(emulatorPath, 
-                $"\"{gamePath}\" --windowed --nogui --console {gsNullPluginOverride} {spu2NullPluginOverride} {cdvdNullPluginOverride}")
+                $"\"{gamePath}\" --windowed --nogui --console " +
+                $"{gsNullPluginOverride} {spu2NullPluginOverride} {cdvdNullPluginOverride} {padNullPluginOverride} {usbNullPluginOverride} {dev9NullPluginOverride} {fwNullPluginOverride}")
             {
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Minimized,
@@ -101,16 +114,6 @@ namespace PCSX2_Configurator.Core
                 pluginsDir = Path.IsPathRooted(pluginsDir) ? pluginsDir : $"{Path.GetDirectoryName(emulatorPath)}\\{pluginsDir}";
                 var messageData = $"Open{plugin}Plugin->{pluginsDir}\\{pluginName}|{configPath}".Replace(".dll", "");
                 Task.Run(() => processHelpers.SendMessageCopyDataToWindowAnsi(autoHotkeyWindowHandle, messageData));
-            }
-        }
-
-        private void EnsureUsingIso(string inisPath)
-        {
-            var config = iniParser.ReadFile($"{inisPath}/PCSX2_ui.ini");
-            if (config.Global["CdvdSource"].ToLowerInvariant() != "iso")
-            {
-                config.Global["CdvdSource"] = "ISO";
-                iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config, Encoding.UTF8);
             }
         }
 

@@ -50,9 +50,11 @@ namespace PCSX2_Configurator.Core
             return Games.FirstOrDefault(game => game.Name == gameName.Value);
         }
 
-        public void UpdateGameInfo(GameInfo gameInfo, GameInfo newInfo, bool shouldReloadLibrary = false)
+        public void UpdateGameInfo(string name, GameInfo newInfo, bool shouldReloadLibrary = false)
         {
-            if (!Games.Any(game => game.Name == gameInfo.Name)) return;
+            var gameInfo = Games.FirstOrDefault(game => game.Name == name);
+            if (gameInfo == null) return;
+
             var gamePath = $"//Game[@Name=\"{gameInfo.Name}\"]";
             var gameNode = xmlDocument.SelectSingleNode(gamePath);
 
