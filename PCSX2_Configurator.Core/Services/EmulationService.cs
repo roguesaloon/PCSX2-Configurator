@@ -74,17 +74,17 @@ namespace PCSX2_Configurator.Core
             {
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Minimized,
-                WorkingDirectory = Path.GetDirectoryName(emulatorPath)
+                WorkingDirectory = Path.GetDirectoryName(emulatorPath),
             };
 
             using var emulator = Process.Start(startInfo);
             var gameInfo = ReadInfoFromEmulatorWindow(emulator, retryCount: 4);
-            while (!emulator.HasExited || emulator.Responding)
-            {
-                emulator.Kill();
-                Thread.Sleep(10);
-            }
+            if(emulator.HasExited) return IdentifyGame(emulatorPath, gamePath);
 
+            emulator.Kill();
+            emulator.WaitForExit();
+            emulator.Close();
+            Thread.Sleep(500);
             return gameInfo;
         }
 
