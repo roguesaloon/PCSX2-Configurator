@@ -79,7 +79,11 @@ namespace PCSX2_Configurator.Core
 
             using var emulator = Process.Start(startInfo);
             var gameInfo = ReadInfoFromEmulatorWindow(emulator, retryCount: 4);
-            emulator.Kill();
+            while (!emulator.HasExited || emulator.Responding)
+            {
+                emulator.Kill();
+                Thread.Sleep(10);
+            }
 
             return gameInfo;
         }

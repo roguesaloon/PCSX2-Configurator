@@ -2,6 +2,7 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
+using PCSX2_Configurator.Core;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {
@@ -9,6 +10,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
     {
         private readonly static List<GameModel> gameModels = new List<GameModel>();
         public GameModel() => gameModels.Add(this);
+
+        public GameInfo GameInfo { get; set; }
 
         public string Game { get; set; }
         public string Path { get; set; }

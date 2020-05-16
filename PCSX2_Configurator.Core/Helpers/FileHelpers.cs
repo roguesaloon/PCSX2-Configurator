@@ -18,6 +18,12 @@ namespace PCSX2_Configurator.Core
             }
         }
 
+        public static string[] GetFilesToDepth(string path, int depth)
+        {
+            var directories = Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly);
+            return depth == (int)SearchOption.TopDirectoryOnly || !directories.Any() ? directories : GetFilesToDepth(path, depth - 1);
+        }
+
         public static string GetFileNameSafeString(string fileName) => 
             Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
     }

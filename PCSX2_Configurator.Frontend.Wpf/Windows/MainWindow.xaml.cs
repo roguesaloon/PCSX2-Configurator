@@ -61,31 +61,38 @@ namespace PCSX2_Configurator.Frontend.Wpf
             this.emulationService = emulationService;
             this.coverService = coverService;
 
-            UpdateGameModels();
+            PopulateGameModelsFromLibrary();
             gamesList.ItemsSource = gameModels; 
         }
 
-        private void UpdateGameModels()
+        private void PopulateGameModelsFromLibrary()
         {
             GameModel.Versions = settings.Versions?.Keys;
             GameModel.Configs = settings.Configs?.Keys;
-            gameModels ??= new ObservableCollection<GameModel>();
-            gameModels.Clear();
-            foreach (var game in gameLibraryService.Games)
-            {
-                gameModels.Add(new GameModel
-                {
-                    Game = game.DisplayName ?? game.Name,
-                    Path = game.Path,
-                    Version = game.EmuVersion,
-                    Config = game.Config,
-                    LaunchOptions = game.LaunchOptions,
-                    CoverPath = settings.Covers.LoadingCover
-                });
-            }
+            gameModels = new ObservableCollection<GameModel>();
 
-            Task.Run(() => Parallel.For(0, gameModels.Count, async index => 
+            gameLibraryService.Games.ForEach(game => AddGameModel(game));
+            GetAllCoversAsync();
+        }
+
+        private void GetAllCoversAsync()
+        {
+            Task.Run(() => Parallel.For(0, gameModels.Count, async index =>
                 gameModels[index].CoverPath = await coverService.GetCoverForGame(gameLibraryService.Games[index])));
+        }
+
+        private void AddGameModel(GameInfo game)
+        {
+            gameModels.Add(new GameModel
+            {
+                Game = game.DisplayName ?? game.Name,
+                Path = game.Path,
+                Version = game.EmuVersion,
+                Config = game.Config,
+                LaunchOptions = game.LaunchOptions,
+                CoverPath = settings.Covers.LoadingCover,
+                GameInfo = game
+            });
         }
 
         private void OnClosing(object sender, CancelEventArgs e)
@@ -111,26 +118,37 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private void DropIso(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
-                foreach (var file in files)
-                {
-                    var versionToUse = VersionManagementService.GetMostRecentStableVersion(settings.Versions.Keys);
-                    if (versionToUse == null)
-                    {
-                        MessageBox.Show("PCSX2 Configurator requires at least one installed PCSX2 version", "Error");
-                        return;
-                    }
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-                    Mouse.OverrideCursor = Cursors.Wait;
-                    var gameInfo = gameLibraryService.AddToLibrary(file);
-                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions[versionToUse], file);
-                    gameLibraryService.UpdateGameInfo(gameInfo, new GameInfo(gameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
-                    Mouse.OverrideCursor = null;
-                }
-                UpdateGameModels();
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            files = files
+                .SelectMany(path => Directory.Exists(path) ? FileHelpers.GetFilesToDepth(path, 3) : new string[] { path })
+                .Where(file => new string[] { ".iso", ".mdf", ".nrg", ".bin", ".img", ".dump", ".gz", ".cso" }.Contains(Path.GetExtension(file).ToLowerInvariant()))
+                .OrderBy(file => file)
+                .ToArray();
+
+            var versionToUse = VersionManagementService.GetMostRecentStableVersion(settings.Versions.Keys);
+            if (versionToUse == null)
+            {
+                MessageBox.Show("PCSX2 Configurator requires at least one installed PCSX2 version", "Error");
+                return;
             }
+
+            foreach (var file in files)
+            {
+                var gameInfo = gameLibraryService.AddToLibrary(file);
+                AddGameModel(gameInfo);
+            }
+
+            Task.Run(() =>
+            {
+                foreach (var model in gameModels)
+                {
+                    var (name, region, id) = emulationService.IdentifyGame(settings.Versions[versionToUse], model.Path);
+                    gameLibraryService.UpdateGameInfo(model.GameInfo, new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id }, shouldReloadLibrary: true);
+                    Task.Run(async () => model.CoverPath = await coverService.GetCoverForGame(model.GameInfo));
+                }
+            });
         }
 
         private void SetVersion(object sender, RoutedEventArgs e)
@@ -152,7 +170,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
             var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == model.Game || x.Name == model.Game);
             gameLibraryService.RemoveFromLibrary(gameInfo);
-            UpdateGameModels();
+            gameModels.Remove(model);
         }
 
         private void ConfigGame(object sender, RoutedEventArgs e)

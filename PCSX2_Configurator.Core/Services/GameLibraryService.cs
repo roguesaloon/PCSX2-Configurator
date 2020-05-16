@@ -52,7 +52,7 @@ namespace PCSX2_Configurator.Core
 
         public void UpdateGameInfo(GameInfo gameInfo, GameInfo newInfo, bool shouldReloadLibrary = false)
         {
-            if (!Games.Contains(gameInfo)) return;
+            if (!Games.Any(game => game.Name == gameInfo.Name)) return;
             var gamePath = $"//Game[@Name=\"{gameInfo.Name}\"]";
             var gameNode = xmlDocument.SelectSingleNode(gamePath);
 
