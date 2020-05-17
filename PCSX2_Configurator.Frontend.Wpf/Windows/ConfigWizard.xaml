@@ -68,7 +68,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <CheckBox Name="options_NoPresets" Content="No Presets" VerticalAlignment="Center" Grid.Column="0"/>
-                <CheckBox Name="options_GameFixes" Content="Game Fixes" VerticalAlignment="Center" Grid.Column="1" IsChecked="True"/>
+                <CheckBox Name="options_GameFixes" Content="Manual&#10;Game Fixes" VerticalAlignment="Top" Grid.Column="1" Margin="0,8,0,0" />
                 <CheckBox Name="options_SpeedHacks" Content="Speed hacks" VerticalAlignment="Center" Grid.Column="2"/>
             </Grid>
         </GroupBox>
