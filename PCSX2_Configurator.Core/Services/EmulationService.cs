@@ -89,7 +89,7 @@ namespace PCSX2_Configurator.Core
                 $"{gsNullPluginOverride} {spu2NullPluginOverride} {cdvdNullPluginOverride} {padNullPluginOverride} {usbNullPluginOverride} {dev9NullPluginOverride} {fwNullPluginOverride}")
             {
                 UseShellExecute = true,
-                WindowStyle = ProcessWindowStyle.Minimized,
+                WindowStyle = ProcessWindowStyle.Hidden,
                 WorkingDirectory = Path.GetDirectoryName(emulatorPath)
             };
 
@@ -132,12 +132,13 @@ namespace PCSX2_Configurator.Core
             for (int i = 0; i < retryCount; ++i)
             {
                 Thread.Sleep(2000);
-                var windowTitle = processHelpers.GetWindowTitleText(runningEmulator.MainWindowHandle);
-                var idMatch = Regex.Match(windowTitle, "\\[[A-Z]{4}-[0-9]{5}]");
+                var window = processHelpers.FindWindowForProcess(runningEmulator.Id, title => title.ToLowerInvariant() != "pcsx2");
+                if (window.title == null) continue;
+                var idMatch = Regex.Match(window.title, "\\[[A-Z]{4}-[0-9]{5}]");
                 if (idMatch.Success)
                 {
-                    var regionMatch = Regex.Match(windowTitle, "\\(.*?\\)");
-                    gameTitle = windowTitle.Substring(0, regionMatch.Index).Trim();
+                    var regionMatch = Regex.Match(window.title, "\\(.*?\\)");
+                    gameTitle = window.title.Substring(0, regionMatch.Index).Trim();
                     gameRegion = regionMatch.Value.Substring(1, regionMatch.Value.Length - 2);
                     gameId = idMatch.Value.Substring(1, 10);
                     break;

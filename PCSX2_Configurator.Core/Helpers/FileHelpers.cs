@@ -26,5 +26,10 @@ namespace PCSX2_Configurator.Core
 
         public static string GetFileNameSafeString(string fileName) => 
             Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
+
+        public static void SetFileToReadOnly(string fileName, bool @readonly) => new FileInfo(fileName)
+        {
+            IsReadOnly = @readonly
+        };
     }
 }
