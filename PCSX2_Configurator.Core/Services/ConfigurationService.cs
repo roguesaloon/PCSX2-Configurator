@@ -2,9 +2,9 @@
 using System.Text;
 using IniParser;
 using IniParser.Model;
+using SevenZip;
 using PCSX2_Configurator.Settings;
 using static PCSX2_Configurator.Core.ConfigOptions;
-
 
 namespace PCSX2_Configurator.Core
 {
@@ -18,10 +18,14 @@ namespace PCSX2_Configurator.Core
 
         private readonly string configsDir;
         private readonly FileIniDataParser iniParser;
+        private readonly string compressedMemoryCard;
+
         public ConfigurationService(AppSettings appSettings)
         {
             iniParser = new FileIniDataParser();
             configsDir = appSettings.ConfigsDirectory;
+            compressedMemoryCard = appSettings.CompressedMemCard;
+            SevenZipBase.SetLibraryPath(appSettings.SevenZipLibraryPath);
         }
 
         public string CreateConfig(string configName, string inisPath, ConfigOptions configOptions)
@@ -83,6 +87,18 @@ namespace PCSX2_Configurator.Core
                 configOptions.AspectRatio == ConfigAspectRatio.Original ? "4:3":
                 configOptions.AspectRatio == ConfigAspectRatio.Widescreen ? "16:9":
                 configOptions.AspectRatio == ConfigAspectRatio.Stretched ? "Stretch": "";
+
+            if (configOptions.Flags.HasFlag(ConfigFlags.CreateMemoryCard))
+            {
+                targetUiConfig["Folders"]["UseDefaultMemoryCards"] = "disabled";
+                targetUiConfig["Folders"]["MemoryCards"] = configPath.Replace("\\","\\\\");
+                targetUiConfig["MemoryCards"]["Slot1_Enable"] = "enabled";
+                targetUiConfig["MemoryCards"]["Slot2_Enable"] = "disabled";
+                targetUiConfig["MemoryCards"]["Slot1_Filename"] = "Mcd.ps2";
+                targetUiConfig["MemoryCards"]["Slot2_Filename"] = string.Empty;
+                using var extractor = new SevenZipExtractor(compressedMemoryCard);
+                extractor.ExtractArchive(configPath);
+            } 
 
             iniParser.WriteFile($"{configPath}\\{uiFileName}", targetUiConfig, Encoding.UTF8);
         }

@@ -31,6 +31,9 @@ namespace PCSX2_Configurator.Settings
         private string additionalPluginsDirectory;
         public string AdditionalPluginsDirectory { get => additionalPluginsDirectory; private set => additionalPluginsDirectory = Path.GetFullPath(value); }
 
+        private string compressedMemCard;
+        public string CompressedMemCard { get => compressedMemCard; private set => compressedMemCard = Path.GetFullPath(value); }
+
         public string DefaultLaunchOptions { get; private set; }
         public CoverSettings Covers { get; private set; }
         public VersionManagerSettings VersionManager { get; private set; }

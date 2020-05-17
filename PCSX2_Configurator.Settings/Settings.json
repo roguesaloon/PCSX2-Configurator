@@ -9,6 +9,7 @@
   "AutoHotkeyExecutable": "Tools\\AutoHotkeyA32.exe",
   "AutoHotkeyScript": "Assets/BackgroundHelper.ahk",
   "AdditionalPluginsDirectory": "Assets/Plugins",
+  "CompressedMemCard":  "Assets/Mcd.7z",
   "DefaultLaunchOptions":  "--fullscreen",
   "Covers": {
     "CoversPath": "Assets/Covers",

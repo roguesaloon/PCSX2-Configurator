@@ -70,6 +70,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             if (options_GSdx.IsChecked.Value) options.Flags |= ConfigFlags.CopyGsdxSettings;
             if (options_SPU2X.IsChecked.Value) options.Flags |= ConfigFlags.CopySpu2xSettings;
             if (options_LilyPad.IsChecked.Value) options.Flags |= ConfigFlags.CopyLilyPadSettings;
+            if (options_CreateMemoryCard.IsChecked.Value) options.Flags |= ConfigFlags.CreateMemoryCard;
             if (options_NoPresets.IsChecked.Value) options.Flags |= ConfigFlags.DisablePresets;
             if (options_GameFixes.IsChecked.Value) options.Flags |= ConfigFlags.EnableGameFixes;
             if (options_SpeedHacks.IsChecked.Value) options.Flags |= ConfigFlags.EnableSpeedHacks;
