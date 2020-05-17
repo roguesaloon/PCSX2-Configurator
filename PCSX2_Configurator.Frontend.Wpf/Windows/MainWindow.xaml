@@ -6,7 +6,7 @@
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
         Title="PCSX2 Configurator" Width="1700" Height="820" MinWidth="1000" MinHeight="530"
-        Closing="OnClosing" WindowStyle="SingleBorderWindow" Background="#FF2D333C">
+        Closing="OnClosing" WindowStyle="SingleBorderWindow" Background="{StaticResource ResourceKey=BackgroundBrush}" FontFamily="{StaticResource DefaultFont}">
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0" CornerRadius="0"/>
     </WindowChrome.WindowChrome>
@@ -21,7 +21,7 @@
         </Canvas>
         <DockPanel Margin="0,26,0,0">
             <Canvas Name="headerBar" Height="94" VerticalAlignment="Top">
-                <Rectangle Fill="#2E3A4E" Height="{Binding ElementName=headerBar, Path=ActualHeight}" Width="{Binding ElementName=headerBar, Path=ActualWidth}"/>
+                <Rectangle Height="{Binding ElementName=headerBar, Path=ActualHeight}" Width="{Binding ElementName=headerBar, Path=ActualWidth}" Fill="{StaticResource ResourceKey=TopBannerBrush}" />
                 <Button Height="64" Width="64" FontSize="46" Cursor="Hand" Content="⚙" Canvas.Left="40" Canvas.Top="15" Click="OpenVersionManager">
                     <Button.Style>
                         <Style TargetType="Button">

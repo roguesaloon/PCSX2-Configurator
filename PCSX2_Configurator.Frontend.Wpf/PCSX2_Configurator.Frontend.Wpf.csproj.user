@@ -18,6 +18,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Assets\Resources.xaml">
+      <SubType>Designer</SubType>
+    </Content>
     <Page Update="Windows\ConfigWizard.xaml">
       <SubType>Designer</SubType>
     </Page>
