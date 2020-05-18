@@ -7,9 +7,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using PCSX2_Configurator.Core.Helpers;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public sealed class TgdbCoverService : BaseCoverService
     {

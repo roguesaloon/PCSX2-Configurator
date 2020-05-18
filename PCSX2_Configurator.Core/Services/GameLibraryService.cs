@@ -4,7 +4,7 @@ using System.Xml;
 using System.Collections.Generic;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public sealed class GameLibraryService
     {

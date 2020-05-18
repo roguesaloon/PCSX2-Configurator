@@ -13,8 +13,9 @@ using IniParser;
 using IniParser.Model;
 using NaturalSort.Extension;
 using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.Core.Helpers;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public sealed class VersionManagementService
     {

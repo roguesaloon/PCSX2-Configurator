@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public interface ICoverService
     {

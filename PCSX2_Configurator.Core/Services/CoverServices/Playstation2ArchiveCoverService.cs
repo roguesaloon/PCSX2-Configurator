@@ -6,8 +6,9 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
 using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.Core.Helpers;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public sealed class Playstation2ArchiveCoverService : BaseCoverService
     {

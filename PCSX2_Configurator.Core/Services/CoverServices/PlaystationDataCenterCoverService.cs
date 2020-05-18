@@ -1,8 +1,9 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
+using PCSX2_Configurator.Core.Helpers;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public sealed class PlaystationDataCenterCoverService : BaseCoverService
     {

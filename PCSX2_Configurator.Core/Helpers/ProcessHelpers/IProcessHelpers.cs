@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Helpers
 {
-    interface IProcessHelpers
+    internal interface IProcessHelpers
     {
         string GetWindowTitleText(IntPtr window);
         (IntPtr handle, string title) FindWindowForProcess(int processId, Func<string, bool> filter = null);

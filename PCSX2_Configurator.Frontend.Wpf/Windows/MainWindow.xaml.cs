@@ -12,8 +12,10 @@ using System.Threading.Tasks;
 using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
 using System.Collections.Generic;
+using PCSX2_Configurator.Core.Services;
+using PCSX2_Configurator.Core.Helpers;
 
-namespace PCSX2_Configurator.Frontend.Wpf
+namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

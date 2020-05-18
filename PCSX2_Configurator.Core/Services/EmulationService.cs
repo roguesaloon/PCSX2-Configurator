@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Text.RegularExpressions;
 using IniParser;
-using IniParser.Model;
 using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.Core.Helpers;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public sealed class EmulationService
     {

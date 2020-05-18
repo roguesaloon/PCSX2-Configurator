@@ -4,10 +4,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Core.Helpers;
+using PCSX2_Configurator.Core.Services;
 using PCSX2_Configurator.Settings;
 using static PCSX2_Configurator.Core.ConfigOptions;
 
-namespace PCSX2_Configurator.Frontend.Wpf
+namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
     /// <summary>
     /// Interaction logic for ConfigWizard.xaml

@@ -1,10 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Collections.Generic;
-using PCSX2_Configurator.Core;
 using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.Core.Services;
 
-namespace PCSX2_Configurator.Frontend.Wpf
+namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
     /// <summary>
     /// Interaction logic for VersionManager.xaml

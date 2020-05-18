@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.ComponentModel;
 
-namespace PCSX2_Configurator.Frontend.Wpf
+namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
     /// <summary>
     /// Interaction logic for LaunchOptions.xaml

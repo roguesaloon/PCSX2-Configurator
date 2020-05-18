@@ -4,9 +4,10 @@ using IniParser;
 using IniParser.Model;
 using SevenZip;
 using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.Core.Helpers;
 using static PCSX2_Configurator.Core.ConfigOptions;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Core.Services
 {
     public sealed class ConfigurationService
     {

@@ -2,13 +2,13 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Core.Services;
+using PCSX2_Configurator.Frontend.Wpf.Windows;
 using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Frontend.Wpf
