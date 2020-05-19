@@ -2,9 +2,10 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
     public abstract class BaseCoverService : ICoverService
     {
@@ -13,13 +14,13 @@ namespace PCSX2_Configurator.Core.Services
 
         protected readonly HttpClient httpClient;
 
-        protected BaseCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory)
+        protected BaseCoverService(AppSettings appSettings, IHttpClientFactory httpClientFactory)
         {
             httpClient = httpClientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromSeconds(30);
 
-            CoversPath = settings.CoversPath;
-            MissingCoverArt = settings.MissingCover;
+            CoversPath = appSettings.Covers.CoversPath;
+            MissingCoverArt = appSettings.Covers.MissingCover;
         }
 
         public async Task<string> GetCoverForGame(GameInfo game)

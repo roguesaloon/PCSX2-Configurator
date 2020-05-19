@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Xml;
 using System.Collections.Generic;
+using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class GameLibraryService
+    internal sealed class GameLibraryService : IGameLibraryService
     {
         public List<GameInfo> Games { get; private set; }
 

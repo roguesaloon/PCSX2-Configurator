@@ -4,17 +4,17 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
+using PCSX2_Configurator.Common;
+using PCSX2_Configurator.Helpers;
 using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.Core.Helpers;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class Playstation2ArchiveCoverService : BaseCoverService
+    internal sealed class Playstation2ArchiveCoverService : BaseCoverService
     {
         private readonly string baseUri = "http://www.atensionspan.com/evil/covers"; // Links From http://www.evilbadman.com/
 
-        public Playstation2ArchiveCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
+        public Playstation2ArchiveCoverService(AppSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
         {
             CoversPath = $"{CoversPath}/Playstation2Archive";
         }

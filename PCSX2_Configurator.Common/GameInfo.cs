@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace PCSX2_Configurator.Core
+namespace PCSX2_Configurator.Common
 {
     public class GameInfo
     {

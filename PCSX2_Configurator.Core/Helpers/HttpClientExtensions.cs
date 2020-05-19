@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace PCSX2_Configurator.Core.Helpers
+namespace PCSX2_Configurator.Helpers
 {
     internal static class HttpClientExtensions
     {

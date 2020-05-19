@@ -9,11 +9,11 @@ using System.Windows.Input;
 using System.Windows.Shell;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using PCSX2_Configurator.Core;
-using PCSX2_Configurator.Settings;
 using System.Collections.Generic;
-using PCSX2_Configurator.Core.Services;
-using PCSX2_Configurator.Core.Helpers;
+using PCSX2_Configurator.Common;
+using PCSX2_Configurator.Services;
+using PCSX2_Configurator.Settings;
+using PCSX2_Configurator.Helpers;
 
 namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
@@ -25,9 +25,10 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private ObservableCollection<GameModel> gameModels;
 
         private readonly AppSettings settings;
-        private readonly GameLibraryService gameLibraryService;
-        private readonly EmulationService emulationService;
+        private readonly IGameLibraryService gameLibraryService;
+        private readonly IEmulationService emulationService;
         private readonly ICoverService coverService;
+        private readonly IVersionManagementService versionManagementService;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
         private void MaximizeWindow(object sender, RoutedEventArgs e)
@@ -56,13 +57,14 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             base.OnStateChanged(e);
         }
 
-        public MainWindow(AppSettings settings, GameLibraryService gameLibraryService, EmulationService emulationService, ICoverService coverService)
+        public MainWindow(AppSettings settings, IGameLibraryService gameLibraryService, IEmulationService emulationService, ICoverService coverService, IVersionManagementService versionManagementService)
         {
             InitializeComponent();
             this.settings = settings;
             this.gameLibraryService = gameLibraryService;
             this.emulationService = emulationService;
             this.coverService = coverService;
+            this.versionManagementService = versionManagementService;
 
             PopulateGameModelsFromLibrary();
             gamesList.ItemsSource = gameModels; 
@@ -130,7 +132,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 .OrderBy(file => file)
                 .ToArray();
 
-            var versionToUse = VersionManagementService.GetMostRecentStableVersion(settings.Versions.Keys);
+            var versionToUse = versionManagementService.GetMostRecentStableVersion(settings.Versions.Keys);
             if (versionToUse == null)
             {
                 MessageBox.Show("PCSX2 Configurator requires at least one installed PCSX2 version", "Error");
@@ -147,7 +149,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             {
                 var updateGameInfos = new Queue<Action>();
                 var emulatorPath = settings.Versions[versionToUse];
-                var inisPath = EmulationService.GetInisPath(emulatorPath);
+                var inisPath = emulationService.GetInisPath(emulatorPath);
                 emulationService.EnsureUsingIso(inisPath);
                 FileHelpers.SetFileToReadOnly($"{inisPath}/PCSX2_ui.ini", true);
                 Parallel.ForEach(gameModels, model =>

@@ -2,17 +2,18 @@
 using System.IO;
 using System.Linq;
 using LibGit2Sharp;
+using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class RemoteConfigurationService
+    internal sealed class RemoteConfigurationService
     {
         private readonly string remoteConfigsPath;
         private readonly string remote = "https://github.com/Zombeaver/PCSX2-Configs";
         private readonly ConfigurationService configurationService;
 
-        public RemoteConfigurationService(ConfigurationService configurationService, AppSettings appSettings)
+        public RemoteConfigurationService(AppSettings appSettings, ConfigurationService configurationService)
         {
             remoteConfigsPath = appSettings.RemoteConfigsPath ?? "Remote";
             this.configurationService = configurationService;

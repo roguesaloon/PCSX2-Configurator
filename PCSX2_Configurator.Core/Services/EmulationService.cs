@@ -7,21 +7,21 @@ using System.Text;
 using System.Text.RegularExpressions;
 using IniParser;
 using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.Core.Helpers;
+using PCSX2_Configurator.Helpers;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class EmulationService
+    internal sealed class EmulationService : IEmulationService
     {
-        private AppSettings appSettings;
+        private readonly AppSettings appSettings;
         private readonly FileIniDataParser iniParser;
         private readonly IProcessHelpers processHelpers;
 
-        public EmulationService(AppSettings appSettings)
+        public EmulationService(AppSettings appSettings, FileIniDataParser iniParser, IProcessHelpers processHelpers)
         {
             this.appSettings = appSettings;
-            iniParser = new FileIniDataParser();
-            processHelpers = new WindowsProcessHelpers();
+            this.iniParser = iniParser;
+            this.processHelpers = processHelpers;
         }
 
         public void LaunchWithGame(string emulatorPath, string gamePath, string configPath, string launchOptions)
@@ -58,7 +58,7 @@ namespace PCSX2_Configurator.Core.Services
             ConfigurePluginWithAutoHotkey("PAD", emulatorPath, configPath);
         }
 
-        public static string GetInisPath(string emulatorPath)
+        public string GetInisPath(string emulatorPath)
         {
             var inisPath = $"{Path.GetDirectoryName(emulatorPath)}\\inis";
             inisPath = emulatorPath.Contains("1.4.0") ? inisPath.Replace("\\inis", "\\inis_1.4.0") : inisPath;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PCSX2_Configurator.Core.Helpers
+namespace PCSX2_Configurator.Helpers
 {
     internal interface IProcessHelpers
     {

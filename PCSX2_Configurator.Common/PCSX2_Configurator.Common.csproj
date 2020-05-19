@@ -17,4 +17,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>PCSX2_Configurator.Core</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

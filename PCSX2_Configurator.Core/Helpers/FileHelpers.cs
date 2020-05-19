@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace PCSX2_Configurator.Core.Helpers
+namespace PCSX2_Configurator.Helpers
 {
     public static class FileHelpers
     {

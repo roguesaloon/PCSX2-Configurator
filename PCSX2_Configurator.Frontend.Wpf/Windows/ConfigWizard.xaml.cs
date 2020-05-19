@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using PCSX2_Configurator.Core;
-using PCSX2_Configurator.Core.Helpers;
-using PCSX2_Configurator.Core.Services;
+using PCSX2_Configurator.Common;
+using PCSX2_Configurator.Helpers;
+using PCSX2_Configurator.Services;
 using PCSX2_Configurator.Settings;
-using static PCSX2_Configurator.Core.ConfigOptions;
+using static PCSX2_Configurator.Common.ConfigOptions;
 
 namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
@@ -17,13 +17,15 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
     public partial class ConfigWizard : Window
     {
         private readonly AppSettings settings;
-        private readonly ConfigurationService configurationService;
+        private readonly IConfigurationService configurationService;
+        private readonly IEmulationService emulationService;
         private GameModel gameModel;
 
-        public ConfigWizard(AppSettings settings, ConfigurationService configurationService)
+        public ConfigWizard(AppSettings settings, IConfigurationService configurationService, IEmulationService emulationService)
         {
             InitializeComponent();
             this.configurationService = configurationService;
+            this.emulationService = emulationService;
             this.settings = settings;
         }
 
@@ -47,7 +49,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 MessageBox.Show("You must " + error, "Error");
                 return;
             }
-            var inisPath = EmulationService.GetInisPath(settings.Versions[selectedVersion]);
+            var inisPath = emulationService.GetInisPath(settings.Versions[selectedVersion]);
             var options = GetConfigOptions();
             configurationService.CreateConfig(givenName, inisPath, options);
             settings.UpdateConfigs();

@@ -2,7 +2,7 @@
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace PCSX2_Configurator.Core.Helpers
+namespace PCSX2_Configurator.Helpers
 {
     internal sealed class WindowsProcessHelpers : IProcessHelpers
     {

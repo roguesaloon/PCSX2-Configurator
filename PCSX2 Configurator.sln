@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Frontend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Core", "PCSX2_Configurator.Core\PCSX2_Configurator.Core.csproj", "{AA25A598-E31C-447F-96F0-9D2FF251D9EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Settings", "PCSX2_Configurator.Settings\PCSX2_Configurator.Settings.csproj", "{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCSX2_Configurator.Common", "PCSX2_Configurator.Common\PCSX2_Configurator.Common.csproj", "{9FB272C3-90CB-41ED-A6C8-A5E1C96E981F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

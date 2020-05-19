@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Collections.Generic;
 using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.Core.Services;
+using PCSX2_Configurator.Services;
 
 namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
@@ -11,9 +11,9 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
     /// </summary>
     public partial class VersionManager : Window
     {
-        private readonly VersionManagementService versionManagementService;
+        private readonly IVersionManagementService versionManagementService;
         private IDictionary<string, VersionSettings> availableVersions;
-        public VersionManager(VersionManagementService versionManagementService)
+        public VersionManager(IVersionManagementService versionManagementService)
         {
             this.versionManagementService = versionManagementService;
             InitializeComponent();

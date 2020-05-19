@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class ChainedCoverService : ICoverService
+    internal sealed class ChainedCoverService : ICoverService
     {
         private readonly List<ICoverService> chainOfCoverServices;
 
-        public ChainedCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory)
+        public ChainedCoverService(AppSettings settings, IHttpClientFactory httpClientFactory)
         {
             chainOfCoverServices = new List<ICoverService>
             {

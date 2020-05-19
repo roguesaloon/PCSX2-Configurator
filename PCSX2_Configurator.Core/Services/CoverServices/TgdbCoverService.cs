@@ -7,18 +7,19 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PCSX2_Configurator.Core.Helpers;
+using PCSX2_Configurator.Common;
+using PCSX2_Configurator.Helpers;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class TgdbCoverService : BaseCoverService
+    internal sealed class TgdbCoverService : BaseCoverService
     {
         private readonly string apiKey = "MjU1M2RmNWZlY2UzMjhlZWVkYTk2NWJkZjJkNzUwNzM0NjdlY2I0NjE1N2NhNTQzMjI5ZTE0YTMzYzliNWQ4ZQ==";
         private readonly string byGameNameApiUri = "https://api.thegamesdb.net/v1.1/Games/ByGameName?apikey={apiKey}&filter%5Bplatform%5D=11&name=";
         private readonly string cdnThumbsBoxFrontUri = "https://cdn.thegamesdb.net/images/thumb/boxart/front/";
 
-        public TgdbCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
+        public TgdbCoverService(AppSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
         {
             CoversPath = $"{CoversPath}/TGDB";
             byGameNameApiUri = byGameNameApiUri.Replace("{apiKey}", Encoding.ASCII.GetString(Convert.FromBase64String(apiKey)));

@@ -7,7 +7,7 @@ using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PCSX2_Configurator.Core.Services;
+using PCSX2_Configurator.Extensions.DependencyInjection;
 using PCSX2_Configurator.Frontend.Wpf.Windows;
 using PCSX2_Configurator.Settings;
 
@@ -35,18 +35,8 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
-            var settings = new AppSettings();
-            context.Configuration.Bind(settings, options => options.BindNonPublicProperties = true);
-            services.AddTransient(provider => settings);
-            services.AddTransient(provider => settings.Covers);
-            services.AddTransient(provider => settings.VersionManager);
-
             services.AddHttpClient();
-            services.AddSingleton<GameLibraryService>();
-            services.AddSingleton<EmulationService>();
-            services.AddSingleton<ConfigurationService>();
-            services.AddSingleton<ICoverService, ChainedCoverService>();
-            services.AddSingleton<VersionManagementService>();
+            services.AddPcsx2ConfiguratorCoreServices(context.Configuration);
 
             services.AddSingleton<MainWindow>();
             services.AddTransient<ConfigWizard>();

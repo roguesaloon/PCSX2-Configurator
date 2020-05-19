@@ -13,25 +13,23 @@ using IniParser;
 using IniParser.Model;
 using NaturalSort.Extension;
 using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.Core.Helpers;
+using PCSX2_Configurator.Helpers;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class VersionManagementService
+    internal sealed class VersionManagementService : IVersionManagementService
     {
         private readonly HttpClient httpClient;
         private readonly VersionManagerSettings settings;
         private readonly AppSettings appSettings;
         private readonly FileIniDataParser iniParser;
 
-        public VersionManagementService(VersionManagerSettings settings, AppSettings appSettings, IHttpClientFactory httpClientFactory)
+        public VersionManagementService(AppSettings appSettings, FileIniDataParser iniParser, IHttpClientFactory httpClientFactory)
         {
-            this.settings = settings;
             this.appSettings = appSettings;
+            this.iniParser = iniParser;
+            settings = appSettings.VersionManager;
             httpClient = httpClientFactory.CreateClient();
-            
-            SevenZipBase.SetLibraryPath(appSettings.SevenZipLibraryPath);
-            iniParser = new FileIniDataParser();
         }
 
         public async Task<IDictionary<string, VersionSettings>> GetAvailableVersions()
@@ -60,7 +58,7 @@ namespace PCSX2_Configurator.Core.Services
             Process.Start($"{installPath}/{version.Executable}");
         }
 
-        public static string GetMostRecentStableVersion(IEnumerable<string> versionNames)
+        public string GetMostRecentStableVersion(IEnumerable<string> versionNames)
         {
             var sortedVersions = versionNames.OrderBy(version => version, StringComparer.OrdinalIgnoreCase.WithNaturalSort());
             var latestStable = sortedVersions.LastOrDefault(version => !version.Contains("dev"));

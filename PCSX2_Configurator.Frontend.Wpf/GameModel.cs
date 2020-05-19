@@ -2,7 +2,7 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
-using PCSX2_Configurator.Core;
+using PCSX2_Configurator.Common;
 
 namespace PCSX2_Configurator.Frontend.Wpf
 {

@@ -1,15 +1,16 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using PCSX2_Configurator.Core.Helpers;
+using PCSX2_Configurator.Common;
+using PCSX2_Configurator.Helpers;
 using PCSX2_Configurator.Settings;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class PlaystationDataCenterCoverService : BaseCoverService
+    internal sealed class PlaystationDataCenterCoverService : BaseCoverService
     {
         private readonly string baseUri = "https://psxdatacenter.com/psx2/images2/covers";
 
-        public PlaystationDataCenterCoverService(CoverSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
+        public PlaystationDataCenterCoverService(AppSettings settings, IHttpClientFactory httpClientFactory) : base(settings, httpClientFactory)
         {
             CoversPath = $"{CoversPath}/PlaystationDataCenter";
         }

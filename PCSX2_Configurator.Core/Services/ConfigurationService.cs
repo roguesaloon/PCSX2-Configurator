@@ -3,13 +3,14 @@ using System.Text;
 using IniParser;
 using IniParser.Model;
 using SevenZip;
+using PCSX2_Configurator.Common;
+using PCSX2_Configurator.Helpers;
 using PCSX2_Configurator.Settings;
-using PCSX2_Configurator.Core.Helpers;
-using static PCSX2_Configurator.Core.ConfigOptions;
+using static PCSX2_Configurator.Common.ConfigOptions;
 
-namespace PCSX2_Configurator.Core.Services
+namespace PCSX2_Configurator.Services
 {
-    public sealed class ConfigurationService
+    internal sealed class ConfigurationService : IConfigurationService
     {
         private const string uiFileName = "PCSX2_ui.ini";
         private const string vmFileName = "PCSX2_vm.ini";
@@ -17,16 +18,15 @@ namespace PCSX2_Configurator.Core.Services
         private const string spu2xFileName = "SPU2-X.ini";
         private const string lilyPadFileName = "LilyPad.ini";
 
-        private readonly string configsDir;
         private readonly FileIniDataParser iniParser;
+        private readonly string configsDir;
         private readonly string compressedMemoryCard;
 
-        public ConfigurationService(AppSettings appSettings)
+        public ConfigurationService(AppSettings appSettings, FileIniDataParser iniParser)
         {
-            iniParser = new FileIniDataParser();
+            this.iniParser = iniParser;
             configsDir = appSettings.ConfigsDirectory;
             compressedMemoryCard = appSettings.CompressedMemCard;
-            SevenZipBase.SetLibraryPath(appSettings.SevenZipLibraryPath);
         }
 
         public string CreateConfig(string configName, string inisPath, ConfigOptions configOptions)
