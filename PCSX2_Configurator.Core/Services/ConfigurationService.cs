@@ -12,12 +12,6 @@ namespace PCSX2_Configurator.Services
 {
     internal sealed class ConfigurationService : IConfigurationService
     {
-        private const string uiFileName = "PCSX2_ui.ini";
-        private const string vmFileName = "PCSX2_vm.ini";
-        private const string gsdxFileName = "Gsdx.ini";
-        private const string spu2xFileName = "SPU2-X.ini";
-        private const string lilyPadFileName = "LilyPad.ini";
-
         private readonly FileIniDataParser iniParser;
         private readonly string configsDir;
         private readonly string compressedMemoryCard;
@@ -36,10 +30,10 @@ namespace PCSX2_Configurator.Services
 
             CreateUiFile(configPath, inisPath, configOptions);
 
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{vmFileName}", $"{configPath}\\{vmFileName}");
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{gsdxFileName}", $"{configPath}\\{gsdxFileName}");
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{spu2xFileName}", $"{configPath}\\{spu2xFileName}");
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{lilyPadFileName}", $"{configPath}\\{lilyPadFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.VmFileName}", $"{configPath}\\{ConfiguratorConstants.VmFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.GsdxFileName}", $"{configPath}\\{ConfiguratorConstants.GsdxFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.Spu2xFileName}", $"{configPath}\\{ConfiguratorConstants.Spu2xFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.LilyPadFileName}", $"{configPath}\\{ConfiguratorConstants.LilyPadFileName}");
 
             SetVmSettings(configPath, configOptions);
 
@@ -60,7 +54,7 @@ namespace PCSX2_Configurator.Services
 
         private void SetVmSettings(string configPath, ConfigOptions configOptions)
         {
-            var targetVmFile = $"{configPath}\\{vmFileName}";
+            var targetVmFile = $"{configPath}\\{ConfiguratorConstants.VmFileName}";
             var targetVmConfig = File.Exists(targetVmFile) ? iniParser.ReadFile(targetVmFile) : new IniData();
 
             if (configOptions.Flags.HasFlag(ConfigFlags.EnableWidescreenPatches)) targetVmConfig["EmuCore"]["EnableWideScreenPatches"] = "enabled";
@@ -71,7 +65,7 @@ namespace PCSX2_Configurator.Services
 
         private void CreateUiFile(string configPath, string inisPath, ConfigOptions configOptions)
         {
-            var baseUiConfig = iniParser.ReadFile($"{inisPath}\\{uiFileName}");
+            var baseUiConfig = iniParser.ReadFile($"{inisPath}\\{ConfiguratorConstants.UiFileName}");
             var targetUiConfig = new IniData();
 
             if (configOptions.Flags.HasFlag(ConfigFlags.CopyLogSettings)) targetUiConfig["ProgramLog"].Merge(baseUiConfig["ProgramLog"]);
@@ -101,7 +95,7 @@ namespace PCSX2_Configurator.Services
                 extractor.ExtractArchive(configPath);
             } 
 
-            iniParser.WriteFile($"{configPath}\\{uiFileName}", targetUiConfig, Encoding.UTF8);
+            iniParser.WriteFile($"{configPath}\\{ConfiguratorConstants.UiFileName}", targetUiConfig, Encoding.UTF8);
         }
     }
 }

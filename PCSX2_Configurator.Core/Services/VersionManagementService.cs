@@ -12,6 +12,7 @@ using HtmlAgilityPack;
 using IniParser;
 using IniParser.Model;
 using NaturalSort.Extension;
+using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Settings;
 using PCSX2_Configurator.Helpers;
 
@@ -153,7 +154,7 @@ namespace PCSX2_Configurator.Services
             config["Folders"]["Bios"] = Path.GetFullPath($"{biosDirectory}").Replace("\\", "\\\\");
             config["Folders"]["UseDefaultBios"] = "disabled";
             var inisPath = Directory.CreateDirectory($"{installPath}/{inisDirectory}");
-            iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config);
+            iniParser.WriteFile($"{inisPath}/{ConfiguratorConstants.UiFileName}", config);
         }
     }
 }

@@ -151,7 +151,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 var emulatorPath = settings.Versions[versionToUse];
                 var inisPath = emulationService.GetInisPath(emulatorPath);
                 emulationService.EnsureUsingIso(inisPath);
-                FileHelpers.SetFileToReadOnly($"{inisPath}/PCSX2_ui.ini", true);
+                FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", true);
                 Parallel.ForEach(gameModels, model =>
                 {
                     if (model.GameInfo.GameId != null) return;
@@ -161,7 +161,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                     Task.Run(async () => model.CoverPath = await coverService.GetCoverForGame(model.GameInfo));
                 });
 
-                FileHelpers.SetFileToReadOnly($"{inisPath}/PCSX2_ui.ini", false);
+                FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
                 while (updateGameInfos.Count > 0) updateGameInfos.Dequeue()?.Invoke();
             });
         }

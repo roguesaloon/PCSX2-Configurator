@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Text.RegularExpressions;
 using IniParser;
+using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Settings;
 using PCSX2_Configurator.Helpers;
 
@@ -67,11 +68,11 @@ namespace PCSX2_Configurator.Services
 
         public void EnsureUsingIso(string inisPath)
         {
-            var config = iniParser.ReadFile($"{inisPath}/PCSX2_ui.ini");
+            var config = iniParser.ReadFile($"{inisPath}/{ConfiguratorConstants.UiFileName}");
             if (config.Global["CdvdSource"].ToLowerInvariant() != "iso")
             {
                 config.Global["CdvdSource"] = "ISO";
-                iniParser.WriteFile($"{inisPath}/PCSX2_ui.ini", config, Encoding.UTF8);
+                iniParser.WriteFile($"{inisPath}/{ConfiguratorConstants.UiFileName}", config, Encoding.UTF8);
             }
         }
 
@@ -108,7 +109,7 @@ namespace PCSX2_Configurator.Services
             var autoHotkeyWindowHandle = appSettings.AutoHotkeyWindowHandle;
             if (autoHotkeyWindowHandle != IntPtr.Zero)
             {
-                var config = iniParser.ReadFile($"{configPath}/PCSX2_ui.ini");
+                var config = iniParser.ReadFile($"{configPath}/{ConfiguratorConstants.UiFileName}");
                 var pluginsDir = config["Folders"]["PluginsFolder"];
                 var pluginName = config["Filenames"][plugin];
                 pluginsDir = Path.IsPathRooted(pluginsDir) ? pluginsDir : $"{Path.GetDirectoryName(emulatorPath)}\\{pluginsDir}";
@@ -119,9 +120,9 @@ namespace PCSX2_Configurator.Services
 
         private void UseIsoForGame(string gamePath, string configPath)
         {
-            var config = iniParser.ReadFile($"{configPath}/PCSX2_ui.ini");
+            var config = iniParser.ReadFile($"{configPath}/{ConfiguratorConstants.UiFileName}");
             config.Global["CurrentIso"] = gamePath.Replace("\\","\\\\");
-            iniParser.WriteFile($"{configPath}/PCSX2_ui.ini", config, Encoding.UTF8);
+            iniParser.WriteFile($"{configPath}/{ConfiguratorConstants.UiFileName}", config, Encoding.UTF8);
         }
 
         private (string gameTitle, string gameRegion, string gameId) ReadInfoFromEmulatorWindow(Process runningEmulator, int retryCount)
