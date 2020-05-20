@@ -158,7 +158,10 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                     var (name, region, id) = emulationService.IdentifyGame(emulatorPath, model.Path);
                     model.GameInfo = new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id };
                     updateGameInfos.Enqueue(() => gameLibraryService.UpdateGameInfo(model.Game, model.GameInfo, shouldReloadLibrary: true));
-                    Task.Run(async () => model.CoverPath = await coverService.GetCoverForGame(model.GameInfo));
+                    Task.Run(async () => {
+                        model.CoverPath = await coverService.GetCoverForGame(model.GameInfo);
+                        model.Game = name ?? model.Game;
+                    });
                 });
 
                 FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
