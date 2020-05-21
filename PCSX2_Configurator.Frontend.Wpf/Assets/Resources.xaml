@@ -2,5 +2,25 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="TopBannerBrush" Color="#2E3A4E" />
     <SolidColorBrush x:Key="BackgroundBrush" Color="#FF2D333C" />
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#808080" />
+    <Style TargetType="Label" x:Key="TitleTextStyle">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style TargetType="Label" x:Key="TopBannerTextStyle">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="46" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style TargetType="TextBlock" x:Key="PlaceholderTextStyle">
+        <Setter Property="FontSize" Value="80" />
+    </Style>
+    <Style TargetType="Button" x:Key="SettingsButtonStyle">
+        <Setter Property="Width" Value="64"/>
+        <Setter Property="Height" Value="64" />
+        <Setter Property="FontSize" Value="46" />
+        <Setter Property="Content" Value="⚙" />
+    </Style>
+    <FontFamily x:Key="TitleBarIconsFont">Segoe UI</FontFamily>
     <FontFamily x:Key="DefaultFont">Segoe UI</FontFamily>
 </ResourceDictionary>

@@ -12,19 +12,19 @@
     </WindowChrome.WindowChrome>
     <Grid>
         <Canvas Name="titleBar" Height="26" VerticalAlignment="Top">
-            <Rectangle Height="42" Margin="0,-16,0,0" Fill="#808080" Width="{Binding ElementName=titleBar, Path=ActualWidth}" />
-            <Label Content="PCSX2 Configurator" Canvas.Left="10" Foreground="White" FontSize="14"/>
-            <Button Name="titleBar_Fullscreen" Height="26" Width="26" Canvas.Right="85" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="FullscreenWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="⛶" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
-            <Button Name="titleBar_Minimize" Height="26" Width="26" Canvas.Right="55" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MinimizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗕" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
-            <Button Name="titleBar_Maximize" Height="26" Width="26" Canvas.Right="30" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MaximizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗖" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
-            <Button Name="titleBar_Close" Height="26" Width="26" Canvas.Right="5" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="CloseWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗙" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
+            <Rectangle Height="42" Margin="0,-16,0,0" Width="{Binding ElementName=titleBar, Path=ActualWidth}" Fill="{StaticResource TitleBarBrush}"/>
+            <Label Content="PCSX2 Configurator" Canvas.Left="10" Style="{StaticResource TitleTextStyle}" />
+            <Button Name="titleBar_Fullscreen" Height="26" Width="26" Canvas.Right="85" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="FullscreenWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="⛶" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" FontFamily="{StaticResource TitleBarIconsFont}"/>
+            <Button Name="titleBar_Minimize" Height="26" Width="26" Canvas.Right="55" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MinimizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗕" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" FontFamily="{StaticResource TitleBarIconsFont}" />
+            <Button Name="titleBar_Maximize" Height="26" Width="26" Canvas.Right="30" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="MaximizeWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗖" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" FontFamily="{StaticResource TitleBarIconsFont}" />
+            <Button Name="titleBar_Close" Height="26" Width="26" Canvas.Right="5" Canvas.Top="0" Background="{x:Null}" Foreground="White" BorderBrush="{x:Null}" FontSize="16" Click="CloseWindow" BorderThickness="0,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Content="🗙" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" FontFamily="{StaticResource TitleBarIconsFont}" />
         </Canvas>
         <DockPanel Margin="0,26,0,0">
             <Canvas Name="headerBar" Height="94" VerticalAlignment="Top">
                 <Rectangle Height="{Binding ElementName=headerBar, Path=ActualHeight}" Width="{Binding ElementName=headerBar, Path=ActualWidth}" Fill="{StaticResource ResourceKey=TopBannerBrush}" />
-                <Button Height="64" Width="64" FontSize="46" Cursor="Hand" Content="⚙" Canvas.Left="40" Canvas.Top="15" Click="OpenVersionManager">
+                <Button Cursor="Hand" Canvas.Left="40" Canvas.Top="15" Click="OpenVersionManager">
                     <Button.Style>
-                        <Style TargetType="Button">
+                        <Style TargetType="Button" BasedOn="{StaticResource SettingsButtonStyle}">
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Template">
                                 <Setter.Value>
@@ -38,12 +38,12 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Label Content="Games Library" FontSize="46" Canvas.Top="6" Canvas.Left="130" FontWeight="Bold" Foreground="White"/>
+                <Label Content="Games Library" Canvas.Top="6" Canvas.Left="130" Style="{StaticResource TopBannerTextStyle}"/>
             </Canvas>
         </DockPanel>
-        <TextBlock TextAlignment="Center" TextWrapping="Wrap" FontSize="80" Margin="200,250,200,0">
+        <TextBlock TextAlignment="Center" TextWrapping="Wrap" Margin="200,250,200,0">
             <TextBlock.Style>
-                <Style TargetType="TextBlock">
+                <Style TargetType="TextBlock" BasedOn="{StaticResource PlaceholderTextStyle}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding ElementName=gamesList, Path=Items.Count}" Value="0">
                             <Setter Property="Text" Value="Drop PS2 Disc Image Files Here" />
