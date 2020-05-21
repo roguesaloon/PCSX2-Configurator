@@ -19,7 +19,7 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
             services.AddTransient<IProcessHelpers, WindowsProcessHelpers>();
             
             SevenZipBase.SetLibraryPath(settings.SevenZipLibraryPath);
-            services.AddTransient<FileIniDataParser>();
+            services.AddTransient(provider => new FileIniDataParser());
 
             services.AddSingleton<IGameLibraryService, GameLibraryService>();
             services.AddSingleton<IEmulationService, EmulationService>();
