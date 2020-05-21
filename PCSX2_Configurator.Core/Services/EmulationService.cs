@@ -95,13 +95,19 @@ namespace PCSX2_Configurator.Services
             };
 
             using var emulator = Process.Start(startInfo);
-            var gameInfo = ReadInfoFromEmulatorWindow(emulator, retryCount: 4);
+            var gameInfo = ReadInfoFromEmulatorWindow(emulator, retryCount: 12);
             if(emulator.HasExited) return IdentifyGame(emulatorPath, gamePath);
 
             emulator.Kill();
             emulator.WaitForExit();
             emulator.Close();
             return gameInfo;
+        }
+
+        public void DisableErrorMessages(bool disable)
+        {
+            if (disable) processHelpers.SupressErrorMessages();
+            else processHelpers.RestoreErrorMessages();
         }
 
         private void ConfigurePluginWithAutoHotkey(string plugin, string emulatorPath, string configPath)
@@ -140,7 +146,7 @@ namespace PCSX2_Configurator.Services
                 {
                     var regionMatch = Regex.Match(window.title, "\\(.*?\\)");
                     gameTitle = window.title.Substring(0, regionMatch.Index).Trim();
-                    gameRegion = regionMatch.Value.Substring(1, regionMatch.Value.Length - 2);
+                    gameRegion = regionMatch.Value[1..^1];
                     gameId = idMatch.Value.Substring(1, 10);
                     break;
                 }

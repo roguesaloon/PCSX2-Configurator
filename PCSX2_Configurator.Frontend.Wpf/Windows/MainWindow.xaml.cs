@@ -158,6 +158,8 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                     .GroupBy(x => x.Index / 20)
                     .Select(x => x.Select(v => v.Value));
 
+                emulationService.DisableErrorMessages(true);
+
                 foreach (var group in groups)
                 {
                     Parallel.ForEach(group, model =>
@@ -173,6 +175,8 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                         });
                     });
                 }
+
+                emulationService.DisableErrorMessages(false);
 
                 FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
                 while (updateGameInfos.Count > 0) updateGameInfos.Dequeue()?.Invoke();

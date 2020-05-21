@@ -23,6 +23,9 @@ namespace PCSX2_Configurator.Helpers
         [DllImport("user32.dll")]
         private static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
 
+        [DllImport("kernel32.dll")]
+        private static extern int SetErrorMode(int newMode);
+
         private struct CopyData
         {
             public IntPtr dwData;
@@ -77,5 +80,8 @@ namespace PCSX2_Configurator.Helpers
             GetWindowText(hWnd, sb, sb.Capacity);
             return sb.ToString();
         }
+
+        public void SupressErrorMessages() => SetErrorMode(0x1 | 0x2);
+        public void RestoreErrorMessages() => SetErrorMode(0x0);
     }
 }

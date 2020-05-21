@@ -10,5 +10,6 @@
         string GetInisPath(string emulatorPath);
         void EnsureUsingIso(string inisPath);
         (string gameTitle, string gameRegion, string gameId) IdentifyGame(string emulatorPath, string gamePath);
+        void DisableErrorMessages(bool disable);
     }
 }
