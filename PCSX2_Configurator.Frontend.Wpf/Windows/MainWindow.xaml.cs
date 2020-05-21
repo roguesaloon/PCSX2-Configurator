@@ -152,17 +152,27 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 var inisPath = emulationService.GetInisPath(emulatorPath);
                 emulationService.EnsureUsingIso(inisPath);
                 FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", true);
-                Parallel.ForEach(gameModels, model =>
+
+                var groups = gameModels
+                    .Select((x, i) => new { Index = i, Value = x })
+                    .GroupBy(x => x.Index / 20)
+                    .Select(x => x.Select(v => v.Value));
+
+                foreach (var group in groups)
                 {
-                    if (model.GameInfo.GameId != null) return;
-                    var (name, region, id) = emulationService.IdentifyGame(emulatorPath, model.Path);
-                    model.GameInfo = new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id };
-                    updateGameInfos.Enqueue(() => gameLibraryService.UpdateGameInfo(model.Game, model.GameInfo, shouldReloadLibrary: true));
-                    Task.Run(async () => {
-                        model.CoverPath = await coverService.GetCoverForGame(model.GameInfo);
-                        model.Game = name ?? model.Game;
+                    Parallel.ForEach(group, model =>
+                    {
+                        if (model.GameInfo.GameId != null) return;
+                        var (name, region, id) = emulationService.IdentifyGame(emulatorPath, model.Path);
+                        model.GameInfo = new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id };
+                        updateGameInfos.Enqueue(() => gameLibraryService.UpdateGameInfo(model.GameInfo.Name, model.GameInfo, shouldReloadLibrary: true));
+                        Task.Run(async () =>
+                        {
+                            model.CoverPath = await coverService.GetCoverForGame(model.GameInfo);
+                            model.Game = name ?? model.Game;
+                        });
                     });
-                });
+                }
 
                 FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
                 while (updateGameInfos.Count > 0) updateGameInfos.Dequeue()?.Invoke();
