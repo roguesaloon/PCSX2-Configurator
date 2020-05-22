@@ -17,12 +17,17 @@ namespace PCSX2_Configurator.Services
         private readonly AppSettings appSettings;
         private readonly FileIniDataParser iniParser;
         private readonly IProcessHelpers processHelpers;
+        private readonly IFileHelpers fileHelpers;
 
-        public EmulationService(AppSettings appSettings, FileIniDataParser iniParser, IProcessHelpers processHelpers)
+        IProcessHelpers IEmulationService.ProcessHelpers => processHelpers;
+        IFileHelpers IEmulationService.FileHelpers => fileHelpers;
+
+        public EmulationService(AppSettings appSettings, FileIniDataParser iniParser, IProcessHelpers processHelpers, IFileHelpers fileHelpers)
         {
             this.appSettings = appSettings;
             this.iniParser = iniParser;
             this.processHelpers = processHelpers;
+            this.fileHelpers = fileHelpers;
         }
 
         public void LaunchWithGame(string emulatorPath, string gamePath, string configPath, string launchOptions)
@@ -95,19 +100,13 @@ namespace PCSX2_Configurator.Services
             };
 
             using var emulator = Process.Start(startInfo);
-            var gameInfo = ReadInfoFromEmulatorWindow(emulator, retryCount: 12);
+            var gameInfo = ReadInfoFromEmulatorWindow(emulator, retryCount: 4);
             if(emulator.HasExited) return IdentifyGame(emulatorPath, gamePath);
 
             emulator.Kill();
             emulator.WaitForExit();
             emulator.Close();
-            return gameInfo;
-        }
-
-        public void DisableErrorMessages(bool disable)
-        {
-            if (disable) processHelpers.SupressErrorMessages();
-            else processHelpers.RestoreErrorMessages();
+            return gameInfo.gameId != null ? gameInfo : IdentifyGame(emulatorPath, gamePath);
         }
 
         private void ConfigurePluginWithAutoHotkey(string plugin, string emulatorPath, string configPath)
@@ -146,8 +145,8 @@ namespace PCSX2_Configurator.Services
                 {
                     var regionMatch = Regex.Match(window.title, "\\(.*?\\)");
                     gameTitle = window.title.Substring(0, regionMatch.Index).Trim();
-                    gameRegion = regionMatch.Value[1..^1];
-                    gameId = idMatch.Value.Substring(1, 10);
+                    gameRegion = regionMatch?.Value[1..^1];
+                    gameId = idMatch?.Value?.Substring(1, 10);
                     break;
                 }
             }

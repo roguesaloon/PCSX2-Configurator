@@ -13,12 +13,14 @@ namespace PCSX2_Configurator.Services
     internal sealed class ConfigurationService : IConfigurationService
     {
         private readonly FileIniDataParser iniParser;
+        private readonly IFileHelpers fileHelpers;
         private readonly string configsDir;
         private readonly string compressedMemoryCard;
 
-        public ConfigurationService(AppSettings appSettings, FileIniDataParser iniParser)
+        public ConfigurationService(AppSettings appSettings, FileIniDataParser iniParser, IFileHelpers fileHelpers)
         {
             this.iniParser = iniParser;
+            this.fileHelpers = fileHelpers;
             configsDir = appSettings.ConfigsDirectory;
             compressedMemoryCard = appSettings.CompressedMemCard;
         }
@@ -30,10 +32,10 @@ namespace PCSX2_Configurator.Services
 
             CreateUiFile(configPath, inisPath, configOptions);
 
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopyVmSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.VmFileName}", $"{configPath}\\{ConfiguratorConstants.VmFileName}");
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopyGsdxSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.GsdxFileName}", $"{configPath}\\{ConfiguratorConstants.GsdxFileName}");
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopySpu2xSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.Spu2xFileName}", $"{configPath}\\{ConfiguratorConstants.Spu2xFileName}");
-            if (configOptions.Flags.HasFlag(ConfigFlags.CopyLilyPadSettings)) FileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.LilyPadFileName}", $"{configPath}\\{ConfiguratorConstants.LilyPadFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyVmSettings)) fileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.VmFileName}", $"{configPath}\\{ConfiguratorConstants.VmFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyGsdxSettings)) fileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.GsdxFileName}", $"{configPath}\\{ConfiguratorConstants.GsdxFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopySpu2xSettings)) fileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.Spu2xFileName}", $"{configPath}\\{ConfiguratorConstants.Spu2xFileName}");
+            if (configOptions.Flags.HasFlag(ConfigFlags.CopyLilyPadSettings)) fileHelpers.CopyWithoutException($"{inisPath}\\{ConfiguratorConstants.LilyPadFileName}", $"{configPath}\\{ConfiguratorConstants.LilyPadFileName}");
 
             SetVmSettings(configPath, configOptions);
 

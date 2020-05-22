@@ -19,9 +19,10 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private readonly AppSettings settings;
         private readonly IConfigurationService configurationService;
         private readonly IEmulationService emulationService;
+        private readonly IFileHelpers fileHelpers;
         private GameModel gameModel;
 
-        public ConfigWizard(AppSettings settings, IConfigurationService configurationService, IEmulationService emulationService)
+        public ConfigWizard(AppSettings settings, IConfigurationService configurationService, IEmulationService emulationService, IFileHelpers fileHelpers)
         {
             InitializeComponent();
             this.configurationService = configurationService;
@@ -35,7 +36,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             version.ItemsSource = GameModel.Versions;
             version.SelectedItem = gameModel.Version;
             configName.Text = gameModel.Game.ToLowerInvariant().Replace(", the ", " ").Replace(" - ", "-").Replace(" ", "-");
-            configName.Text = FileHelpers.GetFileNameSafeString(configName.Text);
+            configName.Text = fileHelpers.GetFileNameSafeString(configName.Text);
             Show();
         }
 

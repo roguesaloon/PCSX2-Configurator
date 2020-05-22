@@ -16,7 +16,8 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
             configuration.Bind(settings, options => options.BindNonPublicProperties = true);
             services.AddTransient(provider => settings);
 
-            services.AddTransient<IProcessHelpers, WindowsProcessHelpers>();
+            services.AddSingleton<IProcessHelpers, WindowsProcessHelpers>();
+            services.AddSingleton<IFileHelpers, FileHelpers>();
             
             SevenZipBase.SetLibraryPath(settings.SevenZipLibraryPath);
             services.AddTransient(provider => new FileIniDataParser());

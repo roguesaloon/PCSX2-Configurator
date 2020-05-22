@@ -29,6 +29,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private readonly IEmulationService emulationService;
         private readonly ICoverService coverService;
         private readonly IVersionManagementService versionManagementService;
+        private readonly IFileHelpers fileHelpers;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
         private void MaximizeWindow(object sender, RoutedEventArgs e)
@@ -57,7 +58,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             base.OnStateChanged(e);
         }
 
-        public MainWindow(AppSettings settings, IGameLibraryService gameLibraryService, IEmulationService emulationService, ICoverService coverService, IVersionManagementService versionManagementService)
+        public MainWindow(AppSettings settings, IGameLibraryService gameLibraryService, IEmulationService emulationService, ICoverService coverService, IVersionManagementService versionManagementService, IFileHelpers fileHelpers)
         {
             InitializeComponent();
             this.settings = settings;
@@ -65,6 +66,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             this.emulationService = emulationService;
             this.coverService = coverService;
             this.versionManagementService = versionManagementService;
+            this.fileHelpers = fileHelpers;
 
             PopulateGameModelsFromLibrary();
             gamesList.ItemsSource = gameModels; 
@@ -127,7 +129,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
 
             var files = e.Data.GetData(DataFormats.FileDrop) as string[];
             files = files
-                .SelectMany(path => Directory.Exists(path) ? FileHelpers.GetFilesToDepth(path, 3) : new string[] { path })
+                .SelectMany(path => Directory.Exists(path) ? fileHelpers.GetFilesToDepth(path, 3) : new string[] { path })
                 .Where(file => new string[] { ".iso", ".mdf", ".nrg", ".bin", ".img", ".dump", ".gz", ".cso" }.Contains(Path.GetExtension(file).ToLowerInvariant()))
                 .OrderBy(file => file)
                 .ToArray();
@@ -145,42 +147,14 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 AddGameModel(gameInfo);
             }
 
-            Task.Run(() =>
+            var emulatorPath = settings.Versions[versionToUse];
+            var gameInfos = gameModels.Select(x => x.GameInfo);
+            Task.Run(() => emulationService.ImportGames(emulatorPath, gameInfos, gameLibraryService, coverService, (info, cover) =>
             {
-                var updateGameInfos = new Queue<Action>();
-                var emulatorPath = settings.Versions[versionToUse];
-                var inisPath = emulationService.GetInisPath(emulatorPath);
-                emulationService.EnsureUsingIso(inisPath);
-                FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", true);
-
-                var groups = gameModels
-                    .Select((x, i) => new { Index = i, Value = x })
-                    .GroupBy(x => x.Index / 20)
-                    .Select(x => x.Select(v => v.Value));
-
-                emulationService.DisableErrorMessages(true);
-
-                foreach (var group in groups)
-                {
-                    Parallel.ForEach(group, model =>
-                    {
-                        if (model.GameInfo.GameId != null) return;
-                        var (name, region, id) = emulationService.IdentifyGame(emulatorPath, model.Path);
-                        model.GameInfo = new GameInfo(model.GameInfo) { DisplayName = name, Region = region, GameId = id };
-                        updateGameInfos.Enqueue(() => gameLibraryService.UpdateGameInfo(model.GameInfo.Name, model.GameInfo, shouldReloadLibrary: true));
-                        Task.Run(async () =>
-                        {
-                            model.CoverPath = await coverService.GetCoverForGame(model.GameInfo);
-                            model.Game = name ?? model.Game;
-                        });
-                    });
-                }
-
-                emulationService.DisableErrorMessages(false);
-
-                FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
-                while (updateGameInfos.Count > 0) updateGameInfos.Dequeue()?.Invoke();
-            });
+                var model = gameModels.First(model => model.GameInfo.Name == info.Name);
+                model.GameInfo = info;
+                model.CoverPath = cover;
+            }));
         }
 
         private void SetVersion(object sender, RoutedEventArgs e)

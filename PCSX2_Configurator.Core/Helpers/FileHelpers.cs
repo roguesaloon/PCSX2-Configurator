@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace PCSX2_Configurator.Helpers
 {
-    public static class FileHelpers
+    public sealed class FileHelpers : IFileHelpers
     {
-        internal static void CopyWithoutException(string sourceFileName, string destFileName)
+        void IFileHelpers.CopyWithoutException(string sourceFileName, string destFileName)
         {
             try
             {
@@ -18,16 +18,16 @@ namespace PCSX2_Configurator.Helpers
             }
         }
 
-        public static string[] GetFilesToDepth(string path, int depth)
+        public string[] GetFilesToDepth(string path, int depth)
         {
             var directories = Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly);
             return depth == (int)SearchOption.TopDirectoryOnly || !directories.Any() ? directories : GetFilesToDepth(path, depth - 1);
         }
 
-        public static string GetFileNameSafeString(string fileName) => 
+        public string GetFileNameSafeString(string fileName) => 
             Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
 
-        public static void SetFileToReadOnly(string fileName, bool @readonly) => new FileInfo(fileName)
+        public void SetFileToReadOnly(string fileName, bool @readonly) => new FileInfo(fileName)
         {
             IsReadOnly = @readonly
         };
