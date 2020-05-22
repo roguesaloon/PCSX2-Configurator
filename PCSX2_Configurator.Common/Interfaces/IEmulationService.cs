@@ -25,7 +25,7 @@ namespace PCSX2_Configurator.Services
             var inisPath = GetInisPath(emulatorPath);
             EnsureUsingIso(inisPath);
             FileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", true);
-            ProcessHelpers.SupressErrorMessages();
+            ProcessHelpers.SuppressErrorMessages();
 
             var groups = gameInfos
                 .Select((x, i) => new { Index = i, Value = x })

@@ -81,7 +81,7 @@ namespace PCSX2_Configurator.Helpers
             return sb.ToString();
         }
 
-        public void SupressErrorMessages() => SetErrorMode(0x1 | 0x2);
+        public void SuppressErrorMessages() => SetErrorMode(0x1 | 0x2);
         public void RestoreErrorMessages() => SetErrorMode(0x0);
     }
 }
