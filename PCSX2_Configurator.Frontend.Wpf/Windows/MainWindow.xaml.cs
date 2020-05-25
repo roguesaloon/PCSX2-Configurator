@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.Windows.Shell;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Services;
 using PCSX2_Configurator.Settings;
@@ -27,6 +26,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private readonly AppSettings settings;
         private readonly IGameLibraryService gameLibraryService;
         private readonly IEmulationService emulationService;
+        private readonly IIdentificationService identificationService;
         private readonly ICoverService coverService;
         private readonly IVersionManagementService versionManagementService;
         private readonly IFileHelpers fileHelpers;
@@ -58,12 +58,13 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             base.OnStateChanged(e);
         }
 
-        public MainWindow(AppSettings settings, IGameLibraryService gameLibraryService, IEmulationService emulationService, ICoverService coverService, IVersionManagementService versionManagementService, IFileHelpers fileHelpers)
+        public MainWindow(AppSettings settings, IGameLibraryService gameLibraryService, IEmulationService emulationService, IIdentificationService identificationService, ICoverService coverService, IVersionManagementService versionManagementService, IFileHelpers fileHelpers)
         {
             InitializeComponent();
             this.settings = settings;
             this.gameLibraryService = gameLibraryService;
             this.emulationService = emulationService;
+            this.identificationService = identificationService;
             this.coverService = coverService;
             this.versionManagementService = versionManagementService;
             this.fileHelpers = fileHelpers;
@@ -149,7 +150,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
 
             var emulatorPath = settings.Versions[versionToUse];
             var gameInfos = gameModels.Select(x => x.GameInfo);
-            Task.Run(() => emulationService.ImportGames(emulatorPath, gameInfos, gameLibraryService, coverService, (info, cover) =>
+            Task.Run(() => identificationService.ImportGames(emulatorPath, gameInfos, (info, cover) =>
             {
                 var model = gameModels.First(model => model.GameInfo.Name == info.Name);
                 model.GameInfo = info;
