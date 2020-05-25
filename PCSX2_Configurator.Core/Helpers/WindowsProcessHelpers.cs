@@ -25,7 +25,7 @@ namespace PCSX2_Configurator.Helpers
 
         [DllImport("kernel32.dll")]
         private static extern int SetErrorMode(int newMode);
-
+        [StructLayout(LayoutKind.Sequential)]
         private struct CopyData
         {
             public IntPtr dwData;
@@ -35,6 +35,29 @@ namespace PCSX2_Configurator.Helpers
 
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref CopyData lParam);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct StartupInfo
+        {
+            public int cb;
+            public string lpReserved, lpDesktop, lpTitle;
+            public int dwX, dwY, dwXSize, dwYSize;
+            public int dwXCountChars, dwYCountChars;
+            public int dwFillAttribute, dwFlags, wShowWindow;
+            public int cbReserved2, lpReserved2;
+            public int hStdInput, hStdOutput, hStdError;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct ProcessInfo
+        {
+            public IntPtr hProcess, hThread;
+            public int dwProcessId, dwThreadId;
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, 
+            bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref StartupInfo lpStartupInfo, out ProcessInfo lpProcessInformation);
 
         public (IntPtr handle, string title) FindWindowForProcess(int processId, Func<string, bool> filter)
         {
@@ -81,7 +104,16 @@ namespace PCSX2_Configurator.Helpers
             return sb.ToString();
         }
 
-        public void SuppressErrorMessages() => SetErrorMode(0x1 | 0x2);
-        public void RestoreErrorMessages() => SetErrorMode(0x0);
+        public int StartProcess(string processPath, string arguments, string workingDirectory, int windowStyle)
+        {
+            var startupInfo = new StartupInfo();
+            startupInfo.cb = Marshal.SizeOf(startupInfo);
+            startupInfo.dwFlags = 0x1;
+            startupInfo.wShowWindow = windowStyle;
+
+            CreateProcess(null, processPath + " " + arguments, IntPtr.Zero, IntPtr.Zero, true, 0, IntPtr.Zero, workingDirectory, ref startupInfo, out var processInfo);
+
+            return processInfo.dwProcessId;
+        }
     }
 }

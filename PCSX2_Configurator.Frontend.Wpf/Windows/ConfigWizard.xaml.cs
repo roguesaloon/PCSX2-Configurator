@@ -28,6 +28,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             this.configurationService = configurationService;
             this.emulationService = emulationService;
             this.settings = settings;
+            this.fileHelpers = fileHelpers;
         }
 
         public void Show(GameModel gameModel)

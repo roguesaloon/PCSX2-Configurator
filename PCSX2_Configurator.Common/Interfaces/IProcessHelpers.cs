@@ -7,7 +7,6 @@ namespace PCSX2_Configurator.Helpers
         string GetWindowTitleText(IntPtr window);
         (IntPtr handle, string title) FindWindowForProcess(int processId, Func<string, bool> filter = null);
         void SendMessageCopyDataToWindowAnsi(IntPtr window, string data);
-        void SuppressErrorMessages();
-        void RestoreErrorMessages();
+        int StartProcess(string processPath, string arguments, string workingDirectory, int windowStyle);
     }
 }
