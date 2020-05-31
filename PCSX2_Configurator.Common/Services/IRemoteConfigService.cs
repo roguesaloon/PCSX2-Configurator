@@ -2,7 +2,6 @@
 {
     public interface IRemoteConfigService
     {
-        void UpdateFromRemote();
-        void ImportConfig(string directoryName, string inisPath);
+        void ImportConfig(string gameId, string emulatorPath);
     }
 }

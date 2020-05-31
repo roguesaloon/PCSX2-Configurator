@@ -13,6 +13,7 @@ using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Services;
 using PCSX2_Configurator.Settings;
 using PCSX2_Configurator.Helpers;
+using LibGit2Sharp;
 
 namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
@@ -29,6 +30,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private readonly IIdentificationService identificationService;
         private readonly ICoverService coverService;
         private readonly IVersionManagementService versionManagementService;
+        private readonly IRemoteConfigService remoteConfigService;
         private readonly IFileHelpers fileHelpers;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
@@ -70,8 +72,8 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             this.coverService = coverService;
             this.versionManagementService = versionManagementService;
             this.fileHelpers = fileHelpers;
+            this.remoteConfigService = remoteConfigService;
 
-            remoteConfigService.UpdateFromRemote();
             PopulateGameModelsFromLibrary();
             gamesList.ItemsSource = gameModels; 
         }
@@ -158,6 +160,8 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 var model = gameModels.First(model => model.GameInfo.Name == info.Name);
                 model.GameInfo = info;
                 model.CoverPath = cover;
+
+                remoteConfigService.ImportConfig(info.GameId, emulatorPath);
             }));
         }
 

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Xml;
 using LibGit2Sharp;
 using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Settings;
@@ -12,28 +15,39 @@ namespace PCSX2_Configurator.Services
         private readonly string remoteConfigsPath;
         private readonly string remote = "https://github.com/Zombeaver/PCSX2-Configs";
         private readonly IConfigurationService configurationService;
+        private readonly IEmulationService emulationService;
+        private readonly XmlDocument remoteIndex;
 
-        public RemoteConfigService(AppSettings appSettings, IConfigurationService configurationService)
+        public RemoteConfigService(AppSettings appSettings, IConfigurationService configurationService, IEmulationService emulationService)
         {
             remoteConfigsPath = appSettings.RemoteConfigsPath ?? "Remote";
             this.configurationService = configurationService;
+            this.emulationService = emulationService;
+            remoteIndex = new XmlDocument();
+
+            Task.Run(UpdateFromRemote).ContinueWith(task => remoteIndex.Load($"{remoteConfigsPath}\\RemoteIndex.xml"));
         }
 
-        public void ImportConfig(string directoryName, string inisPath)
+        public void ImportConfig(string gameId, string emulatorPath)
         {
-            if (!Directory.GetDirectories(remoteConfigsPath).Any(directory => directory == directoryName)) throw new Exception("Config does not exist");
-            var configPath = $"{remoteConfigsPath}\\{directoryName}";
-            var configName = Path.GetDirectoryName(configPath);
+            var configElement = remoteIndex.SelectSingleNode($"//Config[GameIds/GameId = '{gameId}']") as XmlElement;
+            var configDirectory = configElement.GetAttribute("Name");
+            var availableConfigs = Directory.GetDirectories($"{remoteConfigsPath}\\Game Configs").Select(dir => Path.GetFileName(dir));
+            if (!availableConfigs.Any(directory => directory == configDirectory)) return;
+            var configPath = $"{remoteConfigsPath}\\Game Configs\\{configDirectory}";
+            var configName = Regex.Replace(configDirectory, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
+            var inisPath = emulationService.GetInisPath(emulatorPath);
             var importedConfigPath = configurationService.CreateConfig(configName, inisPath, ConfigOptions.Default);
 
+            // Additional Merge Operations, copy is placeholder
             foreach (var file in Directory.GetFiles(configPath))
             {
                 var fileName = Path.GetFileName(file);
-                File.Copy(file, $"{importedConfigPath}\\{fileName}");
+                File.Copy(file, $"{importedConfigPath}\\{fileName}", overwrite: true);
             }
         }
 
-        public void UpdateFromRemote()
+        private void UpdateFromRemote()
         {
             if (Directory.Exists(remoteConfigsPath))
             {
