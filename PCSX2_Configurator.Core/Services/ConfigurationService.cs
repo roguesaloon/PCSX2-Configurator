@@ -42,18 +42,6 @@ namespace PCSX2_Configurator.Services
             return configPath;
         }
 
-        public void ImportConfig(string configPath, string inisPath, ConfigOptions settingsOptions)
-        {
-            var configName = Path.GetDirectoryName(configPath);
-            var importedConfigPath = CreateConfig(configName, inisPath, settingsOptions);
-
-            foreach (var file in Directory.GetFiles(configPath))
-            {
-                var fileName = Path.GetFileName(file);
-                File.Copy(file, $"{importedConfigPath}\\{fileName}");
-            }
-        }
-
         private void SetVmSettings(string configPath, ConfigOptions configOptions)
         {
             var targetVmFile = $"{configPath}\\{ConfiguratorConstants.VmFileName}";

@@ -58,7 +58,9 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             base.OnStateChanged(e);
         }
 
-        public MainWindow(AppSettings settings, IGameLibraryService gameLibraryService, IEmulationService emulationService, IIdentificationService identificationService, ICoverService coverService, IVersionManagementService versionManagementService, IFileHelpers fileHelpers)
+        public MainWindow(AppSettings settings, 
+            IGameLibraryService gameLibraryService, IEmulationService emulationService, IIdentificationService identificationService, 
+            ICoverService coverService, IRemoteConfigService remoteConfigService,  IVersionManagementService versionManagementService, IFileHelpers fileHelpers)
         {
             InitializeComponent();
             this.settings = settings;
@@ -69,6 +71,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             this.versionManagementService = versionManagementService;
             this.fileHelpers = fileHelpers;
 
+            remoteConfigService.UpdateFromRemote();
             PopulateGameModelsFromLibrary();
             gamesList.ItemsSource = gameModels; 
         }

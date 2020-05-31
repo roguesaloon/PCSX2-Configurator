@@ -28,6 +28,7 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
             services.AddSingleton<ICoverService, ChainedCoverService>();
             services.AddSingleton<IIdentificationService, EmulatorIdentificationService>();
             services.AddSingleton<IVersionManagementService, VersionManagementService>();
+            services.AddSingleton<IRemoteConfigService, RemoteConfigService>();
         }
     }
 }

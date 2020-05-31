@@ -7,27 +7,33 @@ using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Services
 {
-    internal sealed class RemoteConfigurationService
+    internal sealed class RemoteConfigService : IRemoteConfigService
     {
         private readonly string remoteConfigsPath;
         private readonly string remote = "https://github.com/Zombeaver/PCSX2-Configs";
-        private readonly ConfigurationService configurationService;
+        private readonly IConfigurationService configurationService;
 
-        public RemoteConfigurationService(AppSettings appSettings, ConfigurationService configurationService)
+        public RemoteConfigService(AppSettings appSettings, IConfigurationService configurationService)
         {
             remoteConfigsPath = appSettings.RemoteConfigsPath ?? "Remote";
             this.configurationService = configurationService;
-
-            UpdateFromRemote();
         }
 
         public void ImportConfig(string directoryName, string inisPath)
         {
             if (!Directory.GetDirectories(remoteConfigsPath).Any(directory => directory == directoryName)) throw new Exception("Config does not exist");
-            configurationService.ImportConfig($"{remoteConfigsPath}\\{directoryName}", inisPath, ConfigOptions.Default);
+            var configPath = $"{remoteConfigsPath}\\{directoryName}";
+            var configName = Path.GetDirectoryName(configPath);
+            var importedConfigPath = configurationService.CreateConfig(configName, inisPath, ConfigOptions.Default);
+
+            foreach (var file in Directory.GetFiles(configPath))
+            {
+                var fileName = Path.GetFileName(file);
+                File.Copy(file, $"{importedConfigPath}\\{fileName}");
+            }
         }
 
-        private void UpdateFromRemote()
+        public void UpdateFromRemote()
         {
             if (Directory.Exists(remoteConfigsPath))
             {
