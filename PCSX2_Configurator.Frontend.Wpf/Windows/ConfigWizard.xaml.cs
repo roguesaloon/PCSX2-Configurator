@@ -54,7 +54,6 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             var inisPath = emulationService.GetInisPath(settings.Versions[selectedVersion]);
             var options = GetConfigOptions();
             configurationService.CreateConfig(givenName, inisPath, options);
-            settings.UpdateConfigs();
             GameModel.Configs = settings.Configs.Keys;
             gameModel.Version = selectedVersion;
             gameModel.Config = givenName;

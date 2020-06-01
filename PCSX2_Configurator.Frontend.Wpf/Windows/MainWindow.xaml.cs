@@ -162,6 +162,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 model.CoverPath = cover;
 
                 remoteConfigService.ImportConfig(info.GameId, emulatorPath);
+                GameModel.Configs = settings.Configs.Keys;
             }));
         }
 

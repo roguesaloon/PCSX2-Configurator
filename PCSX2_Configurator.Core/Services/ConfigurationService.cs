@@ -12,6 +12,7 @@ namespace PCSX2_Configurator.Services
 {
     internal sealed class ConfigurationService : IConfigurationService
     {
+        private readonly AppSettings appSettings;
         private readonly FileIniDataParser iniParser;
         private readonly IFileHelpers fileHelpers;
         private readonly string configsDir;
@@ -19,6 +20,7 @@ namespace PCSX2_Configurator.Services
 
         public ConfigurationService(AppSettings appSettings, FileIniDataParser iniParser, IFileHelpers fileHelpers)
         {
+            this.appSettings = appSettings;
             this.iniParser = iniParser;
             this.fileHelpers = fileHelpers;
             configsDir = appSettings.ConfigsDirectory;
@@ -39,6 +41,7 @@ namespace PCSX2_Configurator.Services
 
             SetVmSettings(configPath, configOptions);
 
+            appSettings.UpdateConfigs();
             return configPath;
         }
 
