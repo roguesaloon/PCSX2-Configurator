@@ -30,7 +30,6 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private readonly IIdentificationService identificationService;
         private readonly ICoverService coverService;
         private readonly IVersionManagementService versionManagementService;
-        private readonly IRemoteConfigService remoteConfigService;
         private readonly IFileHelpers fileHelpers;
 
         private void CloseWindow(object sender, RoutedEventArgs e) => Close();
@@ -62,7 +61,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
 
         public MainWindow(AppSettings settings, 
             IGameLibraryService gameLibraryService, IEmulationService emulationService, IIdentificationService identificationService, 
-            ICoverService coverService, IRemoteConfigService remoteConfigService,  IVersionManagementService versionManagementService, IFileHelpers fileHelpers)
+            ICoverService coverService, IVersionManagementService versionManagementService, IFileHelpers fileHelpers)
         {
             InitializeComponent();
             this.settings = settings;
@@ -72,7 +71,6 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             this.coverService = coverService;
             this.versionManagementService = versionManagementService;
             this.fileHelpers = fileHelpers;
-            this.remoteConfigService = remoteConfigService;
 
             PopulateGameModelsFromLibrary();
             gamesList.ItemsSource = gameModels; 
@@ -160,10 +158,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 var model = gameModels.First(model => model.GameInfo.Name == info.Name);
                 model.GameInfo = info;
                 model.CoverPath = cover;
-
-                remoteConfigService.ImportConfig(info.GameId, emulatorPath);
-                GameModel.Configs = settings.Configs.Keys;
-            }));
+            }, () => GameModel.Configs = settings.Configs.Keys));
         }
 
         private void SetVersion(object sender, RoutedEventArgs e)

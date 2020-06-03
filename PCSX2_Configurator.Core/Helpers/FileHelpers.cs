@@ -6,11 +6,11 @@ namespace PCSX2_Configurator.Helpers
 {
     public sealed class FileHelpers : IFileHelpers
     {
-        void IFileHelpers.CopyWithoutException(string sourceFileName, string destFileName)
+        void IFileHelpers.CopyWithoutException(string sourceFileName, string destFileName, bool overwrite)
         {
             try
             {
-                File.Copy(sourceFileName, destFileName);
+                File.Copy(sourceFileName, destFileName, overwrite);
             }
             catch (Exception e)
             {

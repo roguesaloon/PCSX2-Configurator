@@ -18,7 +18,8 @@ namespace PCSX2_Configurator.Services
         private readonly IFileHelpers fileHelpers;
         private readonly IProcessHelpers processHelpers;
 
-        public EmulatorIdentificationService(AppSettings appSettings, IGameLibraryService gameLibraryService, ICoverService coverService, IEmulationService emulationService, IFileHelpers fileHelpers, IProcessHelpers processHelpers) : base(gameLibraryService, coverService)
+        public EmulatorIdentificationService(AppSettings appSettings, IGameLibraryService gameLibraryService, ICoverService coverService, IEmulationService emulationService, IRemoteConfigService remoteConfigService, 
+            IFileHelpers fileHelpers, IProcessHelpers processHelpers) : base(gameLibraryService, coverService, remoteConfigService)
         {
             this.appSettings = appSettings;
             this.emulationService = emulationService;
@@ -81,13 +82,13 @@ namespace PCSX2_Configurator.Services
             return (gameTitle, gameRegion, gameId);
         }
 
-        public async override Task ImportGames(string emulatorPath, IEnumerable<GameInfo> gameInfos, Action<GameInfo, string> callback)
+        public async override Task ImportGames(string emulatorPath, IEnumerable<GameInfo> gameInfos, Action<GameInfo, string> callback, Action defferedCallback)
         {
             var inisPath = emulationService.GetInisPath(emulatorPath);
             emulationService.EnsureUsingIso(inisPath);
             fileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", true);
 
-            await base.ImportGames(emulatorPath, gameInfos, callback);
+            await base.ImportGames(emulatorPath, gameInfos, callback, defferedCallback);
 
             fileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
         }
