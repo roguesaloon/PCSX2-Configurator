@@ -33,6 +33,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             }
         }
 
+        private static IEnumerable<ConfigModel> configModels = new List<ConfigModel>();
         private static IEnumerable<string> configs = new List<string>();
         public static IEnumerable<string> Configs
         {
@@ -40,6 +41,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
             set
             {
                 configs = value;
+                configModels = configs.Select(name => new ConfigModel(name));
                 foreach (var model in gameModels)
                 {
                     model.PropertyChanged?.Invoke(model, new PropertyChangedEventArgs(nameof(ConfigsAndStates)));
@@ -48,13 +50,14 @@ namespace PCSX2_Configurator.Frontend.Wpf
             }
         }
 
+        private IEnumerable<ConfigModel> FilteredConfigs => configModels.Where(config => config.GameIds != null && config.GameIds.Contains(GameInfo.GameId) || config.GameIds == null);
         public IEnumerable<Tuple<string, bool>> VersionsAndStates => Versions.Select(version => new Tuple<string, bool>(version, Version == version));
-        public IEnumerable<Tuple<string, bool>> ConfigsAndStates => Configs.Select(config => new Tuple<string, bool>(config, Config == config));
+        public IEnumerable<Tuple<string, bool>> ConfigsAndStates => FilteredConfigs.Select(config => new Tuple<string, bool>(config.Name, Config == config.Name));
 
         public bool HasVersions => VersionsAndStates.Count() > 0;
         public bool HasConfigs => ConfigsAndStates.Count() > 0;
 
-        public bool HasConfig => Config != null && Configs.Contains(Config);
+        public bool HasConfig => Config != null && FilteredConfigs.Select(config => config.Name).Contains(Config);
 
         public string Version { get; set; }
         public string Config { get; set; }

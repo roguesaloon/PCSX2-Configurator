@@ -10,7 +10,7 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
 {
     public static class Pcsx2ConfiguratorServiceConfigurationExtensions
     {
-        public static void AddPcsx2ConfiguratorCoreServices(this IServiceCollection services, IConfiguration configuration)
+        public static AppSettings AddPcsx2ConfiguratorCoreServices(this IServiceCollection services, IConfiguration configuration)
         {
             var settings = new AppSettings();
             configuration.Bind(settings, options => options.BindNonPublicProperties = true);
@@ -29,6 +29,8 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
             services.AddSingleton<IIdentificationService, EmulatorIdentificationService>();
             services.AddSingleton<IVersionManagementService, VersionManagementService>();
             services.AddSingleton<IRemoteConfigService, RemoteConfigService>();
+
+            return settings;
         }
     }
 }

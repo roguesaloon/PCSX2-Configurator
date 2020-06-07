@@ -38,10 +38,8 @@ namespace PCSX2_Configurator.Services
 
         public void ImportConfig(string gameId, string emulatorPath)
         {
-            var configElement = remoteIndex.SelectSingleNode($"//Config[GameIds/GameId = '{gameId}']") as XmlElement;
+            if (!(remoteIndex.SelectSingleNode($"//Config[GameIds/GameId = '{gameId}']") is XmlElement configElement)) return;
             var configDirectory = configElement.GetAttribute("Name");
-            var availableConfigs = Directory.GetDirectories($"{remoteConfigsPath}\\Game Configs").Select(dir => Path.GetFileName(dir));
-            if (!availableConfigs.Any(directory => directory == configDirectory)) return;
             var configPath = $"{remoteConfigsPath}\\Game Configs\\{configDirectory}";
             var configName = Regex.Replace(configDirectory, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
             var inisPath = emulationService.GetInisPath(emulatorPath);
@@ -95,7 +93,10 @@ namespace PCSX2_Configurator.Services
                 File.Copy(file, destination, overwrite: true);
             }
 
-            // Ensure new config is only visible to relevent game ids
+            // Game Ids
+            var gameIds = configElement.SelectNodes("GameIds/GameId").Cast<XmlNode>().Select(x => x.InnerText);
+            File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
+
             // Colour code remote games with a status
             // Auto Apply Config as option (in user settings)
         }

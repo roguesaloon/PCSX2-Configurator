@@ -36,7 +36,9 @@ namespace PCSX2_Configurator.Frontend.Wpf
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddPcsx2ConfiguratorCoreServices(context.Configuration);
+            var settings = services.AddPcsx2ConfiguratorCoreServices(context.Configuration);
+
+            typeof(ConfigModel).GetProperty(nameof(ConfigModel.ConfigsDirectory)).SetValue(null, settings.ConfigsDirectory);
 
             services.AddSingleton<MainWindow>();
             services.AddTransient<ConfigWizard>();

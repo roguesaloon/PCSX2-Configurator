@@ -13,7 +13,6 @@ using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Services;
 using PCSX2_Configurator.Settings;
 using PCSX2_Configurator.Helpers;
-using LibGit2Sharp;
 
 namespace PCSX2_Configurator.Frontend.Wpf.Windows
 {
