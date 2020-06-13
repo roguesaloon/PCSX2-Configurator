@@ -13,7 +13,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         public GameInfo GameInfo { get; set; }
 
-        public string Game { get; set; }
+        public string Game { get => GameInfo?.DisplayName ?? GameInfo?.Name; }
         public string Path { get; set; }
         public string CoverPath { get; set; }
         public string LaunchOptions { get; set; }

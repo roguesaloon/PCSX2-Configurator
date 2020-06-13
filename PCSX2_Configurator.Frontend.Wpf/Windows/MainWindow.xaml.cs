@@ -99,7 +99,6 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         {
             gameModels.Add(new GameModel
             {
-                Game = game.DisplayName ?? game.Name,
                 Path = game.Path,
                 Version = game.EmuVersion,
                 Config = game.Config,
