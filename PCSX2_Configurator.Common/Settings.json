@@ -50,5 +50,8 @@
       }
     ],
     "DevVersions": "https://buildbot.orphis.net/pcsx2/index.php"
+  },
+  "UserSettings": {
+    "AutoApplyRemoteConfigs": true
   }
 }

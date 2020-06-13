@@ -54,8 +54,9 @@ namespace PCSX2_Configurator.Frontend.Wpf
         public IEnumerable<Tuple<string, bool>> VersionsAndStates => Versions.Select(version => new Tuple<string, bool>(version, Version == version));
         public IEnumerable<Tuple<string, bool>> ConfigsAndStates => FilteredConfigs.Select(config => new Tuple<string, bool>(config.Name, Config == config.Name));
 
-        public bool HasVersions => VersionsAndStates.Count() > 0;
-        public bool HasConfigs => ConfigsAndStates.Count() > 0;
+        public bool HasVersions => Versions.Count() > 0;
+        public bool HasConfigs => FilteredConfigs.Count() > 0;
+        public string RemoteConfig => FilteredConfigs.FirstOrDefault(config => config.IsRemote).Name;
 
         public bool HasConfig => Config != null && FilteredConfigs.Select(config => config.Name).Contains(Config);
 

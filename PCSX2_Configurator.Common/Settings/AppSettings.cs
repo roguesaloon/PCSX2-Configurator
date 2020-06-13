@@ -49,6 +49,16 @@ namespace PCSX2_Configurator.Settings
             await File.WriteAllTextAsync("settings.json", settingsJson);
         }
 
+        public Dictionary<string, object> UserSettings { get; private set; } = new Dictionary<string, object>();
+        public async Task UpdateUserSettings()
+        {
+            var settingsJson = await File.ReadAllTextAsync("settings.json");
+            var settingsObj = JsonConvert.DeserializeObject<JObject>(settingsJson);
+            settingsObj[nameof(UserSettings)] = JToken.FromObject(UserSettings);
+            settingsJson = JsonConvert.SerializeObject(settingsObj, Formatting.Indented);
+            await File.WriteAllTextAsync("settings.json", settingsJson);
+        }
+
 
         private Dictionary<string, string> configs;
         public Dictionary<string, string> Configs

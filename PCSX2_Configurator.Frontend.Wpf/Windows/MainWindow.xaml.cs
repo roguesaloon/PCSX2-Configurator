@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shell;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Services;
@@ -22,6 +23,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
     public partial class MainWindow : Window
     {
         private ObservableCollection<GameModel> gameModels;
+        private UserSettingsModel userSettingsModel;
 
         private readonly AppSettings settings;
         private readonly IGameLibraryService gameLibraryService;
@@ -72,7 +74,9 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             this.fileHelpers = fileHelpers;
 
             PopulateGameModelsFromLibrary();
-            gamesList.ItemsSource = gameModels; 
+            userSettingsModel = new UserSettingsModel(settings.UserSettings);
+            gamesList.ItemsSource = gameModels;
+            settingsMenu.DataContext = userSettingsModel;
         }
 
         private void PopulateGameModelsFromLibrary()
@@ -91,7 +95,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 gameModels[index].CoverPath = await coverService.GetCoverForGame(gameLibraryService.Games[index])));
         }
 
-        private void AddGameModel(GameInfo game)
+        private GameModel AddGameModel(GameInfo game)
         {
             gameModels.Add(new GameModel
             {
@@ -103,6 +107,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 CoverPath = settings.Covers.LoadingCover,
                 GameInfo = game
             });
+            return gameModels.Last();
         }
 
         private void OnClosing(object sender, CancelEventArgs e)
@@ -110,13 +115,14 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             SaveBindings();
         }
 
-        private void SaveBindings()
+        private async void SaveBindings()
         {
             foreach (var game in gameModels)
             {
                 var gameInfo = gameLibraryService.Games.FirstOrDefault(x => x.DisplayName == game.Game);
                 if(gameInfo != null) gameLibraryService.UpdateGameInfo(gameInfo.Name, new GameInfo(gameInfo) { EmuVersion = game.Version, Config = game.Config, LaunchOptions = game.LaunchOptions });
             }
+            await settings.UpdateUserSettings();
         }
 
         private void ShowConfigWizard(object sender, RoutedEventArgs e)
@@ -144,20 +150,29 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 return;
             }
 
+            var importedGameModels = new List<GameModel>();
             foreach (var file in files)
             {
                 var gameInfo = gameLibraryService.AddToLibrary(file);
-                AddGameModel(gameInfo);
+                var model = AddGameModel(gameInfo);
+                importedGameModels.Add(model);
             }
 
             var emulatorPath = settings.Versions[versionToUse];
-            var gameInfos = gameModels.Select(x => x.GameInfo);
+            var gameInfos = importedGameModels.Select(x => x.GameInfo);
             Task.Run(() => identificationService.ImportGames(emulatorPath, gameInfos, (info, cover) =>
             {
                 var model = gameModels.First(model => model.GameInfo.Name == info.Name);
                 model.GameInfo = info;
                 model.CoverPath = cover;
-            }, () => GameModel.Configs = settings.Configs.Keys));
+            }, () => 
+            {
+                GameModel.Configs = settings.Configs.Keys;
+                if (userSettingsModel.AutoApplyRemoteConfigs)
+                {
+                    foreach (var model in importedGameModels) model.Config = model.RemoteConfig;
+                }
+            }));
         }
 
         private void SetVersion(object sender, RoutedEventArgs e)
@@ -239,6 +254,11 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private void OpenVersionManager(object sender, RoutedEventArgs e)
         {
             App.Get<VersionManager>().Show();
+        }
+
+        private void OpenSettingsMenu(object sender, RoutedEventArgs e)
+        {
+            settingsMenu.IsOpen = true;
         }
 
         private void StartGame(object sender, MouseButtonEventArgs e)

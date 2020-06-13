@@ -44,7 +44,6 @@ namespace PCSX2_Configurator.Services
             var configName = Regex.Replace(configDirectory, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
             var inisPath = emulationService.GetInisPath(emulatorPath);
 
-            // Inject Config Options from user settings
             var importedConfigPath = configurationService.CreateConfig(configName, inisPath, ConfigOptions.Default);
 
             // PCSX2_ui.ini
@@ -97,8 +96,9 @@ namespace PCSX2_Configurator.Services
             var gameIds = configElement.SelectNodes("GameIds/GameId").Cast<XmlNode>().Select(x => x.InnerText);
             File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
 
-            // Colour code remote games with a status
-            // Auto Apply Config as option (in user settings)
+            // Remote File
+            // TODO: Update with status and notes when available
+            File.CreateText($"{importedConfigPath}\\remote");
         }
 
         private static void MergeUiConfig(IniData target, IniData source)

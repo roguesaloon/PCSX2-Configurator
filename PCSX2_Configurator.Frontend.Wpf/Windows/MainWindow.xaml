@@ -22,7 +22,7 @@
         <DockPanel Margin="0,26,0,0">
             <Canvas Name="headerBar" Height="94" VerticalAlignment="Top">
                 <Rectangle Height="{Binding ElementName=headerBar, Path=ActualHeight}" Width="{Binding ElementName=headerBar, Path=ActualWidth}" Fill="{StaticResource ResourceKey=TopBannerBrush}" />
-                <Button Cursor="Hand" Canvas.Left="40" Canvas.Top="15" Click="OpenVersionManager">
+                <Button Cursor="Hand" Canvas.Left="40" Canvas.Top="15" Click="OpenSettingsMenu">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource SettingsButtonStyle}">
                             <Setter Property="Background" Value="Transparent"/>
@@ -37,6 +37,12 @@
                             </Setter>
                         </Style>
                     </Button.Style>
+                    <Button.ContextMenu>
+                        <ContextMenu Name="settingsMenu">
+                            <MenuItem Header="Version Manager" Click="OpenVersionManager" />
+                            <MenuItem Header="Auto Apply Remote Configs" IsCheckable="True" StaysOpenOnClick="True"  IsChecked="{Binding AutoApplyRemoteConfigs}"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
                 </Button>
                 <Label Content="Games Library" Canvas.Top="6" Canvas.Left="130" Style="{StaticResource TopBannerTextStyle}"/>
             </Canvas>
