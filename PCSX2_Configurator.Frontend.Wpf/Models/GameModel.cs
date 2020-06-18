@@ -56,7 +56,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         public bool HasVersions => Versions.Count() > 0;
         public bool HasConfigs => FilteredConfigs.Count() > 0;
-        public string RemoteConfig => FilteredConfigs.FirstOrDefault(config => config.IsRemote).Name;
+        public string RemoteConfig => FilteredConfigs.FirstOrDefault(config => config.IsRemote)?.Name;
 
         public bool HasConfig => Config != null && FilteredConfigs.Select(config => config.Name).Contains(Config);
 
