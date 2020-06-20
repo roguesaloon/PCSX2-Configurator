@@ -94,7 +94,8 @@
                                     <MenuItem Header="Config" ItemsSource="{Binding ConfigsAndStates}" Visibility="{Binding HasConfigs, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem">
-                                                <Setter Property="Header" Value="{Binding Item1}" />
+                                                <Setter Property="Header" Value="{Binding Item1.Name}" />
+                                                <Setter Property="Foreground" Value="{Binding Item1.Status}" />
                                                 <Setter Property="IsChecked" Value="{Binding Item2, Mode=OneWay}" />
                                                 <Setter Property="StaysOpenOnClick" Value="True" />
                                                 <Setter Property="BindingGroup" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" />

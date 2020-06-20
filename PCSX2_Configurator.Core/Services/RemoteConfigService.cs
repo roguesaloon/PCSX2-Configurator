@@ -98,7 +98,7 @@ namespace PCSX2_Configurator.Services
             if(gameIds.Count() > 0) File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
 
             // Remote File
-            var remoteJson = JsonConvert.SerializeObject(new { status = configElement.SelectSingleNode("Status")?.InnerText, Notes = configElement.SelectSingleNode("Notes")?.InnerText });
+            var remoteJson = JsonConvert.SerializeObject(new { status = configElement.SelectSingleNode("Status")?.InnerText, notes = configElement.SelectSingleNode("Notes")?.InnerText });
             File.WriteAllText($"{importedConfigPath}\\remote", remoteJson, Encoding.UTF8);
         }
 

@@ -52,7 +52,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
 
         private IEnumerable<ConfigModel> FilteredConfigs => configModels.Where(config => config.GameIds != null && config.GameIds.Contains(GameInfo.GameId) || config.GameIds == null);
         public IEnumerable<Tuple<string, bool>> VersionsAndStates => Versions.Select(version => new Tuple<string, bool>(version, Version == version));
-        public IEnumerable<Tuple<string, bool>> ConfigsAndStates => FilteredConfigs.Select(config => new Tuple<string, bool>(config.Name, Config == config.Name));
+        public IEnumerable<Tuple<ConfigModel, bool>> ConfigsAndStates => FilteredConfigs.Select(config => new Tuple<ConfigModel, bool>(config, Config == config.Name));
 
         public bool HasVersions => Versions.Count() > 0;
         public bool HasConfigs => FilteredConfigs.Count() > 0;
