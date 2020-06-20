@@ -20,7 +20,11 @@ namespace PCSX2_Configurator.Settings
 
         private string SevenZipx86_LibraryPath { get;  set; }
         private string SevenZipx64_LibraryPath { get; set; }
-        public string SevenZipLibraryPath { get =>  Path.GetFullPath(Environment.Is64BitProcess ? SevenZipx64_LibraryPath : SevenZipx86_LibraryPath); }
+        public string SevenZipLibraryPath { get => Path.GetFullPath(Environment.Is64BitProcess ? SevenZipx64_LibraryPath : SevenZipx86_LibraryPath); }
+
+        private string Gitx86_LibraryPath { get; set; }
+        private string Gitx64_LibraryPath { get; set; }
+        public string GitLibraryPath { get => Path.GetFullPath(Environment.Is64BitProcess ? Gitx64_LibraryPath : Gitx86_LibraryPath); }
 
         private string autoHotkeyExecutable;
         public string AutoHotkeyExecutable { get => autoHotkeyExecutable; private set => autoHotkeyExecutable = Path.GetFullPath(value); }

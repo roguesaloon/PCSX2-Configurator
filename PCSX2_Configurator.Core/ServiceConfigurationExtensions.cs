@@ -20,6 +20,7 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
             services.AddSingleton<IFileHelpers, FileHelpers>();
             
             SevenZipBase.SetLibraryPath(settings.SevenZipLibraryPath);
+            LibGit2Sharp.GlobalSettings.NativeLibraryPath = settings.GitLibraryPath;
             services.AddTransient(provider => new FileIniDataParser());
 
             services.AddSingleton<IGameLibraryService, GameLibraryService>();
