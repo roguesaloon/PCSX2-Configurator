@@ -214,8 +214,13 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private void ConfigureGraphicsPlugin(object sender, RoutedEventArgs e)
         {
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
-            var version = model?.Version ?? string.Empty;
-            var config = model?.Config ?? string.Empty;
+            var version = model?.Version;
+            var config = model?.Config;
+            if (version == null || config == null)
+            {
+                MessageBox.Show("This Game is not configured", "Error");
+                return;
+            }
             var emulatorPath = settings.Versions[version];
             var configPath = settings.Configs[config];
 
@@ -225,8 +230,13 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private void ConfigureSoundPlugin(object sender, RoutedEventArgs e)
         {
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
-            var version = model?.Version ?? string.Empty;
-            var config = model?.Config ?? string.Empty;
+            var version = model?.Version;
+            var config = model?.Config;
+            if (version == null || config == null)
+            {
+                MessageBox.Show("This Game is not configured", "Error");
+                return;
+            }
             var emulatorPath = settings.Versions[version];
             var configPath = settings.Configs[config];
 
@@ -236,8 +246,13 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         private void ConfigureInputPlugin(object sender, RoutedEventArgs e)
         {
             var model = ((FrameworkElement)sender).GetBindingExpression(BindingGroupProperty).DataItem as GameModel;
-            var version = model?.Version ?? string.Empty;
-            var config = model?.Config ?? string.Empty;
+            var version = model?.Version;
+            var config = model?.Config;
+            if (version == null || config == null)
+            {
+                MessageBox.Show("This Game is not configured", "Error");
+                return;
+            }
             var emulatorPath = settings.Versions[version];
             var configPath = settings.Configs[config];
 

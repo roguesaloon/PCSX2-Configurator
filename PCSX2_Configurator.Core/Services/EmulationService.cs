@@ -69,7 +69,7 @@ namespace PCSX2_Configurator.Services
         public void EnsureUsingIso(string inisPath)
         {
             var config = iniParser.ReadFile($"{inisPath}/{ConfiguratorConstants.UiFileName}");
-            if (config.Global["CdvdSource"].ToLowerInvariant() != "iso")
+            if (config.Global["CdvdSource"]?.ToLowerInvariant() != "iso")
             {
                 config.Global["CdvdSource"] = "ISO";
                 iniParser.WriteFile($"{inisPath}/{ConfiguratorConstants.UiFileName}", config, Encoding.UTF8);

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using IniParser;
 using IniParser.Model;
+using Newtonsoft.Json;
 using LibGit2Sharp;
 using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Helpers;
@@ -38,7 +39,7 @@ namespace PCSX2_Configurator.Services
 
         public void ImportConfig(string gameId, string emulatorPath)
         {
-            if (!(remoteIndex.SelectSingleNode($"//Config[GameIds/GameId = '{gameId}']") is XmlElement configElement)) return;
+            if (!(remoteIndex.SelectSingleNode($"//Config[GameIds/GameId = contains(., '{gameId}')]") is XmlElement configElement)) return;
             var configDirectory = configElement.GetAttribute("Name");
             var configPath = $"{remoteConfigsPath}\\Game Configs\\{configDirectory}";
             var configName = Regex.Replace(configDirectory, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
@@ -93,12 +94,12 @@ namespace PCSX2_Configurator.Services
             }
 
             // Game Ids
-            var gameIds = configElement.SelectNodes("GameIds/GameId").Cast<XmlNode>().Select(x => x.InnerText);
+            var gameIds = configElement.SelectNodes("GameIds/GameId").Cast<XmlNode>().Select(x => Regex.Match(x.InnerText, "[A-Z]{4}-[0-9]{5}").Value);
             if(gameIds.Count() > 0) File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
 
             // Remote File
-            // TODO: Update with status and notes when available
-            File.CreateText($"{importedConfigPath}\\remote");
+            var remoteJson = JsonConvert.SerializeObject(new { status = configElement.SelectSingleNode("Status")?.InnerText, Notes = configElement.SelectSingleNode("Notes")?.InnerText });
+            File.WriteAllText($"{importedConfigPath}\\remote", remoteJson, Encoding.UTF8);
         }
 
         private static void MergeUiConfig(IniData target, IniData source)
