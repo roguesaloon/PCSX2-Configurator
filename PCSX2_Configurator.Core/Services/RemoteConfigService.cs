@@ -94,7 +94,7 @@ namespace PCSX2_Configurator.Services
 
             // Game Ids
             var gameIds = configElement.SelectNodes("GameIds/GameId").Cast<XmlNode>().Select(x => x.InnerText);
-            File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
+            if(gameIds.Count() > 0) File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
 
             // Remote File
             // TODO: Update with status and notes when available
