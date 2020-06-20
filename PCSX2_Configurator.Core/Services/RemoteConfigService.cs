@@ -45,7 +45,7 @@ namespace PCSX2_Configurator.Services
             var configName = Regex.Replace(configDirectory, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
             var inisPath = emulationService.GetInisPath(emulatorPath);
 
-            var importedConfigPath = configurationService.CreateConfig(configName, inisPath, ConfigOptions.Default);
+            var importedConfigPath = configurationService.CreateConfig(configName, inisPath, ConfigOptions.DefaultForRemote);
 
             // PCSX2_ui.ini
             var targetUiFile = $"{importedConfigPath}\\{ConfiguratorConstants.UiFileName}";
@@ -76,9 +76,9 @@ namespace PCSX2_Configurator.Services
             {
                 var targetVmFile = $"{importedConfigPath}\\{ConfiguratorConstants.VmFileName}";
                 var targetVmConfig = File.Exists(targetVmFile) ? iniParser.ReadFile(targetVmFile) : new IniData();
-                var sourceVmFile = iniParser.ReadFile(sourceVmConfigFile);
+                var sourceVmConfig = iniParser.ReadFile(sourceVmConfigFile);
 
-                MergeVmConfig(targetVmConfig, sourceUiConfig);
+                MergeVmConfig(targetVmConfig, sourceVmConfig);
                 iniParser.WriteFile(targetVmFile, targetVmConfig, Encoding.UTF8);
             }
 

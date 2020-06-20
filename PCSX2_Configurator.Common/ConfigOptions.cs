@@ -31,5 +31,12 @@ namespace PCSX2_Configurator.Common
             AspectRatio = ConfigAspectRatio.Original,
             ZoomLevel = 100
         };
+
+        public static ConfigOptions DefaultForRemote => new ConfigOptions
+        {
+            Flags = ConfigFlags.CopyAllSettings | ConfigFlags.UseAdvancedSettings,
+            AspectRatio = ConfigAspectRatio.Widescreen,
+            ZoomLevel = 101
+        };
     }
 }
