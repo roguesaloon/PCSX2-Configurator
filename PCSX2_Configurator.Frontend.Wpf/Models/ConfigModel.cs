@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -56,7 +57,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 {
                     var remoteFile = $"{ConfigsDirectory}\\{Name}\\remote";
                     var remoteContents = File.ReadAllText(remoteFile);
-                    remoteInfo = JsonConvert.DeserializeObject<Dictionary<string, string>>(remoteContents);
+                    remoteInfo = new Dictionary<string, string>(JsonConvert.DeserializeObject<Dictionary<string, string>>(remoteContents), StringComparer.OrdinalIgnoreCase);
                 }
                 return remoteInfo;
             }
