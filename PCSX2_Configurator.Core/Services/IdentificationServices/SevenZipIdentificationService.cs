@@ -1,15 +1,18 @@
-﻿using System;
+﻿using PCSX2_Configurator.Common;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PCSX2_Configurator.Services
 {
-    internal sealed class SevenZipIdentificationService : BaseIdentificationService
+    internal sealed class SevenZipIdentificationService : IIdentificationService
     {
-        public SevenZipIdentificationService(IGameLibraryService gameLibraryService, ICoverService coverService, IRemoteConfigService remoteConfigService) : base(gameLibraryService, coverService, remoteConfigService) { }
+        public Task<(string gameTitle, string gameRegion, string gameId)> IdentifyGame(string emulatorPath, string gamePath)
+        {
+            throw new NotImplementedException();
+        }
 
-        public override Task<(string gameTitle, string gameRegion, string gameId)> IdentifyGame(string emulatorPath, string gamePath)
+        public Task ImportGames(string emulatorPath, IEnumerable<GameInfo> gameInfos, Action<GameInfo, string> callback, Action deferredCallback)
         {
             throw new NotImplementedException();
         }
