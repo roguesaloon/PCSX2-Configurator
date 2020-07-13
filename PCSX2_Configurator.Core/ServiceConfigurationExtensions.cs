@@ -19,7 +19,8 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
             services.AddSingleton<IProcessHelpers, WindowsProcessHelpers>();
             services.AddSingleton<IFileHelpers, FileHelpers>();
             
-            SevenZipBase.SetLibraryPath(settings.SevenZipLibraryPath);
+            SevenZipBase.SetLibraryPath($"{settings.SevenZipLibraryPath}\\7za.dll");
+            Iso7zIdentificationService.SetLibraryPath(settings.SevenZipLibraryPath);
             LibGit2Sharp.GlobalSettings.NativeLibraryPath = settings.GitLibraryPath;
             services.AddTransient(provider => new FileIniDataParser());
 

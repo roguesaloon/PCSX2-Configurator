@@ -84,10 +84,16 @@
     <None Update="Assets\Plugins\xpad.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Tools\7za_x64.dll">
+    <None Update="Tools\7-Zip\x64\7za.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Tools\7za_x86.dll">
+    <None Update="Tools\7-Zip\x64\Iso7z.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tools\7-Zip\x86\7za.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tools\7-Zip\x86\Iso7z.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Tools\AutoHotkeyA32.exe">

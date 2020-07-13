@@ -4,8 +4,8 @@
   "Versions": {
   },
   "GameLibraryFile": "GameLibrary.xml",
-  "SevenZipx64_LibraryPath": "Tools\\7za_x64.dll",
-  "SevenZipx86_LibraryPath": "Tools\\7za_x86.dll",
+  "SevenZipx64_LibraryPath": "Tools\\7-Zip\\x64",
+  "SevenZipx86_LibraryPath": "Tools\\7-Zip\\x86",
   "Gitx64_LibraryPath": "Tools\\Git\\x64",
   "Gitx86_LibraryPath": "Tools\\Git\\x86",
   "AutoHotkeyExecutable": "Tools\\AutoHotkeyA32.exe",
