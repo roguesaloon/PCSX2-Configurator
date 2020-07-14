@@ -27,8 +27,9 @@ namespace PCSX2_Configurator.Extensions.DependencyInjection
             services.AddSingleton<IGameLibraryService, GameLibraryService>();
             services.AddSingleton<IEmulationService, EmulationService>();
             services.AddSingleton<IConfigurationService, ConfigurationService>();
+            services.AddSingleton<IDiscIdLookupService, RedumpDiscIdLookupService>();
             services.AddSingleton<ICoverService, ChainedCoverService>();
-            services.AddSingleton<IIdentificationService, EmulatorIdentificationService>();
+            services.AddSingleton<IIdentificationService, Iso7zIdentificationService>();
             services.AddSingleton<IVersionManagementService, VersionManagementService>();
             services.AddSingleton<IRemoteConfigService, RemoteConfigService>();
 

@@ -67,7 +67,7 @@ namespace PCSX2_Configurator.Services
                 var nodeOfProp = xmlDocument.SelectSingleNode(gamePath + "/" + prop.Name);
                 if (nodeOfProp != null) gameNode.RemoveChild(nodeOfProp);
                 nodeOfProp = xmlDocument.CreateElement(prop.Name);
-                nodeOfProp.InnerText = gameInfo[prop.Name].ToString();
+                if(gameInfo[prop.Name] != null) nodeOfProp.InnerText = gameInfo[prop.Name].ToString();
                 gameNode.AppendChild(nodeOfProp);
             }
             xmlDocument.Save(targetFile);

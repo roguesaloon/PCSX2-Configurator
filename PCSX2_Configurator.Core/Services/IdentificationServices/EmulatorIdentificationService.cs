@@ -1,68 +1,32 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Dasync.Collections;
 using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Helpers;
 using PCSX2_Configurator.Settings;
 
 namespace PCSX2_Configurator.Services
 {
-    internal sealed class EmulatorIdentificationService : IIdentificationService
+    internal sealed class EmulatorIdentificationService : BaseIdentificationService
     {
         private readonly AppSettings appSettings;
         private readonly IEmulationService emulationService;
         private readonly IFileHelpers fileHelpers;
         private readonly IProcessHelpers processHelpers;
-        private readonly IGameLibraryService gameLibraryService;
-        private readonly ICoverService coverService;
-        private readonly IRemoteConfigService remoteConfigService;
 
-        public EmulatorIdentificationService(AppSettings appSettings, IGameLibraryService gameLibraryService, ICoverService coverService, 
-            IEmulationService emulationService, IRemoteConfigService remoteConfigService, 
-            IFileHelpers fileHelpers, IProcessHelpers processHelpers)
+        public EmulatorIdentificationService(AppSettings appSettings, IGameLibraryService gameLibraryService, ICoverService coverService, IEmulationService emulationService, IRemoteConfigService remoteConfigService,
+            IFileHelpers fileHelpers, IProcessHelpers processHelpers) : base(gameLibraryService, coverService, remoteConfigService)
         {
             this.appSettings = appSettings;
             this.emulationService = emulationService;
             this.fileHelpers = fileHelpers;
             this.processHelpers = processHelpers;
-            this.gameLibraryService = gameLibraryService;
-            this.coverService = coverService;
-            this.remoteConfigService = remoteConfigService;
         }
 
-        public async Task ImportGames(string emulatorPath, IEnumerable<GameInfo> gameInfos, Action<GameInfo, string> callback, Action deferredCallback)
-        {
-            var inisPath = emulationService.GetInisPath(emulatorPath);
-            emulationService.EnsureUsingIso(inisPath);
-            fileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", true);
-
-            var updateGameInfos = new Queue<Action>();
-
-            await gameInfos.ParallelForEachAsync(async gameInfo => {
-                if (gameInfo.GameId != null) return;
-                var (name, region, id) = await IdentifyGame(emulatorPath, gameInfo.Path);
-                var newInfo = new GameInfo(gameInfo) { DisplayName = name, Region = region, GameId = id != "???" ? id : null };
-                var cover = await coverService.GetCoverForGame(newInfo);
-                updateGameInfos.Enqueue(() => {
-                    gameLibraryService.UpdateGameInfo(newInfo.Name, newInfo, shouldReloadLibrary: true);
-                    remoteConfigService.ImportConfig(newInfo.GameId, emulatorPath);
-                    deferredCallback?.Invoke();
-                });
-
-                callback.Invoke(newInfo, cover);
-            }, maxDegreeOfParallelism: 20);
-
-            while (updateGameInfos.Count > 0) updateGameInfos.Dequeue()?.Invoke();
-
-            fileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
-        }
-
-        public async Task<(string gameTitle, string gameRegion, string gameId)> IdentifyGame(string emulatorPath, string gamePath)
+        public async override Task<(string gameTitle, string gameRegion, string gameId)> IdentifyGame(string emulatorPath, string gamePath)
         {
             var gsNullPluginOverride = $"--gs=\"{appSettings.AdditionalPluginsDirectory}\\GSnull.dll\"";
             var spu2NullPluginOverride = $"--spu2=\"{appSettings.AdditionalPluginsDirectory}\\SPU2null.dll\"";
@@ -115,6 +79,17 @@ namespace PCSX2_Configurator.Services
             else gameId = "???";
 
             return (gameTitle, gameRegion, gameId);
+        }
+
+        public async override Task ImportGames(string emulatorPath, IEnumerable<GameInfo> gameInfos, Action<GameInfo, string> callback, Action defferedCallback)
+        {
+            var inisPath = emulationService.GetInisPath(emulatorPath);
+            emulationService.EnsureUsingIso(inisPath);
+            fileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", true);
+
+            await base.ImportGames(emulatorPath, gameInfos, callback, defferedCallback);
+
+            fileHelpers.SetFileToReadOnly($"{inisPath}/{ConfiguratorConstants.UiFileName}", false);
         }
     }
 }
