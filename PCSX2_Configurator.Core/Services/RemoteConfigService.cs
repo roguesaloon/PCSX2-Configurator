@@ -39,7 +39,8 @@ namespace PCSX2_Configurator.Services
 
         public void ImportConfig(string gameId, string emulatorPath)
         {
-            if (!(remoteIndex.SelectSingleNode($"//Config[GameIds/GameId = contains(., '{gameId}')]") is XmlElement configElement)) return;
+            var configNode = remoteIndex.SelectSingleNode($"//Config[GameIds/GameId[contains(., '{gameId}')]]");
+            if (!(configNode is XmlElement configElement)) return;
             var configDirectory = configElement.GetAttribute("Name");
             var configPath = $"{remoteConfigsPath}\\Game Configs\\{configDirectory}";
             var configName = Regex.Replace(configDirectory, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");

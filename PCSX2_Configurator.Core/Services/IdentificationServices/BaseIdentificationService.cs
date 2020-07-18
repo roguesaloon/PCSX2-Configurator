@@ -38,8 +38,8 @@ namespace PCSX2_Configurator.Services
                 callback.Invoke(newInfo, cover);
             }, maxDegreeOfParallelism: 20);
 
-            deferredCallback?.Invoke();
             while (updateGameInfos.Count > 0) updateGameInfos.Dequeue()?.Invoke();
+            deferredCallback?.Invoke();
         }
     }
 }
