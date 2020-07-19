@@ -9,5 +9,6 @@ namespace PCSX2_Configurator.Services
         Task<IDictionary<string, VersionSettings>> GetAvailableVersions();
         Task InstallVersion(VersionSettings version);
         string GetMostRecentStableVersion(IEnumerable<string> versionNames);
+        string GetMostRecentVersion(IEnumerable<string> versionNames);
     }
 }

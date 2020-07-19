@@ -66,6 +66,13 @@ namespace PCSX2_Configurator.Services
             return latestStable ?? sortedVersions.LastOrDefault();
         }
 
+        public string GetMostRecentVersion(IEnumerable<string> versionNames)
+        {
+            var sortedVersions = versionNames.OrderBy(version => version, StringComparer.OrdinalIgnoreCase.WithNaturalSort());
+            var latest = sortedVersions.LastOrDefault();
+            return latest;
+        }
+
         private async Task<List<VersionSettings>> GetDevVersions()
         {
             var uri = new Uri(settings.DevVersions);

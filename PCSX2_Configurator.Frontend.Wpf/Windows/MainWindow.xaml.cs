@@ -22,7 +22,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
     public partial class MainWindow : Window
     {
         private ObservableCollection<GameModel> gameModels;
-        private UserSettingsModel userSettingsModel;
+        private readonly UserSettingsModel userSettingsModel;
 
         private readonly AppSettings settings;
         private readonly IGameLibraryService gameLibraryService;
@@ -141,7 +141,11 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 .OrderBy(file => file)
                 .ToArray();
 
-            var versionToUse = versionManagementService.GetMostRecentStableVersion(settings.Versions.Keys);
+            var versionToUse = userSettingsModel.DefaultPcsx2Version;
+            versionToUse =
+                versionToUse == "Use Latest Stable Version" ? versionManagementService.GetMostRecentStableVersion(settings.Versions.Keys) :
+                versionToUse == "Use Latest Version" ? versionManagementService.GetMostRecentVersion(settings.Versions.Keys) : versionToUse;
+
             if (versionToUse == null)
             {
                 MessageBox.Show("PCSX2 Configurator requires at least one installed PCSX2 version", "Error");
@@ -168,7 +172,11 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 GameModel.Configs = settings.Configs.Keys;
                 if (userSettingsModel.AutoApplyRemoteConfigs)
                 {
-                    foreach (var model in importedGameModels) model.Config = model.RemoteConfig;
+                    foreach (var model in importedGameModels)
+                    {
+                        model.Config = model.RemoteConfig;
+                        model.Version = versionToUse;
+                    }
                 }
             }));
         }
@@ -178,6 +186,12 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             var menuItem = sender as MenuItem;
             var model = ((Control) menuItem.GetBindingExpression(BindingGroupProperty).DataItem).DataContext as GameModel;
             model.Version = menuItem.Header as string;
+        }
+
+        private void SetDefaultVersion(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            userSettingsModel.DefaultPcsx2Version = menuItem.Header as string;
         }
 
         private void SetConfig(object sender, RoutedEventArgs e)

@@ -54,6 +54,7 @@
     "DevVersions": "https://buildbot.orphis.net/pcsx2/index.php"
   },
   "UserSettings": {
-    "AutoApplyRemoteConfigs": true
+    "AutoApplyRemoteConfigs": true,
+    "DefaultPcsx2Version": "Use Latest Stable Version"
   }
 }

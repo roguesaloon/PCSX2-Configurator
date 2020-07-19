@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -58,6 +59,15 @@ namespace PCSX2_Configurator.Settings
         {
             var settingsJson = await File.ReadAllTextAsync("settings.json");
             var settingsObj = JsonConvert.DeserializeObject<JObject>(settingsJson);
+
+            // Transform string typed user settings to strong types
+            UserSettings = UserSettings.ToDictionary(setting => setting.Key, setting => {
+                var value = setting.Value;
+                value = (object) value == "True"  ? true  : value;
+                value = (object) value == "False" ? false : value;
+                return value;
+            });
+
             settingsObj[nameof(UserSettings)] = JToken.FromObject(UserSettings);
             settingsJson = JsonConvert.SerializeObject(settingsObj, Formatting.Indented);
             await File.WriteAllTextAsync("settings.json", settingsJson);

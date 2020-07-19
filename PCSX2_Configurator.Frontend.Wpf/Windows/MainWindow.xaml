@@ -40,7 +40,16 @@
                     <Button.ContextMenu>
                         <ContextMenu Name="settingsMenu">
                             <MenuItem Header="Version Manager" Click="OpenVersionManager" />
-                            <MenuItem Header="Auto Apply Remote Configs" IsCheckable="True" StaysOpenOnClick="True"  IsChecked="{Binding AutoApplyRemoteConfigs}"/>
+                            <MenuItem Header="Auto Apply Remote Configs" IsCheckable="True" IsChecked="{Binding AutoApplyRemoteConfigs}"/>
+                            <MenuItem Header="Default PCSX2 Version" ItemsSource="{Binding DefaultPcsx2VersionSelection}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Item1}" />
+                                        <Setter Property="IsChecked" Value="{Binding Item2, Mode=OneWay}" />
+                                        <EventSetter Event="Click" Handler="SetDefaultVersion" />
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
