@@ -194,6 +194,12 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             userSettingsModel.DefaultPcsx2Version = menuItem.Header as string;
         }
 
+        private void ImportRemoteConfig(object sender, RoutedEventArgs e)
+        {
+            var gameInfos = gameModels.Select(model => model.GameInfo);
+            App.Get<RemoteConfigImporter>().Show(gameInfos);
+        }
+
         private void SetConfig(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;

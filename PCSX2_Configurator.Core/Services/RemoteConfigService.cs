@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Xml;
 using IniParser;
 using IniParser.Model;
@@ -25,6 +26,9 @@ namespace PCSX2_Configurator.Services
         private readonly XmlDocument remoteIndex;
         private readonly FileIniDataParser iniParser;
 
+        private IEnumerable<string> availableConfigs;
+        public  IEnumerable<string> AvailableConfigs => availableConfigs ??= remoteIndex?.SelectNodes("//Config")?.Cast<XmlNode>()?.Select(x => x.Attributes["Name"].Value);
+
         public RemoteConfigService(AppSettings appSettings, FileIniDataParser iniParser, IConfigurationService configurationService, IEmulationService emulationService, IFileHelpers fileHelpers)
         {
             remoteConfigsPath = appSettings.RemoteConfigsPath ?? "Remote";
@@ -37,18 +41,38 @@ namespace PCSX2_Configurator.Services
             Task.Run(UpdateFromRemote).ContinueWith(task => remoteIndex.Load($"{remoteConfigsPath}\\RemoteIndex.xml"));
         }
 
+        public void ImportConfig(string configName, string emulatorPath, string[] gameIds) => ImportConfig(configName, emulatorPath, (IEnumerable<string>) gameIds);
+
         public void ImportConfig(string gameId, string emulatorPath)
         {
             var configNode = remoteIndex.SelectSingleNode($"//Config[GameIds/GameId[contains(., '{gameId}')]]");
             if (!(configNode is XmlElement configElement)) return;
-            var configDirectory = configElement.GetAttribute("Name");
-            var configPath = $"{remoteConfigsPath}\\Game Configs\\{configDirectory}";
-            var configName = Regex.Replace(configDirectory, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
-            var inisPath = emulationService.GetInisPath(emulatorPath);
+            var configName = configElement.GetAttribute("Name");
+            ImportConfig(configName, emulatorPath, configElement: configElement);
+        }
 
+        private void ImportConfig(string configName, string emulatorPath, IEnumerable<string> gameIds = null, XmlElement configElement = null)
+        {
+            var configPath = $"{remoteConfigsPath}\\Game Configs\\{configName}";
+            configElement ??= remoteIndex.SelectSingleNode($"//Config[contains(@Name, '{configName}')]") as XmlElement;
+            if (configElement == null) return;
+
+            configName = Regex.Replace(configName, "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
+            var inisPath = emulationService.GetInisPath(emulatorPath);
             var importedConfigPath = configurationService.CreateConfig(configName, inisPath, ConfigOptions.DefaultForRemote);
 
-            // PCSX2_ui.ini
+            ImportPcsx2Ui(importedConfigPath, configPath);
+            ImportPcsx2Vm(importedConfigPath, configPath);
+            ImportSpu2x(importedConfigPath, configPath);
+            ImportGsdx(importedConfigPath, configPath);
+            ImportCheatsAndPatches(configPath, emulatorPath);
+
+            WriteGameIdsForConfig(importedConfigPath, configElement, gameIds);
+            WriteRemoteInfoForConfig(importedConfigPath, configElement);
+        }
+
+        private void ImportPcsx2Ui(string importedConfigPath, string configPath)
+        {
             var targetUiFile = $"{importedConfigPath}\\{ConfiguratorConstants.UiFileName}";
             var targetUiConfig = iniParser.ReadFile(targetUiFile);
             var sourceUiConfig = new IniData();
@@ -58,20 +82,10 @@ namespace PCSX2_Configurator.Services
 
             targetUiConfig.Merge(sourceUiConfig);
             iniParser.WriteFile(targetUiFile, targetUiConfig, Encoding.UTF8);
+        }
 
-            // SPU2-X.ini
-            var sourceSpu2xConfigFile = $"{configPath}\\{ConfiguratorConstants.Spu2xFileName}";
-            if (File.Exists(sourceSpu2xConfigFile))
-            {
-                var targetSpu2xFile = $"{importedConfigPath}\\{ConfiguratorConstants.Spu2xFileName}";
-                var targetSpu2xConfig = File.Exists(targetSpu2xFile) ? iniParser.ReadFile(targetSpu2xFile) : new IniData();
-                var sourceSpu2xConfig = iniParser.ReadFile(sourceSpu2xConfigFile);
-
-                MergeSpu2xConfig(targetSpu2xConfig, sourceSpu2xConfig);
-                iniParser.WriteFile(targetSpu2xFile, targetSpu2xConfig, Encoding.UTF8);
-            }
-
-            // PCSX2_vm.ini
+        private void ImportPcsx2Vm(string importedConfigPath, string configPath)
+        {
             var sourceVmConfigFile = $"{configPath}\\{ConfiguratorConstants.VmFileName}";
             if (File.Exists(sourceVmConfigFile))
             {
@@ -82,23 +96,42 @@ namespace PCSX2_Configurator.Services
                 MergeVmConfig(targetVmConfig, sourceVmConfig);
                 iniParser.WriteFile(targetVmFile, targetVmConfig, Encoding.UTF8);
             }
+        }
 
-            // GSdx.ini
-            fileHelpers.CopyWithoutException($"{configPath}\\{ConfiguratorConstants.GsdxFileName}", $"{importedConfigPath}\\{ConfiguratorConstants.GsdxFileName}");
+        private void ImportSpu2x(string importedConfigPath, string configPath)
+        {
+            var sourceSpu2xConfigFile = $"{configPath}\\{ConfiguratorConstants.Spu2xFileName}";
+            if (File.Exists(sourceSpu2xConfigFile))
+            {
+                var targetSpu2xFile = $"{importedConfigPath}\\{ConfiguratorConstants.Spu2xFileName}";
+                var targetSpu2xConfig = File.Exists(targetSpu2xFile) ? iniParser.ReadFile(targetSpu2xFile) : new IniData();
+                var sourceSpu2xConfig = iniParser.ReadFile(sourceSpu2xConfigFile);
 
-            // Cheats and Widescreen Patches
+                MergeSpu2xConfig(targetSpu2xConfig, sourceSpu2xConfig);
+                iniParser.WriteFile(targetSpu2xFile, targetSpu2xConfig, Encoding.UTF8);
+            }
+        }
+
+        private void ImportGsdx(string importedConfigPath, string configPath) => fileHelpers.CopyWithoutException($"{configPath}\\{ConfiguratorConstants.GsdxFileName}", $"{importedConfigPath}\\{ConfiguratorConstants.GsdxFileName}");
+
+        private void ImportCheatsAndPatches(string configPath, string emulatorPath)
+        {
             foreach (var file in Directory.GetFiles(configPath, "*.pnach"))
             {
                 var fileName = Path.GetFileName(file);
                 var destination = $"{Path.GetDirectoryName(emulatorPath)}\\" + (fileName.EndsWith("_ws.pnach") ? $"cheats_ws\\{fileName.Replace("_ws", "")}" : $"cheats\\{fileName}");
                 File.Copy(file, destination, overwrite: true);
             }
+        }
 
-            // Game Ids
-            var gameIds = configElement.SelectNodes("GameIds/GameId").Cast<XmlNode>().Select(x => Regex.Match(x.InnerText, "[A-Z]{4}-[0-9]{5}").Value);
-            if(gameIds.Count() > 0) File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
+        private void WriteGameIdsForConfig(string importedConfigPath, XmlElement configElement, IEnumerable<string> gameIds)
+        {
+            gameIds ??= configElement.SelectNodes("GameIds/GameId").Cast<XmlNode>().Select(x => Regex.Match(x.InnerText, "[A-Z]{4}-[0-9]{5}").Value);
+            if (gameIds.Count() > 0) File.WriteAllText($"{importedConfigPath}\\gameids", string.Join(';', gameIds), Encoding.UTF8);
+        }
 
-            // Remote File
+        private void WriteRemoteInfoForConfig(string importedConfigPath, XmlElement configElement)
+        {
             var remoteJson = JsonConvert.SerializeObject(new { status = configElement.SelectSingleNode("Status")?.InnerText, notes = configElement.SelectSingleNode("Notes")?.InnerText });
             File.WriteAllText($"{importedConfigPath}\\remote", remoteJson, Encoding.UTF8);
         }

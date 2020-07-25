@@ -10,6 +10,9 @@
     <Compile Update="Windows\ConfigWizard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Windows\RemoteConfigImporter.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Windows\LaunchOptions.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -22,6 +25,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Page Update="Windows\ConfigWizard.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\RemoteConfigImporter.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\LaunchOptions.xaml">
