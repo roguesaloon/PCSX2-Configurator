@@ -14,8 +14,8 @@
                 </Style>
             </ComboBox.ItemContainerStyle>
         </ComboBox>
-        <CheckBox Name="importForAll" Content="Import For All" HorizontalAlignment="Center" Margin="10,65,10,0" VerticalAlignment="Top" Width="264"/>
+        <CheckBox Name="importForAll" Click="ShouldImportForAll" Content="Import For All" HorizontalAlignment="Center" Margin="10,65,10,0" VerticalAlignment="Top" Width="264"/>
         <ListBox Name="gameSelection" Margin="10,85,10,40" SelectionMode="Extended" />
-        <Button Content="Import Config" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom"/>
+        <Button Content="Import Config" Click="ImportConfig" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>
