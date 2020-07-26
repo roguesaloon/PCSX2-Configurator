@@ -7,7 +7,7 @@ namespace PCSX2_Configurator.Services
     public interface IVersionManagementService
     {
         Task<IDictionary<string, VersionSettings>> GetAvailableVersions();
-        Task InstallVersion(VersionSettings version);
+        Task InstallVersion(VersionSettings version, bool shouldOpen = true);
         string GetMostRecentStableVersion(IEnumerable<string> versionNames);
         string GetMostRecentVersion(IEnumerable<string> versionNames);
     }

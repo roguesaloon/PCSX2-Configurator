@@ -18,6 +18,21 @@ namespace PCSX2_Configurator.Helpers
             }
         }
 
+        void IFileHelpers.MergeDirectoriesAndOverwrite(string sourceDirectory, string destDirectory, params string[] dontOverwrite)
+        {
+            Directory.CreateDirectory(destDirectory);
+            foreach (var file in Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories))
+            {
+                var destPath = file.Replace(sourceDirectory + Path.DirectorySeparatorChar, "");
+                var destFile = destDirectory + Path.DirectorySeparatorChar + destPath;
+                if (dontOverwrite.Any(exclude => File.Exists(destFile) && destPath == exclude)) continue;
+                if (File.Exists(destFile)) File.Delete(destFile);
+                Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                File.Move(file, destFile);
+            }
+            if(Directory.Exists(sourceDirectory)) Directory.Delete(sourceDirectory, true);
+        }
+
         public string[] GetFilesToDepth(string path, int depth)
         {
             var directories = Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly);

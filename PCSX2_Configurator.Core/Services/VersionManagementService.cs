@@ -24,13 +24,16 @@ namespace PCSX2_Configurator.Services
         private readonly VersionManagerSettings settings;
         private readonly AppSettings appSettings;
         private readonly FileIniDataParser iniParser;
+        private readonly IFileHelpers fileHelpers;
 
-        public VersionManagementService(AppSettings appSettings, FileIniDataParser iniParser, IHttpClientFactory httpClientFactory)
+        public VersionManagementService(AppSettings appSettings, FileIniDataParser iniParser, IFileHelpers fileHelpers, IHttpClientFactory httpClientFactory)
         {
             this.appSettings = appSettings;
             this.iniParser = iniParser;
+            this.fileHelpers = fileHelpers;
             settings = appSettings.VersionManager;
             httpClient = httpClientFactory.CreateClient();
+            Task.Run(UpdateLatestDevVersion);
         }
 
         public async Task<IDictionary<string, VersionSettings>> GetAvailableVersions()
@@ -48,15 +51,18 @@ namespace PCSX2_Configurator.Services
             return new SortedDictionary<string, VersionSettings>(availableVersions.ToDictionary(x => x.Name), StringComparer.OrdinalIgnoreCase.WithNaturalSort());
         }
 
-        public async Task InstallVersion(VersionSettings version)
+        public async Task InstallVersion(VersionSettings version, bool shouldOpen)
         {
             var installPath = await DownloadAndExtractArchive(version);
             ConfigureBiosDirectory(installPath, version.InisDirectory);
 
-            appSettings.Versions.Add(version.Name, $"{Path.GetFullPath(installPath)}\\{version.Executable}");
+            var fullExectuablePath = $"{Path.GetFullPath(installPath)}\\{version.Executable}";
+            if (!appSettings.Versions.ContainsKey(version.Name)) appSettings.Versions.Add(version.Name, fullExectuablePath);
+            else if (appSettings.Versions[version.Name] != fullExectuablePath) appSettings.Versions[version.Name] = fullExectuablePath;
             await appSettings.UpdateVersions();
 
-            Process.Start($"{installPath}/{version.Executable}");
+            WriteVersionNumber(installPath, version.Number ?? version.Name);
+            if(shouldOpen) Process.Start($"{installPath}/{version.Executable}");
         }
 
         public string GetMostRecentStableVersion(IEnumerable<string> versionNames)
@@ -71,6 +77,19 @@ namespace PCSX2_Configurator.Services
             var sortedVersions = versionNames.OrderBy(version => version, StringComparer.OrdinalIgnoreCase.WithNaturalSort());
             var latest = sortedVersions.LastOrDefault();
             return latest;
+        }
+
+        private async Task UpdateLatestDevVersion()
+        {
+            var installedVersions = appSettings.Versions;
+            var latestInstalledVersion = installedVersions.LastOrDefault(version => version.Key.Contains("latest"));
+            if ((latestInstalledVersion.Key, latestInstalledVersion.Value) == default) return;
+
+            var installedVersionNumber = ReadVersionNumber(Path.GetDirectoryName(latestInstalledVersion.Value));
+            var devVersions = await GetDevVersions();
+            var latestVersion = GetLatestDevVersion(devVersions);
+
+            if (latestVersion.Number != installedVersionNumber) await InstallVersion(latestVersion, shouldOpen: false);
         }
 
         private async Task<List<VersionSettings>> GetDevVersions()
@@ -118,10 +137,10 @@ namespace PCSX2_Configurator.Services
             return new VersionSettings
             {
                 Name = version.Name.Substring(0, version.Name.LastIndexOf('-')) + "-latest",
+                Number = version.Name,
                 DownloadLink = version.DownloadLink,
                 Directory = version.Directory.Substring(0, version.Directory.LastIndexOf(" ")) + " latest",
                 ArchiveName = version.ArchiveName,
-                ShouldUpdate = true,
                 IsDevBuild = true
             };
         }
@@ -145,7 +164,7 @@ namespace PCSX2_Configurator.Services
 
                 if (Directory.Exists(extractedPath) && extractedPath != targetPath)
                 {
-                    Directory.Move(extractedPath, targetPath);
+                    fileHelpers.MergeDirectoriesAndOverwrite(extractedPath, targetPath, "portable.ini");
                 }
             }
             else await extractor.ExtractArchiveAsync(targetPath);
@@ -157,11 +176,25 @@ namespace PCSX2_Configurator.Services
         {
             if (string.IsNullOrWhiteSpace(settings.BiosDirectory)) return;
             var biosDirectory = Directory.CreateDirectory($"{settings.VersionsDirectory}/{settings.BiosDirectory}");
-            var config = new IniData();
+            var inisPath = Directory.CreateDirectory($"{installPath}/{inisDirectory}");
+            var uiFileName = $"{inisPath}/{ConfiguratorConstants.UiFileName}";
+            var config = File.Exists(uiFileName) ? iniParser.ReadFile(uiFileName) : new IniData();
             config["Folders"]["Bios"] = Path.GetFullPath($"{biosDirectory}").Replace("\\", "\\\\");
             config["Folders"]["UseDefaultBios"] = "disabled";
-            var inisPath = Directory.CreateDirectory($"{installPath}/{inisDirectory}");
-            iniParser.WriteFile($"{inisPath}/{ConfiguratorConstants.UiFileName}", config);
+            iniParser.WriteFile(uiFileName, config, Encoding.UTF8);
+        }
+
+        private void WriteVersionNumber(string installPath, string versionNumber)
+        {
+            var portableConfig = iniParser.ReadFile($"{installPath}/portable.ini");
+            portableConfig.Global["Version"] = versionNumber;
+            iniParser.WriteFile($"{installPath}/portable.ini", portableConfig, Encoding.UTF8);
+        }
+
+        private string ReadVersionNumber(string installPath)
+        {
+            var portableConfig = iniParser.ReadFile($"{installPath}/portable.ini");
+            return portableConfig.Global["Version"];
         }
     }
 }
