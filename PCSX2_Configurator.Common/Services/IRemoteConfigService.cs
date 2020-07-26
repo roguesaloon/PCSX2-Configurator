@@ -6,6 +6,6 @@ namespace PCSX2_Configurator.Services
     {
         IEnumerable<string> AvailableConfigs { get; }
         void ImportConfig(string gameId, string emulatorPath);
-        void ImportConfig(string configName, string emulatorPath, string[] gameIds);
+        void ImportConfig(string configName, string emulatorPath, IEnumerable<string> gameIds);
     }
 }

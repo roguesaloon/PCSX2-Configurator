@@ -60,8 +60,8 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 return;
             }
 
-            var gameIds = Array.Empty<string>();
-            gameIds = !importForAll.IsChecked.Value ? gameSelection.SelectedItems.Cast<Tuple<string, GameInfo>>().Select(selection => selection.Item2.GameId).ToArray() : gameIds;
+            var gameIds = Enumerable.Empty<string>();
+            gameIds = !importForAll.IsChecked.Value ? gameSelection.SelectedItems.Cast<Tuple<string, GameInfo>>().Select(selection => selection.Item2.GameId) : gameIds;
 
             var versionToUse = versionSelector?.Invoke();
             if(versionToUse == null)

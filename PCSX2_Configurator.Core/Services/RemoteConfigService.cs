@@ -41,17 +41,17 @@ namespace PCSX2_Configurator.Services
             Task.Run(UpdateFromRemote).ContinueWith(task => remoteIndex.Load($"{remoteConfigsPath}\\RemoteIndex.xml"));
         }
 
-        public void ImportConfig(string configName, string emulatorPath, string[] gameIds) => ImportConfig(configName, emulatorPath, (IEnumerable<string>) gameIds);
+        public void ImportConfig(string configName, string emulatorPath, IEnumerable<string> gameIds) => ImportConfig(configName, emulatorPath, gameIds, configElement: null);
 
         public void ImportConfig(string gameId, string emulatorPath)
         {
             var configNode = remoteIndex.SelectSingleNode($"//Config[GameIds/GameId[contains(., '{gameId}')]]");
             if (!(configNode is XmlElement configElement)) return;
             var configName = configElement.GetAttribute("Name");
-            ImportConfig(configName, emulatorPath, configElement: configElement);
+            ImportConfig(configName, emulatorPath, gameIds: null, configElement);
         }
 
-        private void ImportConfig(string configName, string emulatorPath, IEnumerable<string> gameIds = null, XmlElement configElement = null)
+        private void ImportConfig(string configName, string emulatorPath, IEnumerable<string> gameIds, XmlElement configElement)
         {
             var configPath = $"{remoteConfigsPath}\\Game Configs\\{configName}";
             configElement ??= remoteIndex.SelectSingleNode($"//Config[contains(@Name, \"{configName}\")]") as XmlElement;
