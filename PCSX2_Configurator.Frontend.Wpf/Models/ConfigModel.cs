@@ -71,7 +71,7 @@ namespace PCSX2_Configurator.Frontend.Wpf
                 var status = RemoteInfo.ContainsKey("status") ? RemoteInfo?["status"] : null;
                 return
                     status == "g" ? new SolidColorBrush(Colors.Green) :
-                    status == "y" ? new SolidColorBrush(Colors.Yellow) :
+                    status == "y" ? new SolidColorBrush(Colors.Orange) :
                     SystemColors.MenuBrush;
             }
         }

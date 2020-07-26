@@ -50,6 +50,7 @@
                                     </Style>
                                 </MenuItem.ItemContainerStyle>
                             </MenuItem>
+                            <MenuItem Header="Import Remote Config" Click="ImportRemoteConfig" />
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>

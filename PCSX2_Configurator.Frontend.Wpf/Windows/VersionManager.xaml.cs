@@ -19,7 +19,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             InitializeComponent();
         }
 
-        new public async void Show()
+        public new async void Show()
         {
             availableVersions = await versionManagementService.GetAvailableVersions();
             versionSelector.ItemsSource = availableVersions.Keys;

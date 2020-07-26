@@ -141,10 +141,7 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
                 .OrderBy(file => file)
                 .ToArray();
 
-            var versionToUse = userSettingsModel.DefaultPcsx2Version;
-            versionToUse =
-                versionToUse == "Use Latest Stable Version" ? versionManagementService.GetMostRecentStableVersion(settings.Versions.Keys) :
-                versionToUse == "Use Latest Version" ? versionManagementService.GetMostRecentVersion(settings.Versions.Keys) : versionToUse;
+            var versionToUse = SelectDefaultVersion();
 
             if (versionToUse == null)
             {
@@ -181,6 +178,15 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
             }));
         }
 
+        private string SelectDefaultVersion()
+        {
+            var defaultVersion = userSettingsModel.DefaultPcsx2Version;
+            defaultVersion =
+                defaultVersion == "Use Latest Stable Version" ? versionManagementService.GetMostRecentStableVersion(settings.Versions.Keys) :
+                defaultVersion == "Use Latest Version" ? versionManagementService.GetMostRecentVersion(settings.Versions.Keys) : defaultVersion;
+            return defaultVersion;
+        }
+
         private void SetVersion(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
@@ -192,6 +198,12 @@ namespace PCSX2_Configurator.Frontend.Wpf.Windows
         {
             var menuItem = sender as MenuItem;
             userSettingsModel.DefaultPcsx2Version = menuItem.Header as string;
+        }
+
+        private void ImportRemoteConfig(object sender, RoutedEventArgs e)
+        {
+            var gameInfos = gameModels.Select(model => model.GameInfo);
+            App.Get<RemoteConfigImporter>().Show(gameInfos, SelectDefaultVersion);
         }
 
         private void SetConfig(object sender, RoutedEventArgs e)
