@@ -170,6 +170,24 @@ namespace PCSX2_Configurator.Services
             {
                 using var repo = new Repository(remoteConfigsPath);
                 repo.Reset(ResetMode.Hard);
+
+                var origin = repo.Network.Remotes["origin"];
+                Commands.Fetch(repo, origin.Name, origin.FetchRefSpecs.Select(x => x.Specification), null, null);
+                var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, repo.Branches["origin/updater-test"].Tip.Tree);
+                if(changes.Count > 0)
+                {
+                    foreach(var change in changes)
+                    {
+                        if (!change.Path.StartsWith("Game Configs")) continue;
+                        if (change.Status != ChangeKind.Modified && change.Status != ChangeKind.Added) continue;
+
+                        var parts = change.Path.Split("/");
+                        // Get Equivelent local config folder
+                        // And modify changed file
+                        // Or add new file
+                    }
+                }
+
                 Commands.Pull(repo, new Signature("MERGE_USER_NAME", "MERGE_USER_EMAIL", DateTimeOffset.Now), null);
             }
             else Repository.Clone(remote, remoteConfigsPath);
