@@ -182,6 +182,7 @@ namespace PCSX2_Configurator.Services
                     foreach(var change in changes)
                     {
                         if (!change.Path.StartsWith("Game Configs")) continue;
+                        if (change.Path.EndsWith("-tweak.ini")) continue;
                         if (change.Status != ChangeKind.Modified && change.Status != ChangeKind.Added) continue;
 
                         var pathParts = change.Path.Split("/");
