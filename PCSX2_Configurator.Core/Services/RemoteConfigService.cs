@@ -10,6 +10,7 @@ using IniParser;
 using IniParser.Model;
 using Newtonsoft.Json;
 using LibGit2Sharp;
+using DiffPatch;
 using PCSX2_Configurator.Common;
 using PCSX2_Configurator.Helpers;
 using PCSX2_Configurator.Settings;
@@ -194,7 +195,7 @@ namespace PCSX2_Configurator.Services
                         {
                             var patch = repo.Diff.Compare<Patch>(repo.Head.Tip.Tree, repo.Branches[$"origin/{branch}"].Tip.Tree, new string[] { change.Path });
                             var fileContents = File.ReadAllText(filePath);
-                            fileContents = DiffPatch.PatchHelper.Patch(fileContents, DiffPatch.DiffParserHelper.Parse(patch.Content).First().Chunks, "\n");
+                            fileContents = PatchHelper.Patch(fileContents, DiffParserHelper.Parse(patch.Content).First().Chunks, "\n");
                             File.WriteAllText(filePath, fileContents, Encoding.UTF8);
                         }
                         else File.Copy($"{remoteConfigsPath}\\{change.Path}", filePath);
