@@ -23,6 +23,7 @@ namespace PCSX2_Configurator.Services
         private readonly IConfigurationService configurationService;
         private readonly IEmulationService emulationService;
         private readonly IFileHelpers fileHelpers;
+        private readonly AppSettings appSettings;
         private readonly XmlDocument remoteIndex;
         private readonly FileIniDataParser iniParser;
 
@@ -31,11 +32,12 @@ namespace PCSX2_Configurator.Services
 
         public RemoteConfigService(AppSettings appSettings, FileIniDataParser iniParser, IConfigurationService configurationService, IEmulationService emulationService, IFileHelpers fileHelpers)
         {
-            remoteConfigsPath = appSettings.RemoteConfigsPath ?? "Remote";
+            this.appSettings = appSettings;
             this.iniParser = iniParser;
             this.configurationService = configurationService;
             this.emulationService = emulationService;
             this.fileHelpers = fileHelpers;
+            remoteConfigsPath = appSettings.RemoteConfigsPath ?? "Remote";
             remoteIndex = new XmlDocument();
 
             Task.Run(UpdateFromRemote).ContinueWith(task => remoteIndex.Load($"{remoteConfigsPath}\\RemoteIndex.xml"));
@@ -172,8 +174,9 @@ namespace PCSX2_Configurator.Services
                 repo.Reset(ResetMode.Hard);
 
                 var origin = repo.Network.Remotes["origin"];
+                var branch = "master";
                 Commands.Fetch(repo, origin.Name, origin.FetchRefSpecs.Select(x => x.Specification), null, null);
-                var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, repo.Branches["origin/updater-test"].Tip.Tree);
+                var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, repo.Branches[$"origin/{branch}"].Tip.Tree);
                 if(changes.Count > 0)
                 {
                     foreach(var change in changes)
@@ -181,10 +184,19 @@ namespace PCSX2_Configurator.Services
                         if (!change.Path.StartsWith("Game Configs")) continue;
                         if (change.Status != ChangeKind.Modified && change.Status != ChangeKind.Added) continue;
 
-                        var parts = change.Path.Split("/");
-                        // Get Equivelent local config folder
-                        // And modify changed file
-                        // Or add new file
+                        var pathParts = change.Path.Split("/");
+                        var configDir = appSettings.ConfigsDirectory + Path.DirectorySeparatorChar + Regex.Replace(pathParts[1], "id#\\d+", "").Trim().ToLowerInvariant().Replace(" ", "-");
+                        if (!Directory.Exists(configDir)) continue;
+
+                        var filePath = configDir + Path.DirectorySeparatorChar + pathParts[2];
+                        if (change.Status == ChangeKind.Modified && File.Exists(filePath))
+                        {
+                            var patch = repo.Diff.Compare<Patch>(repo.Head.Tip.Tree, repo.Branches[$"origin/{branch}"].Tip.Tree, new string[] { change.Path });
+                            var fileContents = File.ReadAllText(filePath);
+                            fileContents = DiffPatch.PatchHelper.Patch(fileContents, DiffPatch.DiffParserHelper.Parse(patch.Content).First().Chunks, "\n");
+                            File.WriteAllText(filePath, fileContents, Encoding.UTF8);
+                        }
+                        else File.Copy($"{remoteConfigsPath}\\{change.Path}", filePath);
                     }
                 }
 
